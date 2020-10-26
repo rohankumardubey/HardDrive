@@ -7,6 +7,13 @@ MANIFEST=manifest.txt
 # Classes to include
 CLASSES=\
 	game/Main.class \
+	\
+	game/engine/Game.class \
+	game/engine/GameState.class \
+	game/engine/Scene.class \
+	game/engine/View.class \
+	game/engine/Sprite.class \
+	game/engine/Entity.class
 
 
 SOURCES=$(CLASSES:%.class=%.java)
@@ -17,6 +24,10 @@ OTHER_FILES=\
 	README.md
 
 ANONYMOUS_CLASSES=\
+  game/MyState.class\
+	game/engine/GameFrame.class \
+	game/engine/GameCanvas.class\
+	# game/engine/Game\$$1.class
 
 
 all: $(JAR)
