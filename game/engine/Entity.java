@@ -1,6 +1,7 @@
 package game.engine;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -13,39 +14,61 @@ import java.util.Map;
 public abstract class Entity {
 
   // Position in the scene
-  protected int x, y;
+  protected Point position;
 
   // Graphic to draw
   protected Sprite sprite;
 
+  // Collision mask
+  protected Mask mask;
+
+  // Whether or not the entity is visible in the room.
+  //  Turns off collision and drawing, but does NOT affect other entity events
+  protected boolean isVisible;
+
+  // Has the entity been destroyed?
+  private boolean isDestroyed;
+
   // List of timers
-  private HashMap<Integer, EntityTimer> timers;
+  private Map<Integer, EntityTimer> timers;
 
   // Scene object (might be null)
-  WeakReference<Scene> scene;
+  private WeakReference<Scene> scene;
 
   /**
    * Construct a new entity
    */
   public Entity() {
-    this.x      = 0;
-    this.y      = 0;
-    this.sprite = null;
-    this.timers = new HashMap<Integer, EntityTimer>();
-    this.scene  = null;
+    this.position    = new Point(0, 0);
+    this.sprite      = new Sprite();
+    this.mask        = new Mask();
+    this.isVisible   = true;
+    this.isDestroyed = false;
+    this.timers      = new HashMap<Integer, EntityTimer>();
+    this.scene       = null;
   }
 
   /**
-   * Called on each tick of the game
+   * Called when the entity is first created
    */
-  abstract protected void onUpdate();
+  abstract protected void onCreate();
+
+  /**
+   * Called when the entity is destroyed
+   */
+  abstract protected void onDestroy();
 
   /**
    * Called whenever a timer is fired
    *
    * @param timerIndex   Index of the timer that fired
    */
-  abstract protected void timerFired(int timerIndex);
+  abstract protected void onTimer(int timerIndex);
+
+  /**
+   * Called on each tick of the game
+   */
+  abstract protected void onStep();
 
   /**
    * Default drawing implementation draws the sprite.
@@ -54,10 +77,12 @@ public abstract class Entity {
    * @param g2d  Graphics object
    */
   protected void draw(Graphics2D g2d) {
+    if (this.isDestroyed) { return; }
+    if (!this.isVisible) { return; }
     if (this.sprite == null) { return; }
 
     final AffineTransform oldTransform = g2d.getTransform();
-    g2d.translate(this.x, this.y);
+    g2d.translate(this.position.x, this.position.y);
 
     this.sprite.draw(g2d);
 
@@ -88,17 +113,27 @@ public abstract class Entity {
   }
 
   /**
+   * Test if two entities are collising using the entity masks
+   *
+   * @param other   Other entity to check
+   * @return        True if they are colliding
+   */
+  protected final boolean isCollidingWith(Entity other) {
+    return this.mask.isCollidingWith(other.mask, this.position, other.position);
+  }
+
+  /**
    * Called when an entity is added to a scene.
    *  This method should not be called manually.
    *
    * @param scene  Scene object
    */
-  void setScene(Scene scene) {
+  final void setScene(Scene scene) {
     this.scene = new WeakReference<Scene>(scene);
   }
 
   /**
-   * Get the current scen
+   * Get the current scene object
    * @return  Scene object
    */
   public final Scene getScene() {
@@ -106,16 +141,9 @@ public abstract class Entity {
   }
 
   /**
-   * Method used by the Scene object to update the entity
-   */
-  void runEntity() {
-    this.tickTimers();
-  }
-
-  /**
    * Tick all timers and fire any events
    */
-  private void tickTimers() {
+  final void tickTimers() {
     final ArrayList<Integer> timersFired = new ArrayList<Integer>();
     for (Map.Entry<Integer, EntityTimer> entry: timers.entrySet()) {
       int index         = entry.getKey();
@@ -126,7 +154,23 @@ public abstract class Entity {
       }
     }
 
-    for (int index: timersFired) { this.timerFired(index); }
+    for (int index: timersFired) { this.onTimer(index); }
+  }
+
+  /**
+   * Mark an entity to be destroyed.
+   * The entity won't actually be destroyed until the next game tick.
+   */
+  public final void destroy() {
+    this.isDestroyed = true;
+  }
+
+  /**
+   * Test if an entity has been destroyed
+   * @return  True if entity has been destroyed
+   */
+  public final boolean isDestroyed() {
+    return this.isDestroyed;
   }
 }
 

@@ -2,78 +2,31 @@ package game.engine;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 
 /**
  * Abstract data type (ADT) for the game engine
  */
 public final class Game {
-  private Stack<GameState> state;
   private Scene scene;
+  private Scene newScene;
   private GameFrame frame;
+  private Map<Class<? extends Resource>, Resource> resources;
 
   /**
    * Construct a new game object and give it an initial game state
    * @param initialState  Initial state
    */
-  public Game(GameState initialState) {
+  public Game(Scene initialScene) {
     // Configure JFrame
     this.frame = new GameFrame();
 
-    // Configure state
-    this.state = new Stack<GameState>();
-    this.state.push(initialState);
-    initialState.onStart(this);
-
-    // Initialize the scene
-    this.scene = null;
-  }
-
-  /**
-   * Push another state onto the stack
-   * @param newState  New state to push onto the stack
-   */
-  public void pushState(GameState newState) {
-    this.state.peek().onPause(this);
-    this.state.push(newState);
-    newState.onStart(this);
-  }
-
-  /**
-   * Pop the current state of the stack.
-   * If there are no more states remaining, then the game is terminated.
-   */
-  public void popState() {
-    this.state.peek().onStart(this);
-    this.state.pop();
-    if (this.state.isEmpty()) {
-      // Kill the game
-      this.end();
-    } else {
-      this.state.peek().onResume(this);
-    }
-  }
-
-  /**
-   * Replace the top state on the stack with a new state.
-   *   This is equivalent to a pop followed by a push.
-   *
-   * @param newState  New current game state
-   */
-  public void replaceState(GameState newState) {
-    this.state.peek().onReplace(this);
-    this.state.pop();
-    this.state.push(newState);
-    newState.onStart(this);
-  }
-
-  /**
-   * Get the current game state on top of the stack
-   * @return Current game state
-   */
-  public GameState getCurrentState() {
-    return this.state.peek();
+    this.scene     = initialScene;
+    this.newScene  = null;
+    this.resources = new HashMap<>();
   }
 
   /**
@@ -85,11 +38,13 @@ public final class Game {
   }
 
   /**
-   * Set the current game scene
+   * Set the new game scene. This scene will be changed on the <b>next</b> game tick.
+   * If one game tick has multiple calls to setScene(), only the first call will succeed.
+   *
    * @param scene  New Scene
    */
   public void setScene(Scene scene) {
-    this.scene = scene;
+    if (this.newScene != null) { this.newScene = scene; }
   }
 
   /**
@@ -112,6 +67,28 @@ public final class Game {
    */
   public void end() {
     this.frame.terminate();
+  }
+
+  /**
+   * Get a global resource given the object class type
+   *
+   * @param <T>   Type of the resource
+   * @param c     Resource class
+   * @return      Resource
+   */
+  public <T extends Resource> T getResouce(Class<T> c) {
+    // This is safe because of setResource()
+    return (T) this.resources.get(c);
+  }
+
+  /**
+   * Set a global resource using the resource class as the key.
+   * Replaces the current instance of the resource.
+   *
+   * @param resource  Resource to set
+   */
+  public void setResource(Resource resource) {
+    this.resources.put(resource.getClass(), resource);
   }
 }
 
@@ -140,7 +117,7 @@ class GameFrame extends JFrame {
   }
 }
 
-class GameCanvas extends JPanel implements ActionListener {
+class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInputListener {
   private static final long serialVersionUID = -5915721891511946875L;
 
   // This swing timer will call actionPerformed every TIMER_DELAY Milliseconds
@@ -158,4 +135,30 @@ class GameCanvas extends JPanel implements ActionListener {
     System.out.println("Repaint");
     this.repaint();
   }
+
+  /**
+   * Keyboard Events
+   */
+  public void keyPressed(KeyEvent e) {}
+
+  public void keyReleased(KeyEvent e) {}
+
+  public void keyTyped(KeyEvent e) {}
+
+  /**
+   * Mouse Events
+   */
+  public void mousePressed(MouseEvent e) {}
+
+  public void mouseReleased(MouseEvent e) {}
+
+  public void mouseEntered(MouseEvent e) {}
+
+  public void mouseExited(MouseEvent e) {}
+
+  public void mouseClicked(MouseEvent e) {}
+
+  public void mouseMoved(MouseEvent e) {}
+
+  public void mouseDragged(MouseEvent e) {}
 }

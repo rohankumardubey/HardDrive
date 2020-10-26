@@ -9,11 +9,15 @@ CLASSES=\
 	game/Main.class \
 	\
 	game/engine/Game.class \
-	game/engine/GameState.class \
+	game/engine/Resource.class \
 	game/engine/Scene.class \
 	game/engine/View.class \
+	game/engine/Entity.class \
+	game/engine/AnimatedImage.class \
 	game/engine/Sprite.class \
-	game/engine/Entity.class
+	game/engine/Background.class \
+	game/engine/BackgroundType.class \
+	game/engine/Mask.class
 
 
 SOURCES=$(CLASSES:%.class=%.java)
@@ -24,10 +28,10 @@ OTHER_FILES=\
 	README.md
 
 ANONYMOUS_CLASSES=\
-  game/MyState.class\
 	game/engine/GameFrame.class \
 	game/engine/GameCanvas.class\
-	# game/engine/Game\$$1.class
+	game/engine/Background\$$1.class \
+	game/engine/EntityTimer.class
 
 
 all: $(JAR)
