@@ -9,6 +9,7 @@ public class Player extends Entity {
 
     this.sprite.addFrames(GameAssets.getLoadedImage("boxy"));
     this.mask = this.sprite.getMask();
+    this.position.setLocation(100, 100);
   }
 
   @Override
@@ -25,21 +26,14 @@ public class Player extends Entity {
   @Override
   protected void onStep() {
     Game g = this.getScene().getGame();
-    if (g.isKeyPressed(Key.UP)) {
-      this.position.y -= 5;
-      this.sprite.setAngleDegrees(0);
-    }
-    if (g.isKeyPressed(Key.DOWN)) {
-      this.position.y += 5;
-      this.sprite.setAngleDegrees(180);
-    }
-    if (g.isKeyPressed(Key.LEFT)) {
-      this.position.x -= 5;
-      this.sprite.setAngleDegrees(270);
-    }
-    if (g.isKeyPressed(Key.RIGHT)) {
-      this.position.x += 5;
-      this.sprite.setAngleDegrees(90);
+    if (g.isKeyPressed(Key.UP)) { this.position.y -= 5; }
+    if (g.isKeyPressed(Key.DOWN)) { this.position.y += 5; }
+    if (g.isKeyPressed(Key.LEFT)) { this.position.x -= 5; }
+    if (g.isKeyPressed(Key.RIGHT)) { this.position.x += 5; }
+
+    if (this.isMouseInside() && g.isLeftMousePressed()) {
+      GameAssets.getLoadedSound("explosion").playSound();
+      this.destroy();
     }
   }
 }

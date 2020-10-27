@@ -16,7 +16,11 @@ public final class Game {
   private Scene scene;
   private Scene newScene;
   private Map<Class<? extends Resource>, Resource> resources;
+
   private Set<Key> pressedKeys;
+  private boolean leftMousePressed;
+  private boolean rightMousePressed;
+  private Point mouseViewLocation;
 
   private GameFrame frame;
 
@@ -25,10 +29,14 @@ public final class Game {
    * @param initialState  Initial state
    */
   public Game(Scene initialScene) {
-    this.scene       = initialScene;
-    this.newScene    = null;
-    this.resources   = new HashMap<>();
-    this.pressedKeys = new HashSet<>();
+    this.scene     = initialScene;
+    this.newScene  = null;
+    this.resources = new HashMap<>();
+
+    this.pressedKeys       = new HashSet<>();
+    this.leftMousePressed  = false;
+    this.rightMousePressed = false;
+    this.mouseViewLocation = new Point(0, 0);
 
     // Configure JFrame
     this.frame = new GameFrame(this);
@@ -109,6 +117,8 @@ public final class Game {
       this.scene.onCreate();
     }
 
+    this.scene.onStep();
+
     this.scene.createEntities();
     this.scene.destroyEntities();
     this.scene.tickEntityTimers();
@@ -140,6 +150,68 @@ public final class Game {
   void setKeyReleased(Key key) {
     this.pressedKeys.remove(key);
   }
+
+  /**
+   * Test whether or not the left mouse button is currently pressed
+   *
+   * @return    Left mouse pressed
+   */
+  public boolean isLeftMousePressed() {
+    return this.leftMousePressed;
+  }
+
+  /**
+   * Test whether or not the right mouse button is currently pressed
+   *
+   * @return    Right mouse pressed
+   */
+  public boolean isRightMousePressed() {
+    return this.rightMousePressed;
+  }
+
+  /**
+   * Indicate that the left mouse has been clicked or released
+   */
+  void setLeftMousePressed(boolean pressed) {
+    this.leftMousePressed = pressed;
+  }
+
+  /**
+   * Indicate that the right mouse has been clicked or released
+   */
+  void setRightMousePressed(boolean pressed) {
+    this.rightMousePressed = pressed;
+  }
+
+  /**
+   * Get the X,Y position of the mouse relative to the main scene view.
+   * Point (0,0) of the view is the top left corner of the screen.
+   *
+   * @return    X,Y location of mouse in the view
+   */
+  public Point getMouseViewPosition() {
+    return this.mouseViewLocation;
+  }
+
+  /**
+   * Get the X,Y position of the mouse relative to the scene.
+   * Point (0,0) of the scene is the top left corner.
+   *
+   * @return   X,Y location of mouse in the scene
+   */
+  public Point getMouseScenePosition() {
+    return new Point(this.mouseViewLocation.x + this.scene.mainView.position.x,
+                     this.mouseViewLocation.y + this.scene.mainView.position.y);
+  }
+
+  /**
+   * Set the mouse view position
+   *
+   * @param   newPosition     New position of the mouse inside the view
+   */
+  void setMouseViewPosition(Point newPosition) {
+    this.mouseViewLocation = newPosition;
+  }
 }
 
 /**
@@ -167,6 +239,9 @@ class GameFrame extends JFrame {
     this.setVisible(true);
   }
 
+  /**
+   * Make the canvas visible and start the timer
+   */
   public void start() {
     SwingUtilities.invokeLater(() -> {
       this.setVisible(true);
@@ -174,6 +249,9 @@ class GameFrame extends JFrame {
     });
   }
 
+  /**
+   * Close this JFrame window to terminate the game
+   */
   public void terminate() {
     this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
   }
@@ -188,7 +266,10 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
 
   private Game game;
 
-  // This swing timer will call actionPerformed every TIMER_DELAY Milliseconds
+  /**
+   * This swing timer will call actionPerformed every TIMER_DELAY Milliseconds
+   *   This is the main loop for the game
+   */
   private Timer timer;
 
   public GameCanvas(Game game) {
@@ -218,6 +299,9 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
     this.repaint();
   }
 
+  /**
+   * Paint the game to the screen
+   */
   @Override
   protected void paintComponent(Graphics g) {
     // Start with the outside color
@@ -241,24 +325,54 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
     if (key != null) { this.game.setKeyReleased(key); }
   }
 
-  public void keyTyped(KeyEvent e) {}
+  public void keyTyped(KeyEvent e) {
+    /* Not Used */
+  }
 
   /**
    * Mouse Events
    */
   public void mousePressed(MouseEvent e) {
-    System.out.println("Click");
+    switch (e.getButton()) {
+      case MouseEvent.BUTTON1:
+        this.game.setLeftMousePressed(true);
+        break;
+
+      case MouseEvent.BUTTON3:
+        this.game.setRightMousePressed(true);
+        break;
+    }
   }
 
-  public void mouseReleased(MouseEvent e) {}
+  public void mouseReleased(MouseEvent e) {
+    switch (e.getButton()) {
+      case MouseEvent.BUTTON1:
+        this.game.setLeftMousePressed(false);
+        break;
 
-  public void mouseEntered(MouseEvent e) {}
+      case MouseEvent.BUTTON3:
+        this.game.setRightMousePressed(false);
+        break;
+    }
+  }
 
-  public void mouseExited(MouseEvent e) {}
+  public void mouseEntered(MouseEvent e) {
+    /* Not Used */
+  }
 
-  public void mouseClicked(MouseEvent e) {}
+  public void mouseExited(MouseEvent e) {
+    /* Not Used */
+  }
 
-  public void mouseMoved(MouseEvent e) {}
+  public void mouseClicked(MouseEvent e) {
+    /* Not Used */
+  }
 
-  public void mouseDragged(MouseEvent e) {}
+  public void mouseMoved(MouseEvent e) {
+    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()));
+  }
+
+  public void mouseDragged(MouseEvent e) {
+    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()));
+  }
 }

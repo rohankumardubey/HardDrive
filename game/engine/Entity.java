@@ -123,6 +123,16 @@ public abstract class Entity {
   }
 
   /**
+   * Test if the mouse is currently inside the mask of this entity
+   *
+   * @return  True if the mouse is inside the entity
+   */
+  protected final boolean isMouseInside() {
+    Point mousePoint = this.scene.get().getGame().getMouseScenePosition();
+    return this.mask.isPointInside(mousePoint, this.position);
+  }
+
+  /**
    * Called when an entity is added to a scene.
    *  This method should not be called manually.
    *

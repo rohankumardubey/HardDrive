@@ -24,7 +24,8 @@ public class TestScene extends Scene {
 
   @Override
   protected void onStep() {
-    // TODO Auto-generated method stub
+    Game g = this.getGame();
+    if (g.isKeyPressed(Key.ESCAPE)) { g.end(); }
   }
 
   @Override

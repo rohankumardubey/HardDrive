@@ -59,4 +59,29 @@ public class Mask {
 
     return true;
   }
+
+  /**
+   * Test if a point is inside the mask given the absolute position of the point
+   *
+   * @param point             Point to test
+   * @param thisAbsPosition   Absolute position of this mask
+   * @return                  True if the point is inside the mask, false otherwise
+   */
+  public boolean isPointInside(Point point, Point thisAbsPosition) {
+    Point thisTopLeft = (Point) thisAbsPosition.clone();
+    thisTopLeft.translate(this.relativePosition.x, this.relativePosition.y);
+
+    int thisLeft   = thisTopLeft.x;
+    int thisRight  = thisTopLeft.x + this.size.width;
+    int thisTop    = thisTopLeft.y;
+    int thisBottom = thisTopLeft.y + this.size.height;
+
+    // Determine non-colliding states
+    if ((thisBottom < point.y) || (thisTop > point.y) || (thisRight < point.x) ||
+        (thisLeft > point.x)) {
+      return false;
+    }
+
+    return true;
+  }
 }
