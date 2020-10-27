@@ -206,12 +206,25 @@ public final class Game {
   }
 
   /**
-   * Set the mouse view position
+   * Set the mouse view position.
+   * Has to adjust the range of values for the scaled canvas size.
    *
    * @param   newPosition     New position of the mouse inside the view
+   * @param   canvasSize      Current scaled size of Canvas
    */
-  void setMouseViewPosition(Point newPosition) {
-    this.mouseViewLocation = newPosition;
+  void setMouseViewPosition(Point newPosition, Dimension canvasSize) {
+    // Adjust for scaling of canvas
+    int newX = map(newPosition.x, 0, canvasSize.width, 0, this.scene.size.width);
+    int newY = map(newPosition.y, 0, canvasSize.height, 0, this.scene.size.height);
+
+    this.mouseViewLocation = new Point(newX, newY);
+  }
+
+  /**
+   * Map one range of integers to another
+   */
+  private static int map(int x, int inMin, int inMax, int outMin, int outMax) {
+    return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
   }
 
   /**
@@ -245,7 +258,7 @@ class GameFrame extends JFrame {
   private static final long serialVersionUID         = -8402788080584404131L;
   private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(640, 480);
 
-  private GameCanvas canvas;
+  GameCanvas canvas;
 
   public GameFrame(Game game) {
     super("Java Game Engine");
@@ -423,10 +436,10 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   }
 
   public void mouseMoved(MouseEvent e) {
-    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()));
+    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()), this.getSize());
   }
 
   public void mouseDragged(MouseEvent e) {
-    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()));
+    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()), this.getSize());
   }
 }

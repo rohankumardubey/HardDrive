@@ -26,6 +26,17 @@ public class Mask {
   }
 
   /**
+   * Set relative position based on the size.
+   * Assume that the center of the rectangle is 0,0.
+   *
+   * @param size   Size of the mask
+   */
+  public Mask(Dimension size) {
+    this.size             = size;
+    this.relativePosition = new Point(0 - (size.width / 2), 0 - (size.height / 2));
+  }
+
+  /**
    * Test if two masks are colliding.
    * This function must know the absolute position of the masks in the room
    *
