@@ -11,7 +11,6 @@ public class Player extends Entity {
     this.sprite.addFrames(i);
     this.setTimer(0, 10, true);
     this.setTimer(1, 7, true);
-    this.setTimer(2, 1, true);
   }
 
   @Override
@@ -22,11 +21,9 @@ public class Player extends Entity {
   @Override
   protected void onTimer(int timerIndex) {
     if (timerIndex == 0) { this.sprite.mirrorVertical = !this.sprite.mirrorVertical; }
-    if (timerIndex == 1) { this.sprite.mirrorHorizontal = !this.sprite.mirrorHorizontal; }
-    if (timerIndex == 2) {
-      View v = this.getScene().mainView;
-      v.position.x += 5;
-      v.position.y += 5;
+    if (timerIndex == 1) {
+      this.sprite.mirrorHorizontal              = !this.sprite.mirrorHorizontal;
+      this.getScene().background.mirrorVertical = !this.getScene().background.mirrorVertical;
     }
   }
 

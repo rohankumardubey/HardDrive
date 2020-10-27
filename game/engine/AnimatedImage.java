@@ -19,7 +19,6 @@ public class AnimatedImage {
   // Transformation
   public Dimension size;
   public boolean mirrorVertical, mirrorHorizontal;
-  public double angleRadians; // Rotation
 
   /**
    * Construct a new empty animated image.
@@ -31,7 +30,6 @@ public class AnimatedImage {
     this.size             = new Dimension(1, 1);
     this.mirrorVertical   = false;
     this.mirrorHorizontal = false;
-    this.angleRadians     = 0.0;
   }
 
   /**
@@ -63,34 +61,6 @@ public class AnimatedImage {
       int height = frames.get(0).getHeight();
       this.size  = new Dimension(width, height);
     }
-  }
-
-  /**
-   * Get the rotation angle of the image in radians
-   */
-  public double getAngleRadians() {
-    return this.angleRadians;
-  }
-
-  /**
-   * Get the rotation angle of the image in degrees
-   */
-  public double getAngleDegrees() {
-    return Math.toDegrees(this.angleRadians);
-  }
-
-  /**
-   * Set the rotation angle of the image in radians
-   */
-  public void setAngleRadians(double radians) {
-    this.angleRadians = radians;
-  }
-
-  /**
-   * Set the rotation angle of the image in degrees
-   */
-  public void setAngleDegrees(double degrees) {
-    this.angleRadians = Math.toRadians(degrees);
   }
 
   /**
@@ -148,8 +118,6 @@ public class AnimatedImage {
    * @return Rectangular Mask
    */
   public Mask getMask() {
-    // TODO: Compute mask based on image angle
-
     int leftX = 0 - this.size.width / 2;
     int leftY = 0 - this.size.height / 2;
     return new Mask(new Point(leftX, leftY), this.size);
@@ -164,18 +132,13 @@ public class AnimatedImage {
    */
   public BufferedImage getImage() {
 
-    // Normalize the angle
-    Dimension d       = this.getRotatedImageDimensions();
-    BufferedImage buf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
+    BufferedImage buf =
+        new BufferedImage(this.size.width, this.size.height, BufferedImage.TYPE_INT_ARGB);
 
     final BufferedImage frame = this.getCurrentFrameImage();
     if (frame == null) { return buf; }
 
     Graphics2D g2d = (Graphics2D) buf.getGraphics();
-
-    // Apply image transformations (Reflect before rotation)
-    g2d.rotate(this.angleRadians, buf.getWidth() / 2, buf.getHeight() / 2);
-    g2d.translate((d.width - this.size.width) / 2, (d.height - this.size.height) / 2);
 
     if (this.mirrorHorizontal) {
       g2d.scale(-1.0, 1.0);
@@ -190,26 +153,4 @@ public class AnimatedImage {
 
     return buf;
   }
-
-  /**
-   * Compute the image dimensions for a rotated image
-   *
-   * @return  Image dimensions
-   */
-  private final Dimension getRotatedImageDimensions() {
-
-    double sin = Math.abs(Math.sin(this.angleRadians));
-    double cos = Math.abs(Math.cos(this.angleRadians));
-
-    int newWidth  = (int) Math.floor(this.size.width * cos + this.size.height * sin);
-    int newHeight = (int) Math.floor(this.size.height * cos + this.size.width * sin);
-
-    return new Dimension(newWidth, newHeight);
-  }
-
-  /**
-   * Get the mirrored image of the sprite
-   *
-   * @return  Mirrored image
-   */
 }
