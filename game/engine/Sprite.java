@@ -59,6 +59,20 @@ public final class Sprite extends AnimatedImage {
   }
 
   /**
+   * Add to the rotation angle of the image in degrees
+   */
+  public void addAngleDegrees(double degrees) {
+    this.angleRadians += Math.toRadians(degrees);
+  }
+
+  /**
+   * Add to the rotation angle of the image in radians
+   */
+  public void addAngleRadians(double radians) {
+    this.angleRadians += radians;
+  }
+
+  /**
    * Draw the sprite centered at position (0,0)
    *
    * @param g2d   Graphics to draw to
