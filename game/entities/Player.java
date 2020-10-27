@@ -1,16 +1,20 @@
 package game.entities;
 
 import game.engine.*;
-import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
 
+  public Player() {
+    super();
+
+    this.sprite.addFrames(GameAssets.getLoadedImage("boxy"));
+    this.mask = this.sprite.getMask();
+  }
+
   @Override
   protected void onCreate() {
-    BufferedImage i = this.getScene().getGame().getLoadedImage("boxy");
-    this.sprite.addFrames(i);
     this.setTimer(0, 10, true);
-    this.setTimer(1, 7, true);
+    this.setTimer(1, 12, true);
   }
 
   @Override
@@ -21,10 +25,8 @@ public class Player extends Entity {
   @Override
   protected void onTimer(int timerIndex) {
     if (timerIndex == 0) { this.sprite.mirrorVertical = !this.sprite.mirrorVertical; }
-    if (timerIndex == 1) {
-      this.sprite.mirrorHorizontal              = !this.sprite.mirrorHorizontal;
-      this.getScene().background.mirrorVertical = !this.getScene().background.mirrorVertical;
-    }
+    if (timerIndex == 1) { GameAssets.getLoadedSound("explosion").playSound(); }
+    if (timerIndex == 2) { GameAssets.getLoadedSound("explosion").playSound(); }
   }
 
   @Override

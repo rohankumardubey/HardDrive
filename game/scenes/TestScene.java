@@ -10,14 +10,15 @@ public class TestScene extends Scene {
 
   public TestScene() {
     super(640 * 2, 480 * 2);
-    this.mainView.size              = new Dimension(640, 480);
+    this.mainView.size = new Dimension(640, 480);
+
+    this.background.addFrames(GameAssets.getLoadedImage("smiley"));
+    this.background.type            = BackgroundType.Tiled;
     this.background.backgroundColor = new Color(255, 0, 0);
   }
 
   @Override
   protected void onCreate() {
-    this.background.addFrames(this.getGame().getLoadedImage("smiley"));
-    this.background.type = BackgroundType.Tiled;
     this.createEntity(new Player());
   }
 

@@ -2,11 +2,8 @@ package game.engine;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
@@ -17,7 +14,6 @@ public final class Game {
   private Scene scene;
   private Scene newScene;
   private Map<Class<? extends Resource>, Resource> resources;
-  private Map<String, BufferedImage> loadedImages;
 
   private GameFrame frame;
 
@@ -26,10 +22,9 @@ public final class Game {
    * @param initialState  Initial state
    */
   public Game(Scene initialScene) {
-    this.scene        = initialScene;
-    this.newScene     = null;
-    this.resources    = new HashMap<>();
-    this.loadedImages = new HashMap<>();
+    this.scene     = initialScene;
+    this.newScene  = null;
+    this.resources = new HashMap<>();
 
     // Configure JFrame
     this.frame = new GameFrame(this);
@@ -101,27 +96,6 @@ public final class Game {
   }
 
   /**
-   * Load an image into in-memory cache
-   *
-   * @param name        Name of the image to load
-   * @param filepath    Path inside of the JAR file
-   */
-  public void loadImage(String name, String filepath) throws IOException {
-    BufferedImage i = ImageIO.read(this.getClass().getResource(filepath));
-    this.loadedImages.put(name, i);
-  }
-
-  /**
-   * Get a loaded image, or null if the image does not exist
-   *
-   * @param name    Image to get
-   * @return        Loaded image or null
-   */
-  public BufferedImage getLoadedImage(String name) {
-    return this.loadedImages.get(name);
-  }
-
-  /**
    * Tick all of the events inside of the game
    */
   void tick() {
@@ -190,6 +164,13 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   public GameCanvas(Game game) {
     this.game  = game;
     this.timer = new Timer(TIMER_DELAY, this);
+
+    this.addKeyListener(this);
+    this.addMouseListener(this);
+    this.addMouseMotionListener(this);
+
+    this.setFocusable(true);
+    this.requestFocusInWindow();
   }
 
   /**
@@ -220,7 +201,9 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   /**
    * Keyboard Events
    */
-  public void keyPressed(KeyEvent e) {}
+  public void keyPressed(KeyEvent e) {
+    System.out.println(KeyEvent.getKeyText(e.getKeyCode()));
+  }
 
   public void keyReleased(KeyEvent e) {}
 
@@ -229,7 +212,9 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   /**
    * Mouse Events
    */
-  public void mousePressed(MouseEvent e) {}
+  public void mousePressed(MouseEvent e) {
+    System.out.println("Click");
+  }
 
   public void mouseReleased(MouseEvent e) {}
 

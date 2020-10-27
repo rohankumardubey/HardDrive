@@ -18,6 +18,8 @@ CLASSES=\
 	game/engine/Background.class \
 	game/engine/BackgroundType.class \
 	game/engine/Mask.class \
+	game/engine/GameAssets.class \
+	game/engine/Sound.class \
 	\
 	game/scenes/TestScene.class \
 	\
