@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 
 public class TestScene extends Scene {
 
+  private boolean isFull = false;
+
   public TestScene() {
     super(640 * 2, 480 * 2);
     this.mainView.size = new Dimension(640, 480);
@@ -27,7 +29,12 @@ public class TestScene extends Scene {
 
   @Override
   protected void onTimer(int timerIndex) {
-    this.background.mirrorVertical = !this.background.mirrorVertical;
+    if (isFull == false) {
+      this.getGame().setFullscreen();
+    } else {
+      this.getGame().setWindowed();
+    }
+    this.isFull = !this.isFull;
   }
 
   @Override

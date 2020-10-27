@@ -213,13 +213,37 @@ public final class Game {
   void setMouseViewPosition(Point newPosition) {
     this.mouseViewLocation = newPosition;
   }
+
+  /**
+   * Put the game into fullscreen mode
+   */
+  public void setFullscreen() {
+    this.frame.fullscreen();
+  }
+
+  /**
+   * Put the game into windowed mode
+   */
+  public void setWindowed() {
+    this.frame.windowed();
+  }
+
+  /**
+   * Put the game into a windowed state of a given size
+   *
+   * @param size    Size of the window
+   */
+  public void setWindowed(Dimension size) {
+    this.frame.windowed(size);
+  }
 }
 
 /**
  * JFrame that actually runs the game
  */
 class GameFrame extends JFrame {
-  private static final long serialVersionUID = -8402788080584404131L;
+  private static final long serialVersionUID         = -8402788080584404131L;
+  private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(640, 480);
 
   private GameCanvas canvas;
 
@@ -230,14 +254,42 @@ class GameFrame extends JFrame {
     this.add(canvas, BorderLayout.CENTER);
 
     // Configure JFrame
-    this.setSize(640, 480);
+    this.setSize(DEFAULT_WINDOW_SIZE);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocationRelativeTo(null);
+  }
 
-    // Go fullscreen
-    // this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    // this.setUndecorated(true);
-    this.setVisible(true);
+  /**
+   * Make JFrame go fullscreen
+   */
+  public void fullscreen() {
+    SwingUtilities.invokeLater(() -> {
+      this.dispose();
+      this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+      this.setUndecorated(true);
+      this.setVisible(true);
+    });
+  }
+
+  /**
+   * Make JFrame go windowed with default size
+   */
+  public void windowed() {
+    this.windowed(DEFAULT_WINDOW_SIZE);
+  }
+
+  /**
+   * Make JFrame go windowed with custom size
+   */
+  public void windowed(Dimension size) {
+    SwingUtilities.invokeLater(() -> {
+      this.dispose();
+      this.setUndecorated(false);
+      this.setExtendedState(JFrame.NORMAL);
+      this.setSize(size);
+      this.setLocationRelativeTo(null);
+      this.setVisible(true);
+    });
   }
 
   /**
@@ -265,6 +317,7 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   private static final long serialVersionUID = -5915721891511946875L;
   private static final int TIMER_DELAY       = 50;
 
+  /** Reference to the game object to keep the JPanel active */
   private Game game;
 
   /**
