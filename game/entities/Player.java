@@ -12,10 +12,7 @@ public class Player extends Entity {
   }
 
   @Override
-  protected void onCreate() {
-    this.setTimer(0, 10, true);
-    this.setTimer(1, 12, true);
-  }
+  protected void onCreate() {}
 
   @Override
   protected void onDestroy() {
@@ -23,16 +20,26 @@ public class Player extends Entity {
   }
 
   @Override
-  protected void onTimer(int timerIndex) {
-    if (timerIndex == 0) { this.sprite.mirrorVertical = !this.sprite.mirrorVertical; }
-    if (timerIndex == 1) { GameAssets.getLoadedSound("explosion").playSound(); }
-    if (timerIndex == 2) { GameAssets.getLoadedSound("explosion").playSound(); }
-  }
+  protected void onTimer(int timerIndex) {}
 
   @Override
   protected void onStep() {
-    this.position.x += 1;
-    this.position.y += 1;
-    this.sprite.angleRadians += Math.PI / 12;
+    Game g = this.getScene().getGame();
+    if (g.isKeyPressed(Key.UP)) {
+      this.position.y -= 5;
+      this.sprite.setAngleDegrees(0);
+    }
+    if (g.isKeyPressed(Key.DOWN)) {
+      this.position.y += 5;
+      this.sprite.setAngleDegrees(180);
+    }
+    if (g.isKeyPressed(Key.LEFT)) {
+      this.position.x -= 5;
+      this.sprite.setAngleDegrees(270);
+    }
+    if (g.isKeyPressed(Key.RIGHT)) {
+      this.position.x += 5;
+      this.sprite.setAngleDegrees(90);
+    }
   }
 }

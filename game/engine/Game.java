@@ -3,7 +3,9 @@ package game.engine;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
@@ -14,6 +16,7 @@ public final class Game {
   private Scene scene;
   private Scene newScene;
   private Map<Class<? extends Resource>, Resource> resources;
+  private Set<Key> pressedKeys;
 
   private GameFrame frame;
 
@@ -22,9 +25,10 @@ public final class Game {
    * @param initialState  Initial state
    */
   public Game(Scene initialScene) {
-    this.scene     = initialScene;
-    this.newScene  = null;
-    this.resources = new HashMap<>();
+    this.scene       = initialScene;
+    this.newScene    = null;
+    this.resources   = new HashMap<>();
+    this.pressedKeys = new HashSet<>();
 
     // Configure JFrame
     this.frame = new GameFrame(this);
@@ -109,6 +113,32 @@ public final class Game {
     this.scene.destroyEntities();
     this.scene.tickEntityTimers();
     this.scene.stepEntities();
+  }
+
+  /**
+   * Test if a key is currently pressed
+   *
+   * @param key    The key to test
+   * @return       True if the key is currently pressed, false otherwise
+   */
+  public boolean isKeyPressed(Key key) {
+    return this.pressedKeys.contains(key);
+  }
+
+  /**
+   * Internal event to mark a key as pressed
+   * @param key   The key being pressed
+   */
+  void setKeyPressed(Key key) {
+    this.pressedKeys.add(key);
+  }
+
+  /**
+   * Internal event to mark a key as released
+   * @param key   The key being released
+   */
+  void setKeyReleased(Key key) {
+    this.pressedKeys.remove(key);
   }
 }
 
@@ -202,10 +232,14 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
    * Keyboard Events
    */
   public void keyPressed(KeyEvent e) {
-    System.out.println(KeyEvent.getKeyText(e.getKeyCode()));
+    Key key = Key.findKeyFromCode(e.getKeyCode());
+    if (key != null) { this.game.setKeyPressed(key); }
   }
 
-  public void keyReleased(KeyEvent e) {}
+  public void keyReleased(KeyEvent e) {
+    Key key = Key.findKeyFromCode(e.getKeyCode());
+    if (key != null) { this.game.setKeyReleased(key); }
+  }
 
   public void keyTyped(KeyEvent e) {}
 

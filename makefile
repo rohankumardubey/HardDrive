@@ -20,6 +20,7 @@ CLASSES=\
 	game/engine/Mask.class \
 	game/engine/GameAssets.class \
 	game/engine/Sound.class \
+	game/engine/Key.class \
 	\
 	game/scenes/TestScene.class \
 	\
