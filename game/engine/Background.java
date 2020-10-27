@@ -1,6 +1,5 @@
 package game.engine;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -11,26 +10,13 @@ import java.awt.image.BufferedImage;
  */
 public final class Background extends AnimatedImage {
   public BackgroundType type;
-  public Color backgroundColor;
 
   /**
    * Construct an empty animated background
    */
   public Background() {
     super();
-    this.type            = BackgroundType.Tiled;
-    this.backgroundColor = new Color(0, 0, 0);
-  }
-
-  /**
-   * Construct a new solid color background
-   *
-   * @param color  Background color
-   */
-  public Background(Color color) {
-    super();
-    this.type            = BackgroundType.None;
-    this.backgroundColor = color;
+    this.type = BackgroundType.Tiled;
   }
 
   /**
@@ -39,8 +25,7 @@ public final class Background extends AnimatedImage {
    */
   public Background(BufferedImage... images) {
     super(images);
-    this.type            = BackgroundType.Tiled;
-    this.backgroundColor = new Color(0, 0, 0);
+    this.type = BackgroundType.Tiled;
   }
 
   /**
@@ -51,9 +36,6 @@ public final class Background extends AnimatedImage {
    * @param size  Size of the image
    */
   public void draw(Graphics2D g2d, Dimension size) {
-    g2d.setColor(this.backgroundColor);
-    g2d.fillRect(0, 0, size.width, size.height);
-
     switch (this.type) {
       case None:
         break;

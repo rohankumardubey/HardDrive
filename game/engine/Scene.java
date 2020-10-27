@@ -26,6 +26,7 @@ public abstract class Scene {
 
   /** Background image for the scene */
   public Background background;
+  public Color backgroundColor;
   public Color outsideColor;
 
   /** List of all entities in the scene */
@@ -196,6 +197,10 @@ public abstract class Scene {
                                                 BufferedImage.TYPE_INT_ARGB);
     Graphics2D imgG2d       = (Graphics2D) viewImage.getGraphics();
     imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
+
+    // Draw the background color
+    imgG2d.setColor(this.backgroundColor);
+    imgG2d.fillRect(0, 0, this.size.width, this.size.height);
 
     // Draw the entire scene to the buffered image
     this.background.draw(imgG2d, this.size);

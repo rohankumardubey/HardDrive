@@ -13,8 +13,9 @@ public class TestScene extends Scene {
     this.mainView.size = new Dimension(640, 480);
 
     this.background.addFrames(GameAssets.getLoadedImage("smiley"));
-    this.background.type            = BackgroundType.Tiled;
-    this.background.backgroundColor = new Color(255, 0, 0);
+    this.background.type = BackgroundType.Tiled;
+    this.backgroundColor = new Color(255, 0, 0);
+    this.outsideColor    = new Color(0, 0, 0);
   }
 
   @Override
@@ -26,6 +27,8 @@ public class TestScene extends Scene {
   protected void onStep() {
     Game g = this.getGame();
     if (g.isKeyPressed(Key.ESCAPE)) { g.end(); }
+    if (g.isKeyPressed(Key.RIGHT)) { this.mainView.position.x += 100; }
+    this.mainView.position.x -= 1;
   }
 
   @Override
