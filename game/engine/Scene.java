@@ -29,6 +29,9 @@ public abstract class Scene {
   public Color backgroundColor;
   public Color outsideColor;
 
+  /** List of timers for scene events */
+  private Map<Integer, TimerEntry> timers;
+
   /** List of all entities in the scene */
   private Map<Class<? extends Entity>, Set<Entity>> allEntities;
 
@@ -48,6 +51,7 @@ public abstract class Scene {
     this.mainView     = new View(new Point(0, 0), new Dimension(width, height));
     this.background   = new Background();
     this.outsideColor = new Color(0, 0, 0);
+    this.timers       = new HashMap<>();
     this.allEntities  = new HashMap<>();
     this.toCreate     = new ArrayList<>();
     this.game         = null;
@@ -57,6 +61,13 @@ public abstract class Scene {
    * Called when the scene is first created
    */
   protected abstract void onCreate();
+
+  /**
+   * Called whenever a timer is fired
+   *
+   * @param timerIndex   Index of the timer that fired
+   */
+  abstract protected void onTimer(int timerIndex);
 
   /**
    * Called on each tick of the game
@@ -106,6 +117,46 @@ public abstract class Scene {
     }
 
     return new ArrayList<T>();
+  }
+
+  /**
+   * Set a timer to fire after a certain number of scene ticks.
+   *  Safe to call from within the timerFired() method.
+   *
+   * @param index    Unique index for the timer
+   * @param ticks    Number of ticks to wait. Minimum is 1.
+   * @param looping  Should timer loop forever?
+   */
+  protected final void setTimer(int index, int ticks, boolean looping) {
+    if (ticks < 1) { return; }
+    this.timers.put(index, new TimerEntry(ticks, looping));
+  }
+
+  /**
+   * Clear and remove the timer.
+   *  Safe to call from within the timerFired() method.
+   *
+   * @param index   Unique index for the timer
+   */
+  protected final void clearTimer(int index) {
+    this.timers.remove(index);
+  }
+
+  /**
+   * Tick all timers and fire any events
+   */
+  final void tickTimers() {
+    final ArrayList<Integer> timersFired = new ArrayList<Integer>();
+    for (Map.Entry<Integer, TimerEntry> entry: timers.entrySet()) {
+      int index        = entry.getKey();
+      TimerEntry timer = entry.getValue();
+
+      if (timer.isRunning()) {
+        if (timer.tick()) { timersFired.add(index); }
+      }
+    }
+
+    for (int index: timersFired) { this.onTimer(index); }
   }
 
   /**

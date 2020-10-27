@@ -30,7 +30,7 @@ public abstract class Entity {
   private boolean isDestroyed;
 
   // List of timers
-  private Map<Integer, EntityTimer> timers;
+  private Map<Integer, TimerEntry> timers;
 
   // Scene object (might be null)
   private WeakReference<Scene> scene;
@@ -44,7 +44,7 @@ public abstract class Entity {
     this.mask        = new Mask();
     this.isVisible   = true;
     this.isDestroyed = false;
-    this.timers      = new HashMap<Integer, EntityTimer>();
+    this.timers      = new HashMap<>();
     this.scene       = null;
   }
 
@@ -99,7 +99,7 @@ public abstract class Entity {
    */
   protected final void setTimer(int index, int ticks, boolean looping) {
     if (ticks < 1) { return; }
-    this.timers.put(index, new EntityTimer(ticks, looping));
+    this.timers.put(index, new TimerEntry(ticks, looping));
   }
 
   /**
@@ -155,9 +155,9 @@ public abstract class Entity {
    */
   final void tickTimers() {
     final ArrayList<Integer> timersFired = new ArrayList<Integer>();
-    for (Map.Entry<Integer, EntityTimer> entry: timers.entrySet()) {
-      int index         = entry.getKey();
-      EntityTimer timer = entry.getValue();
+    for (Map.Entry<Integer, TimerEntry> entry: timers.entrySet()) {
+      int index        = entry.getKey();
+      TimerEntry timer = entry.getValue();
 
       if (timer.isRunning()) {
         if (timer.tick()) { timersFired.add(index); }
@@ -181,61 +181,5 @@ public abstract class Entity {
    */
   public final boolean isDestroyed() {
     return this.isDestroyed;
-  }
-}
-
-/**
- * Plain-old data class for running the entity timer
- */
-class EntityTimer {
-  private int ticksLeft;
-  private int ticks;
-  private boolean looping;
-  private boolean running;
-
-  public EntityTimer(int ticks, boolean looping) {
-    this.ticksLeft = ticks;
-    this.ticks     = ticks;
-    this.looping   = looping;
-    this.running   = true;
-  }
-
-  /**
-   * Test whether or not a timer is running
-   * @return  Timer running
-   */
-  public boolean isRunning() {
-    return this.running;
-  }
-
-  /**
-   * Used to pause and resume a timer
-   * @param running   Set timer running
-   */
-  public void setRunning(boolean running) {
-    this.running = running;
-  }
-
-  /**
-   * One tick on the timer. Returns true if the timer should fire.
-   * @return True if the timer should fire
-   */
-  public boolean tick() {
-    switch (this.ticksLeft) {
-      case 0:
-        return false; // No more ticks left in timer
-
-      case 1:
-        if (this.looping) {
-          this.ticksLeft = ticks;
-        } else {
-          this.ticksLeft = 0;
-        }
-        return true;
-
-      default:
-        this.ticksLeft -= 1;
-        return false; // Still waiting
-    }
   }
 }

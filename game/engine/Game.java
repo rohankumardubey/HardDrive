@@ -117,6 +117,7 @@ public final class Game {
       this.scene.onCreate();
     }
 
+    this.scene.tickTimers();
     this.scene.onStep();
 
     this.scene.createEntities();

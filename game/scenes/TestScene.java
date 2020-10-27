@@ -16,11 +16,18 @@ public class TestScene extends Scene {
     this.background.type = BackgroundType.Tiled;
     this.backgroundColor = new Color(255, 0, 0);
     this.outsideColor    = new Color(0, 0, 0);
+
+    this.setTimer(0, 10, true);
   }
 
   @Override
   protected void onCreate() {
     this.createEntity(new Player());
+  }
+
+  @Override
+  protected void onTimer(int timerIndex) {
+    this.background.mirrorVertical = !this.background.mirrorVertical;
   }
 
   @Override

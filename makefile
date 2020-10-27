@@ -21,6 +21,7 @@ CLASSES=\
 	game/engine/GameAssets.class \
 	game/engine/Sound.class \
 	game/engine/Key.class \
+	game/engine/TimerEntry.class \
 	\
 	game/scenes/TestScene.class \
 	\
@@ -37,8 +38,7 @@ OTHER_FILES=\
 ANONYMOUS_CLASSES=\
 	game/engine/GameFrame.class \
 	game/engine/GameCanvas.class\
-	game/engine/Background\$$1.class \
-	game/engine/EntityTimer.class
+	game/engine/Background\$$1.class
 
 ASSETS_FOLDER=assets
 
