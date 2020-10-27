@@ -1,7 +1,8 @@
 package game.engine;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 /**
  * Main image for the entity in a game
@@ -19,7 +20,7 @@ public final class Sprite extends AnimatedImage {
    * Construct a new animated sprite from one or more images
    * @param images Images for the animation
    */
-  public Sprite(Image... images) {
+  public Sprite(BufferedImage... images) {
     super(images);
   }
 
@@ -29,9 +30,9 @@ public final class Sprite extends AnimatedImage {
    * @param g2d   Graphics to draw to
    */
   public void draw(Graphics2D g2d) {
-    Image i   = this.getImage();
-    int leftX = 0 - i.getWidth(null);
-    int topY  = 0 - i.getHeight(null);
-    g2d.drawImage(i, leftX, topY, i.getWidth(null), i.getHeight(null), null);
+    BufferedImage i = this.getImage();
+    int leftX       = 0 - (i.getWidth() / 2);
+    int topY        = 0 - (i.getHeight() / 2);
+    g2d.drawImage(i, leftX, topY, i.getWidth(), i.getHeight(), null);
   }
 }

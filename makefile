@@ -17,7 +17,11 @@ CLASSES=\
 	game/engine/Sprite.class \
 	game/engine/Background.class \
 	game/engine/BackgroundType.class \
-	game/engine/Mask.class
+	game/engine/Mask.class \
+	\
+	game/scenes/TestScene.class \
+	\
+	game/entities/Player.class
 
 
 SOURCES=$(CLASSES:%.class=%.java)
@@ -33,11 +37,12 @@ ANONYMOUS_CLASSES=\
 	game/engine/Background\$$1.class \
 	game/engine/EntityTimer.class
 
+ASSETS_FOLDER=assets
 
 all: $(JAR)
 
 $(JAR): $(CLASSES) $(MANIFEST) $(SOURCES) $(OTHER_FILES)
-	jar cvfm $@ $(MANIFEST) $(ENTRY) $(ANONYMOUS_CLASSES) $^
+	jar cvfm $@ $(MANIFEST) $(ENTRY) $(ANONYMOUS_CLASSES) $(ASSETS_FOLDER)/* $^
 
 %.class: %.java
 	javac -source 8 -target 8 $<

@@ -1,5 +1,6 @@
 package game.engine;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -25,6 +26,7 @@ public abstract class Scene {
 
   /** Background image for the scene */
   public Background background;
+  public Color outsideColor;
 
   /** List of all entities in the scene */
   private Map<Class<? extends Entity>, Set<Entity>> allEntities;
@@ -41,12 +43,13 @@ public abstract class Scene {
    * @param height
    */
   public Scene(int width, int height) {
-    this.size        = new Dimension(width, height);
-    this.mainView    = new View(new Point(0, 0), new Dimension(width, height));
-    this.background  = new Background();
-    this.allEntities = new HashMap<>();
-    this.toCreate    = new ArrayList<>();
-    this.game        = null;
+    this.size         = new Dimension(width, height);
+    this.mainView     = new View(new Point(0, 0), new Dimension(width, height));
+    this.background   = new Background();
+    this.outsideColor = new Color(0, 0, 0);
+    this.allEntities  = new HashMap<>();
+    this.toCreate     = new ArrayList<>();
+    this.game         = null;
   }
 
   /**
@@ -128,8 +131,10 @@ public abstract class Scene {
   final void createEntities() {
     // Add every entity to the map
     for (Entity e: this.toCreate) {
-      Set<Entity> set = this.allEntities.getOrDefault(e.getClass(), new HashSet<>());
+      Set<Entity> set =
+          this.allEntities.computeIfAbsent(e.getClass(), (value) -> { return new HashSet<>(); });
       set.add(e);
+      e.setScene(this);
     }
 
     // Clear the list of created entities
@@ -182,8 +187,9 @@ public abstract class Scene {
    * Draw the scene to the graphics object
    *
    * @param   g2d   Graphics object to draw to
+   * @param   size  Current size of the screen
    */
-  final void drawScene(Graphics2D g2d) {
+  final void drawScene(Graphics2D g2d, Dimension size) {
 
     // Only draw to the main view
     BufferedImage viewImage = new BufferedImage(this.mainView.size.width, this.mainView.size.height,
@@ -201,6 +207,6 @@ public abstract class Scene {
     this.onDraw(imgG2d);
 
     // Then draw the image to the screen
-    g2d.drawImage(viewImage, 0, 0, viewImage.getWidth(), viewImage.getHeight(), null);
+    g2d.drawImage(viewImage, 0, 0, size.width, size.height, null);
   }
 }

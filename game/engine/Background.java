@@ -37,7 +37,7 @@ public final class Background extends AnimatedImage {
    * Construct a new animated sprite from one or more images
    * @param images Images for the animation
    */
-  public Background(Image... images) {
+  public Background(BufferedImage... images) {
     super(images);
     this.type            = BackgroundType.Tiled;
     this.backgroundColor = new Color(0, 0, 0);
@@ -81,36 +81,16 @@ public final class Background extends AnimatedImage {
    * @param i     Image to draw
    */
   static private void tileImage(Graphics2D g2d, Dimension size, BufferedImage i) {
-    final int imageWidth  = i.getWidth(null);
-    final int imageHeight = i.getHeight(null);
+    final int imageWidth  = i.getWidth();
+    final int imageHeight = i.getHeight();
 
     for (int tileX = 0; tileX < size.width; tileX += imageWidth) {
       for (int tileY = 0; tileY < size.height; tileY += imageHeight) {
-        g2d.drawImage(i, tileX, tileY, imageWidth, imageHeight, null);
-      }
+        int subimgWidth  = Math.min(imageWidth, size.width - tileX);
+        int subimgHeight = Math.min(imageHeight, size.height - tileY);
 
-      // Draw the Y residues
-      if ((size.height % imageHeight) != 0) {
-        BufferedImage subimage = i.getSubimage(0, 0, imageWidth, size.height % imageHeight);
-        g2d.drawImage(subimage, tileX, size.height - (size.height % imageHeight),
-                      subimage.getWidth(null), subimage.getHeight(null), null);
-      }
-    }
-
-    // Draw the X residues
-    if ((size.width % imageWidth) != 0) {
-      BufferedImage subimage = i.getSubimage(0, 0, size.width % imageWidth, imageHeight);
-      for (int tileY = 0; tileY < size.height; tileY += imageHeight) {
-        g2d.drawImage(subimage, size.width - (size.width % imageWidth), imageHeight,
-                      subimage.getWidth(null), subimage.getHeight(null), null);
-      }
-
-      // Draw the Y residues
-      if ((size.height % imageHeight) != 0) {
-        Image nestedSubimage = subimage.getSubimage(0, 0, imageWidth, size.height % imageHeight);
-        g2d.drawImage(nestedSubimage, size.width - (size.width % imageWidth),
-                      size.height - (size.height % imageHeight), nestedSubimage.getWidth(null),
-                      nestedSubimage.getHeight(null), null);
+        BufferedImage subimg = i.getSubimage(0, 0, subimgWidth, subimgHeight);
+        g2d.drawImage(subimg, tileX, tileY, subimg.getWidth(), subimg.getHeight(), null);
       }
     }
   }

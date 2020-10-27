@@ -2,8 +2,11 @@ package game.engine;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
@@ -13,20 +16,23 @@ import javax.swing.event.MouseInputListener;
 public final class Game {
   private Scene scene;
   private Scene newScene;
-  private GameFrame frame;
   private Map<Class<? extends Resource>, Resource> resources;
+  private Map<String, BufferedImage> loadedImages;
+
+  private GameFrame frame;
 
   /**
    * Construct a new game object and give it an initial game state
    * @param initialState  Initial state
    */
   public Game(Scene initialScene) {
-    // Configure JFrame
-    this.frame = new GameFrame();
+    this.scene        = initialScene;
+    this.newScene     = null;
+    this.resources    = new HashMap<>();
+    this.loadedImages = new HashMap<>();
 
-    this.scene     = initialScene;
-    this.newScene  = null;
-    this.resources = new HashMap<>();
+    // Configure JFrame
+    this.frame = new GameFrame(this);
   }
 
   /**
@@ -59,6 +65,9 @@ public final class Game {
    * Start the game
    */
   public void run() {
+    this.scene.setGame(this);
+    this.scene.onCreate();
+
     this.frame.start();
   }
 
@@ -90,26 +99,75 @@ public final class Game {
   public void setResource(Resource resource) {
     this.resources.put(resource.getClass(), resource);
   }
+
+  /**
+   * Load an image into in-memory cache
+   *
+   * @param name        Name of the image to load
+   * @param filepath    Path inside of the JAR file
+   */
+  public void loadImage(String name, String filepath) throws IOException {
+    BufferedImage i = ImageIO.read(this.getClass().getResource(filepath));
+    this.loadedImages.put(name, i);
+  }
+
+  /**
+   * Get a loaded image, or null if the image does not exist
+   *
+   * @param name    Image to get
+   * @return        Loaded image or null
+   */
+  public BufferedImage getLoadedImage(String name) {
+    return this.loadedImages.get(name);
+  }
+
+  /**
+   * Tick all of the events inside of the game
+   */
+  void tick() {
+    if (this.newScene != null) {
+      this.scene    = this.newScene;
+      this.newScene = null;
+      this.scene.onCreate();
+    }
+
+    this.scene.createEntities();
+    this.scene.destroyEntities();
+    this.scene.tickEntityTimers();
+    this.scene.stepEntities();
+  }
 }
 
+/**
+ * JFrame that actually runs the game
+ */
 class GameFrame extends JFrame {
   private static final long serialVersionUID = -8402788080584404131L;
+
   private GameCanvas canvas;
 
-  public GameFrame() {
+  public GameFrame(Game game) {
     super("Java Game Engine");
 
-    this.canvas = new GameCanvas();
+    this.canvas = new GameCanvas(game);
     this.add(canvas, BorderLayout.CENTER);
 
     // Configure JFrame
     this.setSize(640, 480);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocationRelativeTo(null);
+
+    // Go fullscreen
+    // this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    // this.setUndecorated(true);
+    this.setVisible(true);
   }
 
   public void start() {
-    SwingUtilities.invokeLater(() -> { this.setVisible(true); });
+    SwingUtilities.invokeLater(() -> {
+      this.setVisible(true);
+      this.canvas.startTimer();
+    });
   }
 
   public void terminate() {
@@ -117,23 +175,46 @@ class GameFrame extends JFrame {
   }
 }
 
+/**
+ * JPanel that draws the game
+ */
 class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInputListener {
   private static final long serialVersionUID = -5915721891511946875L;
+  private static final int TIMER_DELAY       = 50;
+
+  private Game game;
 
   // This swing timer will call actionPerformed every TIMER_DELAY Milliseconds
   private Timer timer;
 
-  public GameCanvas() {
-    this.timer = new Timer(1, this);
-    timer.start();
+  public GameCanvas(Game game) {
+    this.game  = game;
+    this.timer = new Timer(TIMER_DELAY, this);
   }
 
   /**
-   * Handle the various button and form events
+   * Start the timer
+   */
+  public void startTimer() {
+    this.timer.start();
+  }
+
+  /**
+   * Handle the various form events
    */
   public void actionPerformed(ActionEvent e) {
-    System.out.println("Repaint");
+    this.game.tick();
     this.repaint();
+  }
+
+  @Override
+  protected void paintComponent(Graphics g) {
+    // Start with the outside color
+    g.setColor(this.game.getScene().outsideColor);
+    g.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+    // Then draw the game scene
+    this.game.getScene().drawScene((Graphics2D) g, this.getSize());
   }
 
   /**

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class AnimatedImage {
 
-  private ArrayList<Image> frames;
+  private ArrayList<BufferedImage> frames;
   private int currentFrame;
 
   // Transformation
@@ -25,10 +25,10 @@ public class AnimatedImage {
    * Construct a new empty animated image.
    */
   public AnimatedImage() {
-    this.frames       = new ArrayList<Image>();
+    this.frames       = new ArrayList<>();
     this.currentFrame = 0;
 
-    this.size             = new Dimension(0, 0);
+    this.size             = new Dimension(1, 1);
     this.mirrorVertical   = false;
     this.mirrorHorizontal = false;
     this.angleRadians     = 0.0;
@@ -38,7 +38,7 @@ public class AnimatedImage {
    * Create a animated image. with one or more frames
    * @param images Images for the animation
    */
-  public AnimatedImage(Image... images) {
+  public AnimatedImage(BufferedImage... images) {
     this();
 
     this.addFrames(images);
@@ -49,17 +49,18 @@ public class AnimatedImage {
    * Add one or more image frames to the animation
    * @param images Images to add
    */
-  public void addFrames(Image... images) {
-    for (Image image: images) { this.frames.add(image); }
+  public void addFrames(BufferedImage... images) {
+    for (BufferedImage image: images) { this.frames.add(image); }
+    this.autoSize();
   }
 
   /**
    * Set the width and height based on the first image in the frame
    */
   public void autoSize() {
-    if (this.frames.size() > 0) {
-      int width  = frames.get(0).getWidth(null);
-      int height = frames.get(0).getHeight(null);
+    if (this.getFrameCount() > 0) {
+      int width  = frames.get(0).getWidth();
+      int height = frames.get(0).getHeight();
       this.size  = new Dimension(width, height);
     }
   }
@@ -135,7 +136,7 @@ public class AnimatedImage {
    * Get the current frame image
    * @return Current frame image
    */
-  public Image getCurrentFrameImage() {
+  public BufferedImage getCurrentFrameImage() {
     final int frameCount = this.getFrameCount();
     if (frameCount == 0) { return null; }
     return this.frames.get(Math.floorMod(this.currentFrame, frameCount));
@@ -163,23 +164,52 @@ public class AnimatedImage {
    */
   public BufferedImage getImage() {
 
-    BufferedImage buf =
-        new BufferedImage(this.size.width, this.size.height, BufferedImage.TYPE_INT_ARGB);
+    // Normalize the angle
+    Dimension d       = this.getRotatedImageDimensions();
+    BufferedImage buf = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
 
-    final Image frame = this.getCurrentFrameImage();
+    final BufferedImage frame = this.getCurrentFrameImage();
     if (frame == null) { return buf; }
 
     Graphics2D g2d = (Graphics2D) buf.getGraphics();
 
     // Apply image transformations (Reflect before rotation)
-    if (this.mirrorHorizontal) { g2d.transform(AffineTransform.getScaleInstance(-1, 1)); }
-    if (this.mirrorVertical) { g2d.transform(AffineTransform.getScaleInstance(1, -1)); }
-    g2d.rotate(this.angleRadians);
+    g2d.rotate(this.angleRadians, buf.getWidth() / 2, buf.getHeight() / 2);
+    g2d.translate((d.width - this.size.width) / 2, (d.height - this.size.height) / 2);
 
-    // TODO: Get rotations working properly
+    if (this.mirrorHorizontal) {
+      g2d.scale(-1.0, 1.0);
+      g2d.translate(-this.size.width, 0);
+    }
+    if (this.mirrorVertical) {
+      g2d.scale(1.0, -1.0);
+      g2d.translate(0, -this.size.height);
+    }
 
     g2d.drawImage(frame, 0, 0, this.size.width, this.size.height, null);
 
     return buf;
   }
+
+  /**
+   * Compute the image dimensions for a rotated image
+   *
+   * @return  Image dimensions
+   */
+  private final Dimension getRotatedImageDimensions() {
+
+    double sin = Math.abs(Math.sin(this.angleRadians));
+    double cos = Math.abs(Math.cos(this.angleRadians));
+
+    int newWidth  = (int) Math.floor(this.size.width * cos + this.size.height * sin);
+    int newHeight = (int) Math.floor(this.size.height * cos + this.size.width * sin);
+
+    return new Dimension(newWidth, newHeight);
+  }
+
+  /**
+   * Get the mirrored image of the sprite
+   *
+   * @return  Mirrored image
+   */
 }
