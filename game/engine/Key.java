@@ -108,6 +108,7 @@ public enum Key {
   SEMICOLON(KeyEvent.VK_SEMICOLON),
   FORWARD_SLASH(KeyEvent.VK_SLASH),
   UNDERSCORE(KeyEvent.VK_UNDERSCORE),
+  SPACE(KeyEvent.VK_SPACE),
 
   CONTROL(KeyEvent.VK_CONTROL),
   ALT(KeyEvent.VK_ALT),

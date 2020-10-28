@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -109,6 +110,7 @@ public abstract class Scene {
    * @return    List of all entities that match the class type
    */
   public final <T extends Entity> ArrayList<T> findEntities(Class<T> c) {
+
     Set<Entity> set   = this.allEntities.get(c);
     ArrayList<T> list = new ArrayList<T>();
     if (set != null) {
@@ -116,7 +118,7 @@ public abstract class Scene {
       for (Entity e: set) { list.add((T) e); }
     }
 
-    return new ArrayList<T>();
+    return list;
   }
 
   /**
@@ -249,15 +251,22 @@ public abstract class Scene {
     Graphics2D imgG2d       = (Graphics2D) viewImage.getGraphics();
     imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
 
+    // Save the affine transformation so drawing methods do NOT mess anything up
+    final AffineTransform oldTransform = imgG2d.getTransform();
+
     // Draw the background color
     imgG2d.setColor(this.backgroundColor);
     imgG2d.fillRect(0, 0, this.size.width, this.size.height);
 
     // Draw the entire scene to the buffered image
     this.background.draw(imgG2d, this.size);
+    imgG2d.setTransform(oldTransform);
 
     for (Set<Entity> set: this.allEntities.values()) {
-      for (Entity e: set) { e.draw(imgG2d); }
+      for (Entity e: set) {
+        e.draw(imgG2d);
+        imgG2d.setTransform(oldTransform);
+      }
     }
 
     this.onDraw(imgG2d);

@@ -57,7 +57,7 @@ public final class Game {
    * @param scene  New Scene
    */
   public void setScene(Scene scene) {
-    if (this.newScene != null) { this.newScene = scene; }
+    if (this.newScene == null) { this.newScene = scene; }
   }
 
   /**
@@ -114,6 +114,7 @@ public final class Game {
     if (this.newScene != null) {
       this.scene    = this.newScene;
       this.newScene = null;
+      this.scene.setGame(this);
       this.scene.onCreate();
     }
 
@@ -214,17 +215,10 @@ public final class Game {
    */
   void setMouseViewPosition(Point newPosition, Dimension canvasSize) {
     // Adjust for scaling of canvas
-    int newX = map(newPosition.x, 0, canvasSize.width, 0, this.scene.size.width);
-    int newY = map(newPosition.y, 0, canvasSize.height, 0, this.scene.size.height);
+    int newX = Helpers.map(newPosition.x, 0, canvasSize.width, 0, this.scene.size.width);
+    int newY = Helpers.map(newPosition.y, 0, canvasSize.height, 0, this.scene.size.height);
 
     this.mouseViewLocation = new Point(newX, newY);
-  }
-
-  /**
-   * Map one range of integers to another
-   */
-  private static int map(int x, int inMin, int inMax, int outMin, int outMax) {
-    return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
   }
 
   /**

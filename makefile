@@ -22,10 +22,21 @@ CLASSES=\
 	game/engine/Sound.class \
 	game/engine/Key.class \
 	game/engine/TimerEntry.class \
+	game/engine/Helpers.class \
 	\
-	game/scenes/TestScene.class \
+	game/scenes/TitleScene.class \
+	game/scenes/MainScene.class \
 	\
-	game/entities/Player.class
+	game/entities/StartButton.class \
+	game/entities/Player.class \
+	game/entities/Bullet.class \
+	game/entities/Asteroid.class \
+	game/entities/AsteroidExplosion.class \
+	game/entities/PlayerExplosion.class \
+	game/entities/AngularMotion.class \
+	game/entities/WinSmiley.class \
+	\
+	game/resources/Score.class
 
 
 SOURCES=$(CLASSES:%.class=%.java)

@@ -15,4 +15,20 @@ public class View {
     this.position = position;
     this.size     = size;
   }
+
+  public int getTopBoundary() {
+    return position.y;
+  }
+
+  public int getBottomBoundary() {
+    return position.y + size.height;
+  }
+
+  public int getLeftBoundary() {
+    return position.x;
+  }
+
+  public int getRightBoundary() {
+    return position.x + size.width;
+  }
 }
