@@ -10,8 +10,9 @@ import java.util.ArrayList;
 public class Player extends Entity {
 
   // Constants
-  private final static int MAX_X    = 300; /* Max X when scrolling */
-  private final static int SHIP_PPF = 5;
+  private final static int MAX_X       = 300; /* Max X when scrolling */
+  private final static int SHIP_PPF    = 5;
+  private final static int MAX_BULLETS = 3;
 
   private final static int FLAME_ANIMATION_SPEED = 2;
   private final static int FRAME_NO_FLAME        = 0;
@@ -130,9 +131,9 @@ public class Player extends Entity {
     Scene scene = this.getScene();
     Game game   = scene.getGame();
 
-    if (game.isKeyPressed(Key.SPACE)) {
+    if (game.hasKeyBeenPressed(Key.SPACE)) {
       ArrayList<Bullet> bullets = scene.findEntities(Bullet.class);
-      if (bullets.size() == 0) {
+      if (bullets.size() < MAX_BULLETS) {
         GameAssets.getLoadedSound("shoot").playSound();
         scene.createEntity(new Bullet(this.position));
       }

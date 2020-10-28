@@ -18,10 +18,12 @@ public final class Game {
   private Map<Class<? extends Resource>, Resource> resources;
 
   private Set<Key> pressedKeys;
+  private Set<Key> oneTimePresedKeys;
   private boolean leftMousePressed;
   private boolean rightMousePressed;
   private Point mouseViewLocation;
 
+  private boolean isFullscreen;
   private GameFrame frame;
 
   /**
@@ -34,12 +36,15 @@ public final class Game {
     this.resources = new HashMap<>();
 
     this.pressedKeys       = new HashSet<>();
+    this.oneTimePresedKeys = new HashSet<>();
+    this.oneTimePresedKeys = new HashSet<>();
     this.leftMousePressed  = false;
     this.rightMousePressed = false;
     this.mouseViewLocation = new Point(0, 0);
 
     // Configure JFrame
-    this.frame = new GameFrame(this);
+    this.isFullscreen = false;
+    this.frame        = new GameFrame(this);
   }
 
   /**
@@ -138,11 +143,22 @@ public final class Game {
   }
 
   /**
+   * Test if a key has been pressed since the last time this method has been called.
+   *
+   * @param key    The key to test
+   * @return       True if the key has been pressed
+   */
+  public boolean hasKeyBeenPressed(Key key) {
+    return this.pressedKeys.remove(key);
+  }
+
+  /**
    * Internal event to mark a key as pressed
    * @param key   The key being pressed
    */
   void setKeyPressed(Key key) {
     this.pressedKeys.add(key);
+    this.oneTimePresedKeys.add(key);
   }
 
   /**
@@ -226,6 +242,7 @@ public final class Game {
    */
   public void setFullscreen() {
     this.frame.fullscreen();
+    this.isFullscreen = true;
   }
 
   /**
@@ -233,6 +250,7 @@ public final class Game {
    */
   public void setWindowed() {
     this.frame.windowed();
+    this.isFullscreen = false;
   }
 
   /**
@@ -242,6 +260,41 @@ public final class Game {
    */
   public void setWindowed(Dimension size) {
     this.frame.windowed(size);
+    this.isFullscreen = false;
+  }
+
+  /**
+   * Test if the game is currently fullscreen or not
+   *
+   * @return   Whether or not the game is fullscreen
+   */
+  public boolean isFullscreen() {
+    return this.isFullscreen;
+  }
+
+  /**
+   * Toggle the game between fullscreen and window mode
+   */
+  public void toggleFullscreen() {
+    if (this.isFullscreen) {
+      this.setWindowed();
+    } else {
+      this.setFullscreen();
+    }
+  }
+
+  /**
+   * Toggle the game between fullscreen and window mode
+   * Specify a custom size for windowed mode.
+   *
+   * @param size    Size of the window
+   */
+  public void toggleFullscreen(Dimension size) {
+    if (this.isFullscreen) {
+      this.setWindowed(size);
+    } else {
+      this.setFullscreen();
+    }
   }
 }
 

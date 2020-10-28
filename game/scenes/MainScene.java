@@ -19,7 +19,7 @@ public class MainScene extends Scene {
   private final static int WIN_TIMER       = 0;
   private final static int WIN_TIMER_TICKS = 30;
 
-  private boolean winTriggered = false;
+  private boolean eventTriggered = false;
 
   public MainScene() {
     super(NUM_ROOMS * 640, 480);
@@ -48,18 +48,26 @@ public class MainScene extends Scene {
   protected void onStep() {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
+    if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
 
     scrollWindow();
     testWinCondition();
   }
 
   private void scrollWindow() {
-    if (!this.winTriggered) { this.mainView.position.x += SCROLL_SPEED; }
+    if (!this.eventTriggered) { this.mainView.position.x += SCROLL_SPEED; }
   }
 
   private void testWinCondition() {
-    if (this.winTriggered) { return; }
+    if (this.eventTriggered) { return; }
 
+    // Make sure player hasn't already died
+    if (this.findEntities(PlayerExplosion.class).size() > 0) {
+      this.eventTriggered = true;
+      return;
+    }
+
+    // Test if view has scrolled to end of the level
     if (this.mainView.position.x + this.mainView.size.width > (this.size.width - SCROLL_SPEED)) {
       // Destroy all asteroids
       for (Asteroid asteroid: this.findEntities(Asteroid.class)) {
@@ -71,7 +79,7 @@ public class MainScene extends Scene {
       for (Player player: this.findEntities(Player.class)) { player.disableScrolling(); }
 
       GameAssets.getLoadedSound("asteroid-explosion").playSound();
-      this.winTriggered = true;
+      this.eventTriggered = true;
 
       // Show smiley face in a few ticks
       this.setTimer(WIN_TIMER, WIN_TIMER_TICKS, false);

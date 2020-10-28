@@ -33,7 +33,6 @@ CLASSES=\
 	game/entities/Asteroid.class \
 	game/entities/AsteroidExplosion.class \
 	game/entities/PlayerExplosion.class \
-	game/entities/AngularMotion.class \
 	game/entities/WinSmiley.class \
 	\
 	game/resources/Score.class

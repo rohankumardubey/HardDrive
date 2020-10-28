@@ -15,7 +15,8 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new MainScene());
+    Game g = new Game(new TitleScene());
+    g.setTitle("Asteroid Navigator");
     g.run();
   }
 

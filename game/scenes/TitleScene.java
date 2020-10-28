@@ -28,13 +28,14 @@ public class TitleScene extends Scene {
   protected void onStep() {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
+    if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
   }
 
   @Override
   protected void onDraw(Graphics2D g2d) {
     g2d.setColor(Color.WHITE);
 
-    Helpers.drawCenteredString(g2d, "Space Game Demo", new Rectangle(0, 0, this.size.width, 100),
+    Helpers.drawCenteredString(g2d, "Asteroid Navigator", new Rectangle(0, 0, this.size.width, 100),
                                new Font("Times", Font.BOLD, 48));
 
     Helpers.drawCenteredString(g2d, "Created by Bryan McClain",
