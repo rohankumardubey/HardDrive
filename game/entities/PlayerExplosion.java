@@ -34,7 +34,7 @@ public class PlayerExplosion extends Entity {
   @Override
   protected void onDestroy() {
     // Go back to the title screen
-    this.getScene().getGame().setScene(new TitleScene());
+    this.getScene().getGame().setScene(new MainScene());
   }
 
   @Override
