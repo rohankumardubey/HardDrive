@@ -292,3 +292,75 @@ The scene is drawn in the following order:
 3.  **Background** - Background image of the scene
 4.  **Entities** - All entities inside the scene
 5.  **Scene `onDraw()` method** - Draw on top of everything else in the scene
+
+## Features to Add
+
+There are several things I would like to add in a future version of this game engine:
+
+- Multiple backgrounds in a scene
+- Multiple views (for multiplayer games)
+- Background offsets (for parallax scrolling)
+- Better sound engine (play multiple instances of same sound at once)
+- Support for background tiles (Not just a tiled image)
+- Multithreading event handling
+- Different types of collision detection (like radial collision)
+- More powerful drawing and collision utilities
+
+<br/>
+
+## Demo Game - Asteroid Navigator
+
+![Title Screen](img/TitleScreen.png)
+
+![Main Screen](img/MainScreen.png)
+
+Using my game engine, I built a demo game named "Asteroid Navigator". You use the `arrow keys` to move the spaceship
+and press the `space bar` to shoot. You can also press `escape` to quit the game, or `F4` to toggle between windowed and fullscreen mode.
+The goal is to get to the other side of the asteroid field.
+
+The demo game demonstrates how to use the following features of the game engine:
+
+- Basic movement
+- Collision detection
+- Scrolling views
+- Global game resources (Score object)
+- Custom drawing code (StartButton and the score counter)
+- Timer events (PlayerExplosion and AsteroidExplosion)
+- Custom mouse events (StartButton)
+- Stretched and tiled backgrounds
+- Sprite animations and rotations
+- Playing sounds
+
+I tried to structure the project in an idiomatic way based on the game engine design.
+The code should be fairly easy to follow once you understand how the game engine works.
+The main entry point to the game is in `game/Main.java`.
+For the assets, all of the images are from [Open Game Art](https://opengameart.org/), and
+all of the sound effects are generated from [jxfr](https://jfxr.frozenfractal.com/) or recorded by myself with Audacity.
+
+**Project structure:**
+
+- **game/scenes** - All game scenes
+- **game/entities** - All game entities
+- **game/resources** - Global game resources
+- **assets/sprites** - Sprite graphics
+- **assets/backgrounds** - Background graphics
+- **assets/sounds** - Sound effects
+
+**Game Scenes:**
+
+- **Title Scene** - Shows the game title and a play button
+- **Main Scene** - The gameplay itself with the asteroids and spaceship
+
+**Game Entities:**
+
+- **StartButton** - Button object you click to start the game
+- **Player** - Space ship that you control
+- **Asteroid** - Asteroid in the asteroid belt
+- **Bullet** - Player shoots this at objects
+- **PlayerExplosion** - Creates animation when player collides with an asteroid
+- **AsteroidExplosion** - Creates animation when asteroid is destroyed
+- **WinSmiley** - You win animation
+
+**Global Resources:**
+
+- **Score** - Keep track of the global score based on how many asteroids you destroy
