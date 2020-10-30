@@ -303,6 +303,7 @@ There are several things I would like to add in a future version of this game en
 - Better sound engine (play multiple instances of same sound at once)
 - Support for background tiles (Not just a tiled image)
 - Multithreading event handling
+- Entity drawing priority
 - Different types of collision detection (like radial collision)
 - More powerful drawing and collision utilities
 
