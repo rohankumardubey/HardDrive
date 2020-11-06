@@ -1,7 +1,6 @@
 package game.entities;
 
 import game.engine.*;
-import java.awt.*;
 
 /**
  * Explosion that happens after asteroid is destroyed
@@ -14,7 +13,7 @@ public class AsteroidExplosion extends Entity {
   // Timers
   private final static int ANIMATION_TIMER = 0;
 
-  public AsteroidExplosion(Point position, double scale) {
+  public AsteroidExplosion(Point2d position, double scale) {
     this.position.setLocation(position);
 
     for (int i = 1; i <= NUM_EXPLOSION_FRAMES; i += 1) {

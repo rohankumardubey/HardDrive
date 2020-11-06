@@ -1,34 +1,33 @@
 package game.engine;
 
 import java.awt.Dimension;
-import java.awt.Point;
 
 /**
  * Represents a rectangular window into a scene
  */
 public class View {
 
-  public Point position;
+  public Point2d position;
   public Dimension size;
 
-  public View(Point position, Dimension size) {
+  public View(Point2d position, Dimension size) {
     this.position = position;
     this.size     = size;
   }
 
   public int getTopBoundary() {
-    return position.y;
+    return (int) position.y;
   }
 
   public int getBottomBoundary() {
-    return position.y + size.height;
+    return (int) position.y + size.height;
   }
 
   public int getLeftBoundary() {
-    return position.x;
+    return (int) position.x;
   }
 
   public int getRightBoundary() {
-    return position.x + size.width;
+    return (int) position.x + size.width;
   }
 }

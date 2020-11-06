@@ -2,7 +2,6 @@ package game.engine;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 /**
@@ -96,7 +95,7 @@ public final class Sprite extends AnimatedImage {
     Dimension d = this.getRotatedImageDimensions();
     int leftX   = 0 - d.width / 2;
     int leftY   = 0 - d.height / 2;
-    return new Mask(new Point(leftX, leftY), d);
+    return new Mask(new Point2d(leftX, leftY), d);
   }
 
   /**

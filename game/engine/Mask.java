@@ -1,7 +1,6 @@
 package game.engine;
 
 import java.awt.Dimension;
-import java.awt.Point;
 
 /**
  * Rectangular collision mask.
@@ -10,17 +9,17 @@ import java.awt.Point;
  */
 public class Mask {
   /** Top left point of the mask relative to the center of the sprite */
-  public Point relativePosition;
+  public Point2d relativePosition;
 
   /** Size of the rectangular mask */
   public Dimension size;
 
   public Mask() {
-    this.relativePosition = new Point(0, 0);
+    this.relativePosition = new Point2d(0, 0);
     this.size             = new Dimension(0, 0);
   }
 
-  public Mask(Point relativePosition, Dimension size) {
+  public Mask(Point2d relativePosition, Dimension size) {
     this.relativePosition = relativePosition;
     this.size             = size;
   }
@@ -33,7 +32,7 @@ public class Mask {
    */
   public Mask(Dimension size) {
     this.size             = size;
-    this.relativePosition = new Point(0 - (size.width / 2), 0 - (size.height / 2));
+    this.relativePosition = new Point2d(0 - (size.width / 2), 0 - (size.height / 2));
   }
 
   /**
@@ -45,22 +44,22 @@ public class Mask {
    * @param otherAbsPosition  Absolute x,y position of the other mask
    * @return                  True if the two masks are colliding (overlapping)
    */
-  public boolean isCollidingWith(Mask other, Point thisAbsPosition, Point otherAbsPosition) {
-    Point thisTopLeft  = (Point) thisAbsPosition.clone();
-    Point otherTopLeft = (Point) otherAbsPosition.clone();
+  public boolean isCollidingWith(Mask other, Point2d thisAbsPosition, Point2d otherAbsPosition) {
+    Point2d thisTopLeft  = (Point2d) thisAbsPosition.clone();
+    Point2d otherTopLeft = (Point2d) otherAbsPosition.clone();
 
     thisTopLeft.translate(this.relativePosition.x, this.relativePosition.y);
     otherTopLeft.translate(other.relativePosition.x, other.relativePosition.y);
 
-    int thisLeft   = thisTopLeft.x;
-    int thisRight  = thisTopLeft.x + this.size.width;
-    int thisTop    = thisTopLeft.y;
-    int thisBottom = thisTopLeft.y + this.size.height;
+    double thisLeft   = thisTopLeft.x;
+    double thisRight  = thisTopLeft.x + this.size.width;
+    double thisTop    = thisTopLeft.y;
+    double thisBottom = thisTopLeft.y + this.size.height;
 
-    int otherLeft   = otherTopLeft.x;
-    int otherRight  = otherTopLeft.x + other.size.width;
-    int otherTop    = otherTopLeft.y;
-    int otherBottom = otherTopLeft.y + other.size.height;
+    double otherLeft   = otherTopLeft.x;
+    double otherRight  = otherTopLeft.x + other.size.width;
+    double otherTop    = otherTopLeft.y;
+    double otherBottom = otherTopLeft.y + other.size.height;
 
     // Determine non-colliding states
     if ((thisBottom < otherTop) || (thisTop > otherBottom) || (thisRight < otherLeft) ||
@@ -78,14 +77,14 @@ public class Mask {
    * @param thisAbsPosition   Absolute position of this mask
    * @return                  True if the point is inside the mask, false otherwise
    */
-  public boolean isPointInside(Point point, Point thisAbsPosition) {
-    Point thisTopLeft = (Point) thisAbsPosition.clone();
+  public boolean isPointInside(Point2d point, Point2d thisAbsPosition) {
+    Point2d thisTopLeft = (Point2d) thisAbsPosition.clone();
     thisTopLeft.translate(this.relativePosition.x, this.relativePosition.y);
 
-    int thisLeft   = thisTopLeft.x;
-    int thisRight  = thisTopLeft.x + this.size.width;
-    int thisTop    = thisTopLeft.y;
-    int thisBottom = thisTopLeft.y + this.size.height;
+    double thisLeft   = thisTopLeft.x;
+    double thisRight  = thisTopLeft.x + this.size.width;
+    double thisTop    = thisTopLeft.y;
+    double thisBottom = thisTopLeft.y + this.size.height;
 
     // Determine non-colliding states
     if ((thisBottom < point.y) || (thisTop > point.y) || (thisRight < point.x) ||

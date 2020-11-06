@@ -2,7 +2,6 @@ package game.engine;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -118,7 +117,7 @@ public class AnimatedImage {
   public Mask getMask() {
     int leftX = 0 - this.size.width / 2;
     int leftY = 0 - this.size.height / 2;
-    return new Mask(new Point(leftX, leftY), this.size);
+    return new Mask(new Point2d(leftX, leftY), this.size);
   }
 
   /**

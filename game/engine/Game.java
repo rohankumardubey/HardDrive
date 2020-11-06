@@ -21,7 +21,7 @@ public final class Game {
   private Set<Key> oneTimePresedKeys;
   private boolean leftMousePressed;
   private boolean rightMousePressed;
-  private Point mouseViewLocation;
+  private Point2d mouseViewLocation;
 
   private boolean isFullscreen;
   private GameFrame frame;
@@ -40,7 +40,7 @@ public final class Game {
     this.oneTimePresedKeys = new HashSet<>();
     this.leftMousePressed  = false;
     this.rightMousePressed = false;
-    this.mouseViewLocation = new Point(0, 0);
+    this.mouseViewLocation = new Point2d(0, 0);
 
     // Configure JFrame
     this.isFullscreen = false;
@@ -207,7 +207,7 @@ public final class Game {
    *
    * @return    X,Y location of mouse in the view
    */
-  public Point getMouseViewPosition() {
+  public Point2d getMouseViewPosition() {
     return this.mouseViewLocation;
   }
 
@@ -217,9 +217,9 @@ public final class Game {
    *
    * @return   X,Y location of mouse in the scene
    */
-  public Point getMouseScenePosition() {
-    return new Point(this.mouseViewLocation.x + this.scene.mainView.position.x,
-                     this.mouseViewLocation.y + this.scene.mainView.position.y);
+  public Point2d getMouseScenePosition() {
+    return new Point2d(this.mouseViewLocation.x + this.scene.mainView.position.x,
+                       this.mouseViewLocation.y + this.scene.mainView.position.y);
   }
 
   /**
@@ -229,12 +229,12 @@ public final class Game {
    * @param   newPosition     New position of the mouse inside the view
    * @param   canvasSize      Current scaled size of Canvas
    */
-  void setMouseViewPosition(Point newPosition, Dimension canvasSize) {
+  void setMouseViewPosition(Point2d newPosition, Dimension canvasSize) {
     // Adjust for scaling of canvas
-    int newX = Helpers.map(newPosition.x, 0, canvasSize.width, 0, this.scene.size.width);
-    int newY = Helpers.map(newPosition.y, 0, canvasSize.height, 0, this.scene.size.height);
+    double newX = Helpers.map(newPosition.x, 0, canvasSize.width, 0, this.scene.size.width);
+    double newY = Helpers.map(newPosition.y, 0, canvasSize.height, 0, this.scene.size.height);
 
-    this.mouseViewLocation = new Point(newX, newY);
+    this.mouseViewLocation = new Point2d(newX, newY);
   }
 
   /**
@@ -483,10 +483,10 @@ class GameCanvas extends JPanel implements ActionListener, KeyListener, MouseInp
   }
 
   public void mouseMoved(MouseEvent e) {
-    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()), this.getSize());
+    this.game.setMouseViewPosition(new Point2d(e.getX(), e.getY()), this.getSize());
   }
 
   public void mouseDragged(MouseEvent e) {
-    this.game.setMouseViewPosition(new Point(e.getX(), e.getY()), this.getSize());
+    this.game.setMouseViewPosition(new Point2d(e.getX(), e.getY()), this.getSize());
   }
 }

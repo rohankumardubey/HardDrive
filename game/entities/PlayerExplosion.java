@@ -2,7 +2,6 @@ package game.entities;
 
 import game.engine.*;
 import game.scenes.*;
-import java.awt.*;
 
 /**
  * Player explosion before going back to title screen
@@ -17,7 +16,7 @@ public class PlayerExplosion extends Entity {
   private final static int RESET_TIMER      = 1;
   private final static int RESET_WAIT_TICKS = 50;
 
-  public PlayerExplosion(Point position) {
+  public PlayerExplosion(Point2d position) {
     this.position.setLocation(position);
 
     // Load explosion sprites

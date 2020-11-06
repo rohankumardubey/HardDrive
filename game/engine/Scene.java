@@ -3,7 +3,6 @@ package game.engine;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
@@ -49,7 +48,7 @@ public abstract class Scene {
    */
   public Scene(int width, int height) {
     this.size         = new Dimension(width, height);
-    this.mainView     = new View(new Point(0, 0), new Dimension(width, height));
+    this.mainView     = new View(new Point2d(0, 0), new Dimension(width, height));
     this.background   = new Background();
     this.outsideColor = new Color(0, 0, 0);
     this.timers       = new HashMap<>();

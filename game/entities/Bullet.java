@@ -1,7 +1,6 @@
 package game.entities;
 
 import game.engine.*;
-import java.awt.*;
 
 /**
  * Rocket ship bullet
@@ -10,8 +9,8 @@ public class Bullet extends Entity {
 
   private final static int BULLET_SPEED = 20;
 
-  public Bullet(Point startPoint) {
-    this.position = new Point(startPoint);
+  public Bullet(Point2d startPoint) {
+    this.position = new Point2d(startPoint);
     this.sprite.addFrames(GameAssets.getLoadedImage("bullet"));
     this.mask = this.sprite.getMask();
   }

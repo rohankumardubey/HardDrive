@@ -1,7 +1,6 @@
 package game.engine;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Map;
 public abstract class Entity {
 
   // Position in the scene
-  protected Point position;
+  protected Point2d position;
 
   // Graphic to draw
   protected Sprite sprite;
@@ -39,7 +38,7 @@ public abstract class Entity {
    * Construct a new entity
    */
   public Entity() {
-    this.position    = new Point(0, 0);
+    this.position    = new Point2d(0, 0);
     this.sprite      = new Sprite();
     this.mask        = new Mask();
     this.isVisible   = true;
@@ -128,7 +127,7 @@ public abstract class Entity {
    * @return  True if the mouse is inside the entity
    */
   protected final boolean isMouseInside() {
-    Point mousePoint = this.scene.get().getGame().getMouseScenePosition();
+    Point2d mousePoint = this.scene.get().getGame().getMouseScenePosition();
     return this.mask.isPointInside(mousePoint, this.position);
   }
 
