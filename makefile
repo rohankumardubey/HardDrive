@@ -24,6 +24,7 @@ CLASSES=\
 	game/engine/TimerEntry.class \
 	game/engine/Helpers.class \
 	game/engine/Point2d.class \
+	game/engine/Vector2d.class \
 	\
 	game/scenes/TitleScene.class \
 	game/scenes/MainScene.class \

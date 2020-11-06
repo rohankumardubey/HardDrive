@@ -13,17 +13,17 @@ import java.util.Map;
 public abstract class Entity {
 
   // Position in the scene
-  protected Point2d position;
+  public Point2d position;
 
   // Graphic to draw
-  protected Sprite sprite;
+  public Sprite sprite;
 
   // Collision mask
-  protected Mask mask;
+  public Mask mask;
 
   // Whether or not the entity is visible in the room.
   //  Turns off collision and drawing, but does NOT affect other entity events
-  protected boolean isVisible;
+  public boolean isVisible;
 
   // Has the entity been destroyed?
   private boolean isDestroyed;
@@ -38,7 +38,7 @@ public abstract class Entity {
    * Construct a new entity
    */
   public Entity() {
-    this.position    = new Point2d(0, 0);
+    this.position    = new Point2d();
     this.sprite      = new Sprite();
     this.mask        = new Mask();
     this.isVisible   = true;
@@ -65,7 +65,7 @@ public abstract class Entity {
   abstract protected void onTimer(int timerIndex);
 
   /**
-   * Called on each tick of the game
+   * Called on each tick of the game.
    */
   abstract protected void onStep();
 
@@ -112,12 +112,14 @@ public abstract class Entity {
   }
 
   /**
-   * Test if two entities are collising using the entity masks
+   * Test if two entities are collising using the entity masks.
+   * Invisible entities fail the collision check.
    *
    * @param other   Other entity to check
    * @return        True if they are colliding
    */
-  protected final boolean isCollidingWith(Entity other) {
+  protected boolean isCollidingWith(Entity other) {
+    if (!this.isVisible || !other.isVisible) { return false; }
     return this.mask.isCollidingWith(other.mask, this.position, other.position);
   }
 
@@ -126,7 +128,7 @@ public abstract class Entity {
    *
    * @return  True if the mouse is inside the entity
    */
-  protected final boolean isMouseInside() {
+  protected boolean isMouseInside() {
     Point2d mousePoint = this.scene.get().getGame().getMouseScenePosition();
     return this.mask.isPointInside(mousePoint, this.position);
   }
