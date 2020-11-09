@@ -97,27 +97,22 @@ public abstract class Scene {
    * @return  List of all entities
    */
   public final ArrayList<Entity> getAllEntities() {
-    ArrayList<Entity> entities = new ArrayList<>();
-    for (Set<Entity> set: this.allEntities.values()) { entities.addAll(set); }
-    return entities;
+    return this.findEntities(Entity.class);
   }
 
   /**
-   * Find all entities using the class type as a lookup
+   * Find all entities using the class type as a lookup.
+   * Can either search by a concrete class or a parent class.
    *
    * @param c   Class type of entity to find
    * @return    List of all entities that match the class type
    */
   public final <T extends Entity> ArrayList<T> findEntities(Class<T> c) {
+    Set<Entity> set = this.allEntities.get(c);
+    if (set == null) { return new ArrayList<>(); }
 
-    Set<Entity> set   = this.allEntities.get(c);
-    ArrayList<T> list = new ArrayList<T>();
-    if (set != null) {
-      // This is a safe cast
-      for (Entity e: set) { list.add((T) e); }
-    }
-
-    return list;
+    // This is a safe cast
+    return new ArrayList<T>((Set<T>) set);
   }
 
   /**
@@ -184,9 +179,7 @@ public abstract class Scene {
   final void createEntities() {
     // Add every entity to the map
     for (Entity e: this.toCreate) {
-      Set<Entity> set =
-          this.allEntities.computeIfAbsent(e.getClass(), (value) -> { return new HashSet<>(); });
-      set.add(e);
+      this.addEntityToMap(e);
       e.setScene(this);
     }
 
@@ -199,41 +192,80 @@ public abstract class Scene {
   }
 
   /**
+   * Add entity to the map using all of its parent classes
+   * @param entity  Entity to add
+   */
+  private void addEntityToMap(Entity entity) {
+    Class<?> entityClass = entity.getClass();
+    while (isValidEntityClass(entityClass)) {
+      addIndexToMap((Class<? extends Entity>) entityClass, entity);
+      entityClass = entityClass.getSuperclass();
+    }
+  }
+
+  private boolean isValidEntityClass(Class<?> entityClass) {
+    return (entityClass != null) && Entity.class.isAssignableFrom(entityClass);
+  }
+
+  /**
+   * Add a single entry into the map
+   */
+  private void addIndexToMap(Class<? extends Entity> entityClass, Entity entity) {
+    Set<Entity> set =
+        this.allEntities.computeIfAbsent(entityClass, (value) -> { return new HashSet<>(); });
+    set.add(entity);
+  }
+
+  /**
    * Internal method to destroy entities from the game
    */
   final void destroyEntities() {
-    // Destroy the entities marked for deletion
-    List<Entity> destroyed = new ArrayList<>();
-    for (Set<Entity> set: this.allEntities.values()) {
-      List<Entity> toDestroy = new ArrayList<>();
-      for (Entity e: set) {
-        if (e.isDestroyed()) { toDestroy.add(e); }
-      }
-
-      set.removeAll(toDestroy);
-      destroyed.addAll(toDestroy);
+    // Get all entities marked for deletion
+    List<Entity> toDestroy = new ArrayList<>();
+    for (Entity e: this.getAllEntities()) {
+      if (e.isDestroyed()) { toDestroy.add(e); }
     }
 
+    // Actually remove the entities
+    for (Entity e: toDestroy) { this.removeEntityFromMap(e); }
+
     // Call the "onDestroy" event handler for each entity
-    for (Entity e: destroyed) { e.onDestroy(); }
+    for (Entity e: toDestroy) { e.onDestroy(); }
+  }
+
+  /**
+   * Remove entity to the map using all of its parent classes
+   * @param entity  Entity to remove
+   */
+  private void removeEntityFromMap(Entity entity) {
+    Class<?> entityClass = entity.getClass();
+    while (isValidEntityClass(entityClass)) {
+      removeIndexFromMap((Class<? extends Entity>) entityClass, entity);
+      entityClass = entityClass.getSuperclass();
+    }
+  }
+
+  /**
+   * Remove a single entry from the map
+   */
+  private void removeIndexFromMap(Class<? extends Entity> entityClass, Entity entity) {
+    Set<Entity> set = this.allEntities.get(entityClass);
+    if (set == null) { return; /* Should not happen */ }
+    set.remove(entity);
   }
 
   /**
    * Internal method to tick all entity timers
    */
   final void tickEntityTimers() {
-    for (Set<Entity> set: this.allEntities.values()) {
-      for (Entity e: set) { e.tickTimers(); }
-    }
+    for (Entity e: this.getAllEntities()) { e.tickTimers(); }
   }
 
   /**
    * Internal method to tick all entity timers
    */
   final void stepEntities() {
-    for (Set<Entity> set: this.allEntities.values()) {
-      for (Entity e: set) { e.onStep(); }
-    }
+    for (Entity e: this.getAllEntities()) { e.onStep(); }
   }
 
   /**
@@ -261,11 +293,9 @@ public abstract class Scene {
     this.background.draw(imgG2d, this.size);
     imgG2d.setTransform(oldTransform);
 
-    for (Set<Entity> set: this.allEntities.values()) {
-      for (Entity e: set) {
-        e.draw(imgG2d);
-        imgG2d.setTransform(oldTransform);
-      }
+    for (Entity e: this.getAllEntities()) {
+      e.draw(imgG2d);
+      imgG2d.setTransform(oldTransform);
     }
 
     this.onDraw(imgG2d);
