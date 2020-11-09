@@ -32,6 +32,33 @@ public class Helpers {
   }
 
   /**
+   * Draw a health bar. The health should be between 0.0 and 1.0
+   */
+  static public void drawHealthBar(Graphics g, double health, Rectangle rect, Color fullHealth,
+                                   Color noHealth) {
+
+    Color color = interpolateColor(fullHealth, noHealth, health);
+
+    // Inside bar
+    g.setColor(color);
+    g.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+    // Outline
+    g.setColor(Color.BLACK);
+    g.drawRect(rect.x, rect.y, rect.width, rect.height);
+  }
+
+  /**
+   * Interpolate between two colors
+   */
+  static public Color interpolateColor(Color one, Color two, double interpolation) {
+    double red   = linearInterpolation(one.getRed(), two.getRed(), interpolation);
+    double green = linearInterpolation(one.getGreen(), two.getGreen(), interpolation);
+    double blue  = linearInterpolation(one.getBlue(), two.getBlue(), interpolation);
+    return new Color((float) red / 255, (float) green / 255, (float) blue / 255);
+  }
+
+  /**
    * Map one range of integers to another
    *
    * From: https://stackoverflow.com/questions/7505991/arduino-map-equivalent-function-in-java
@@ -47,6 +74,27 @@ public class Helpers {
    */
   public static double map(double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+  }
+
+  /**
+   * Clamp the input between two values
+   *
+   * @param input   Value to clamp
+   * @param min     Minimum input
+   * @param max     Maximum input
+   * @return        Clamped value
+   */
+  public static double clamp(double input, double min, double max) {
+    return Math.min(Math.max(input, min), max);
+  }
+
+  /**
+   * Do a linear interpolation between two numbers.
+   * The blend value should be between 0.0 and 1.0
+   */
+  public static double linearInterpolation(double one, double two, double blend) {
+    blend = clamp(blend, 0, 1);
+    return one * blend + two * (1 - blend);
   }
 
   /**

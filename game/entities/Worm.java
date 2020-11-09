@@ -11,6 +11,7 @@ public class Worm extends AntiVirus {
   private static final double SPIN_SPEED     = Math.PI / 24;
   private static final double STRAF_SPEED    = Math.PI / 400;
   private static final double MAX_STRAF      = Math.PI / 12;
+  private static final int WORM_HEALTH       = 15;
 
   WormPhase state;
   Vector2d chargingVector;
@@ -20,6 +21,8 @@ public class Worm extends AntiVirus {
   double leftChargingAngle, rightChargingAngle;
 
   public Worm() {
+    super(WORM_HEALTH);
+
     this.state          = WormPhase.Spinning;
     this.chargingVector = new Vector2d();
     this.insideView     = false;
