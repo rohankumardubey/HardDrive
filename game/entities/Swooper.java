@@ -23,38 +23,27 @@ public class Swooper extends AntiVirus {
 
   @Override
   protected void onCreate() {
-    moveToRandomCorner();
+    moveToRandomSide();
 
     this.setTimer(0, SWOOP_SPEED / NUM_BOOGERS, true);
   }
 
   /**
-   * Pick a random starting corner for the sprite
+   * Pick a random starting si
    */
-  private void moveToRandomCorner() {
+  private void moveToRandomSide() {
     View view = this.getScene().mainView;
-
-    // X coordinate
     if (Math.random() > 0.5) {
+      // Left
       this.position.x              = view.getLeftBoundary() - this.sprite.size.width / 2;
       this.velocity.x              = view.size.width / SWOOP_SPEED;
       this.sprite.mirrorHorizontal = true;
     } else {
+      // Right
       this.position.x              = view.getRightBoundary() + this.sprite.size.width / 2;
       this.velocity.x              = -view.size.width / SWOOP_SPEED;
       this.sprite.mirrorHorizontal = false;
     }
-
-    this.position.y = view.getTopBoundary() + this.sprite.size.height / 2;
-
-    // Y coordinate
-    // if (false) {
-    //   this.position.y = view.getTopBoundary() - this.sprite.size.height / 2;
-    //   this.velocity.y = view.size.height / SWOOP_SPEED;
-    // } else {
-    //   this.position.y = view.getBottomBoundary() + this.sprite.size.height / 2;
-    //   this.velocity.y = -view.size.height / SWOOP_SPEED;
-    // }
   }
 
   @Override
@@ -65,6 +54,8 @@ public class Swooper extends AntiVirus {
   @Override
   protected void onStep() {
     super.onStep();
+
     this.position.add(this.velocity);
+    this.position.y = this.getScene().mainView.getTopBoundary() + this.sprite.size.height / 2;
   }
 }

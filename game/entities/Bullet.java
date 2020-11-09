@@ -7,7 +7,7 @@ import game.engine.*;
  */
 public class Bullet extends Entity {
 
-  private final static int BULLET_SPEED = 20;
+  private final static int BULLET_SPEED = 40;
 
   public Bullet(Point2d startPoint) {
     this.position = new Point2d(startPoint);

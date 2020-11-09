@@ -13,9 +13,9 @@ public class Worm extends AntiVirus {
   private static final double MAX_STRAF      = Math.PI / 12;
   private static final int WORM_HEALTH       = 15;
 
-  WormPhase state;
-  Vector2d chargingVector;
-  boolean insideView;
+  private WormPhase state;
+  private Vector2d chargingVector;
+  private boolean insideView;
 
   // Used for computing straffing
   double leftChargingAngle, rightChargingAngle;

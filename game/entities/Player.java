@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class Player extends Entity {
 
   // Constants
-  private final static int MAX_X       = 300; /* Max X when scrolling */
-  private final static int SHIP_PPF    = 5;
+  private final static int MAX_X       = 640; /* Max X when scrolling */
+  private final static int SHIP_PPF    = 15;
   private final static int MAX_BULLETS = 3;
 
   private final static int FLAME_ANIMATION_SPEED = 2;
@@ -66,7 +66,6 @@ public class Player extends Entity {
     boolean shipMoved = this.movePlayer();
     this.setFlameEnabled(shipMoved);
 
-    this.scrollWithShip();
     this.clampBoundaries();
 
     this.createBullet();
@@ -112,19 +111,14 @@ public class Player extends Entity {
     }
   }
 
-  private void scrollWithShip() {
-    if (this.screenScrolling) { this.position.x += MainScene.SCROLL_SPEED; }
-  }
-
   private void clampBoundaries() {
     Scene scene = this.getScene();
 
-    int maxX = this.screenScrolling ? MAX_X : scene.mainView.size.width;
+    this.position.x = Math.min(Math.max(this.position.x, scene.mainView.getLeftBoundary()),
+                               scene.mainView.getRightBoundary());
 
-    this.position.x = Math.min(Math.max(this.position.x, scene.mainView.position.x),
-                               scene.mainView.position.x + maxX);
-
-    this.position.y = Math.min(Math.max(this.position.y, 0), scene.mainView.size.height);
+    this.position.y = Math.min(Math.max(this.position.y, scene.mainView.getTopBoundary()),
+                               scene.mainView.getBottomBoundary());
   }
 
   private void createBullet() {
