@@ -21,10 +21,31 @@ public abstract class AntiVirus extends Entity {
   }
 
   @Override
+  protected void onStep() {
+    checkBulletCollisions();
+    checkNoHealth();
+  }
+
+  private void checkBulletCollisions() {
+    for (Bullet bullet: this.getScene().findEntities(Bullet.class)) {
+      if (this.isCollidingWith(bullet)) {
+        bullet.destroy();
+        this.health -= 1;
+      }
+    }
+  }
+
+  private void checkNoHealth() {
+    if (this.health <= 0) {
+      this.getScene().createEntity(
+          new BinaryExplosion(this.position, this.sprite.getRotatedImageDimensions()));
+      this.destroy();
+    }
+  }
+
+  @Override
   protected void onDestroy() {
     // TODO: Play Sound
-    this.getScene().createEntity(
-        new BinaryExplosion(this.position, this.sprite.getRotatedImageDimensions()));
   }
 
   @Override

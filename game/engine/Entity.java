@@ -163,11 +163,11 @@ public abstract class Entity implements Comparable<Entity> {
     Scene scene = this.getScene();
     Dimension d = this.sprite.getRotatedImageDimensions();
     boolean xInside =
-        Helpers.isBetween(this.position.x, scene.mainView.position.x - (d.width / 2),
-                          scene.mainView.position.x + scene.mainView.size.width + (d.width / 2));
+        Helpers.isBetween(this.position.x, scene.mainView.getLeftBoundary() - (d.width / 2),
+                          scene.mainView.getRightBoundary() + (d.width / 2));
     boolean yInside =
-        Helpers.isBetween(this.position.y, scene.mainView.position.y - (d.height / 2),
-                          scene.mainView.position.y + scene.mainView.size.height + (d.height / 2));
+        Helpers.isBetween(this.position.y, scene.mainView.getTopBoundary() - (d.height / 2),
+                          scene.mainView.getBottomBoundary() + (d.height / 2));
 
     return xInside && yInside;
   }

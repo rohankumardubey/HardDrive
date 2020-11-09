@@ -36,6 +36,8 @@ public class Main {
     GameAssets.loadImage("smiley", "/assets/sprites/smiley.png");
 
     GameAssets.loadImage("worm", "/assets/sprites/worm.png");
+    GameAssets.loadImage("swooper", "/assets/sprites/swooper.png");
+    GameAssets.loadImage("booger", "/assets/sprites/booger.png");
 
     for (int i = 1; i <= 8; i += 1) {
       for (int j = 1; j <= 8; j += 1) {

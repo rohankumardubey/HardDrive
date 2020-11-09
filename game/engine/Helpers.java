@@ -37,11 +37,12 @@ public class Helpers {
   static public void drawHealthBar(Graphics g, double health, Rectangle rect, Color fullHealth,
                                    Color noHealth) {
 
+    health      = clamp(health, 0, 1);
     Color color = interpolateColor(fullHealth, noHealth, health);
 
     // Inside bar
     g.setColor(color);
-    g.fillRect(rect.x, rect.y, rect.width, rect.height);
+    g.fillRect(rect.x, rect.y, (int) (rect.width * health), rect.height);
 
     // Outline
     g.setColor(Color.BLACK);

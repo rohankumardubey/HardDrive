@@ -29,19 +29,34 @@ public class Worm extends AntiVirus {
 
     this.sprite.addFrames(GameAssets.getLoadedImage("worm"));
     this.sprite.size.setSize(128, 64);
+    this.mask                    = sprite.getMask();
     this.sprite.mirrorHorizontal = true;
   }
 
   @Override
   protected void onCreate() {
-    Scene scene = this.getScene();
+    randomCornerStartingPosition();
+  }
 
-    // Worm starts on the right side of the view
-    this.position.set(scene.mainView.position);
-    this.position.add(new Point2d(scene.mainView.size.width, scene.mainView.size.height / 2));
-    this.position.x -= this.sprite.size.width * 2;
+  /**
+   * Start the worm in a random corner
+   */
+  private void randomCornerStartingPosition() {
+    View view = this.getScene().mainView;
 
-    this.setTimer(0, 20, true);
+    // X coordinate
+    if (Math.random() > 0.5) {
+      this.position.x = view.getLeftBoundary() - this.sprite.size.width / 2;
+    } else {
+      this.position.x = view.getRightBoundary() + this.sprite.size.width / 2;
+    }
+
+    // Y coordinate
+    if (Math.random() > 0.5) {
+      this.position.y = view.getTopBoundary() - this.sprite.size.height / 2;
+    } else {
+      this.position.y = view.getBottomBoundary() + this.sprite.size.height / 2;
+    }
   }
 
   @Override
@@ -49,6 +64,8 @@ public class Worm extends AntiVirus {
 
   @Override
   protected void onStep() {
+    super.onStep();
+
     switch (this.state) {
       case Spinning:
         this.spinWorm();

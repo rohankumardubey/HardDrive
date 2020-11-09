@@ -41,6 +41,9 @@ CLASSES=\
 	game/entities/BinaryExplosion.class \
 	game/entities/AntiVirus.class \
 	game/entities/Worm.class \
+	game/entities/Swooper.class \
+	game/entities/Booger.class \
+	game/entities/BoogerExplosion.class \
 	\
 	game/resources/Score.class
 
