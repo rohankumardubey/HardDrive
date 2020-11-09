@@ -15,7 +15,7 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new GameScene());
+    Game g = new Game(new LoadingScene(new GameScene()));
     g.setTitle("Car Game");
     g.run();
   }
@@ -62,6 +62,8 @@ public class Main {
     GameAssets.loadSound("asteroid-explosion", "/assets/sounds/asteroid-explosion.wav");
     GameAssets.loadSound("ship-explosion", "/assets/sounds/ship-explosion.wav");
     GameAssets.loadSound("win", "/assets/sounds/win.wav");
+
+    GameAssets.loadSound("typing", "/assets/sounds/typing.wav");
 
     GameAssets.loadSound("corruption-bgm", "/assets/bgm/data-corruption.wav");
   }

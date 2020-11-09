@@ -43,4 +43,11 @@ public class Sound {
   public void stopSound() {
     if (this.clip.isActive()) { this.clip.stop(); }
   }
+
+  /**
+   * Test if the sound is currently playing or not
+   */
+  public boolean isPlaying() {
+    return this.clip.isActive();
+  }
 }

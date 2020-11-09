@@ -28,6 +28,7 @@ CLASSES=\
 	\
 	game/scenes/TitleScene.class \
 	game/scenes/MainScene.class \
+	game/scenes/LoadingScene.class \
 	game/scenes/GameScene.class \
 	\
 	game/entities/StartButton.class \
@@ -37,8 +38,9 @@ CLASSES=\
 	game/entities/AsteroidExplosion.class \
 	game/entities/PlayerExplosion.class \
 	game/entities/WinSmiley.class \
-	game/entities/Ant.class \
 	game/entities/BinaryExplosion.class \
+	game/entities/Ant.class \
+	game/entities/AntSpawner.class \
 	game/entities/AntiVirus.class \
 	game/entities/Worm.class \
 	game/entities/Swooper.class \

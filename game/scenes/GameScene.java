@@ -10,7 +10,7 @@ public class GameScene extends Scene {
   private static final int VIEW_THRESHHOLD = 200;
 
   public GameScene() {
-    super(1000, 800);
+    super(5000, 8000);
     this.mainView.size.setSize(640, 480);
 
     this.background.addFrames(GameAssets.getLoadedImage("grass-bg"));
@@ -21,8 +21,12 @@ public class GameScene extends Scene {
   protected void onCreate() {
     this.createEntity(new Player());
     this.createEntity(new Worm());
+    this.createEntity(new AntSpawner(new Point2d(150, 150)));
+    this.createEntity(new AntSpawner(new Point2d(400, 400)));
+    this.createEntity(new AntSpawner(new Point2d(900, 900)));
 
     this.setTimer(0, 300, true);
+    // GameAssets.getLoadedSound("corruption-bgm").loopSound();
   }
 
   @Override
@@ -66,7 +70,5 @@ public class GameScene extends Scene {
   }
 
   @Override
-  protected void onDraw(Graphics2D g2d) {
-    // TODO Auto-generated method stub
-  }
+  protected void onDraw(Graphics2D g2d) {}
 }
