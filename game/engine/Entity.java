@@ -1,5 +1,6 @@
 package game.engine;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.lang.ref.WeakReference;
@@ -153,6 +154,29 @@ public abstract class Entity implements Comparable<Entity> {
    */
   public final Scene getScene() {
     return this.scene.get();
+  }
+
+  /**
+   * Test if the entity is inside the current scene view
+   */
+  protected boolean isInsideView() {
+    Scene scene = this.getScene();
+    Dimension d = this.sprite.getRotatedImageDimensions();
+    boolean xInside =
+        Helpers.isBetween(this.position.x, scene.mainView.position.x - (d.width / 2),
+                          scene.mainView.position.x + scene.mainView.size.width + (d.width / 2));
+    boolean yInside =
+        Helpers.isBetween(this.position.y, scene.mainView.position.y - (d.height / 2),
+                          scene.mainView.position.y + scene.mainView.size.height + (d.height / 2));
+
+    return xInside && yInside;
+  }
+
+  /**
+   * Test if the entity is outside the current scene view
+   */
+  protected boolean isOutsideView() {
+    return !this.isInsideView();
   }
 
   /**

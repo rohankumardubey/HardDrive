@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class BinaryExplosion extends Entity {
 
-  private static final double NUM_SHRINK_FRAMES = 10;
+  private static final double NUM_SHRINK_FRAMES = 15;
 
   private static final Font GRAPHICS_FONT   = new Font("monospace", Font.PLAIN, 8);
   private static final Color GRAPHICS_COLOR = new Color(0, 255, 0);

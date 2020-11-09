@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,6 +117,24 @@ public abstract class Scene {
 
     // This is a safe cast
     return new ArrayList<T>((Set<T>) set);
+  }
+
+  /**
+   * Find the first instance of the entity, or null if there are no instances
+   *
+   * @param c   Class type of entity to find
+   * @return    First found entity that match the class type, or null
+   */
+  public final <T extends Entity> T findFirstEntity(Class<T> c) {
+    Set<Entity> set = this.allEntities.get(c);
+    if (set == null) { return null; }
+
+    Iterator<T> iter = (Iterator<T>) set.iterator();
+    if (iter.hasNext()) {
+      return (T) iter.next();
+    } else {
+      return null;
+    }
   }
 
   /**

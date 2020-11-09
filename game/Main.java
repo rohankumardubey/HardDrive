@@ -15,12 +15,17 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new TitleScene());
-    g.setTitle("Asteroid Navigator");
+    Game g = new Game(new GameScene());
+    g.setTitle("Car Game");
     g.run();
   }
 
   private static void loadAssets() throws Exception {
+    GameAssets.loadImage("grass-bg", "/assets/backgrounds/grass.png");
+    GameAssets.loadImage("sand-bg", "/assets/backgrounds/sand.png");
+    GameAssets.loadImage("snow-bg", "/assets/backgrounds/snow.png");
+    GameAssets.loadImage("dirt-bg", "/assets/backgrounds/dirt.jpg");
+    GameAssets.loadImage("rocky-bg", "/assets/backgrounds/rocky.png");
     GameAssets.loadImage("space-bg", "/assets/backgrounds/space.jpg");
     GameAssets.loadImage("stars-tiled", "/assets/backgrounds/stars-tiled.png");
 
@@ -30,13 +35,24 @@ public class Main {
     GameAssets.loadImage("asteroid", "/assets/sprites/asteroid.png");
     GameAssets.loadImage("smiley", "/assets/sprites/smiley.png");
 
+    GameAssets.loadImage("worm", "/assets/sprites/worm.png");
+
+    for (int i = 1; i <= 8; i += 1) {
+      for (int j = 1; j <= 8; j += 1) {
+        if (i == 8 && j > 6) { continue; }
+        GameAssets.loadImage("ant-" + ((i - 1) * 8 + (j)),
+                             "/assets/sprites/ant/row-" + i + "-col-" + j + ".png");
+      }
+    }
+
     for (int i = 1; i <= 4; i += 1) {
-      GameAssets.loadImage("ship-explosion-" + i, "/assets/sprites/ship-explosion-" + i + ".png");
+      GameAssets.loadImage("ship-explosion-" + i,
+                           "/assets/sprites/small-explosion/small-explosion-" + i + ".png");
     }
 
     for (int i = 1; i <= 13; i += 1) {
       GameAssets.loadImage("asteroid-explosion-" + i,
-                           "/assets/sprites/asteroid-explosion-" + i + ".png");
+                           "/assets/sprites/big-explosion/big-explosion-" + i + ".png");
     }
 
     GameAssets.loadSound("shoot", "/assets/sounds/shoot.wav");
@@ -44,5 +60,7 @@ public class Main {
     GameAssets.loadSound("asteroid-explosion", "/assets/sounds/asteroid-explosion.wav");
     GameAssets.loadSound("ship-explosion", "/assets/sounds/ship-explosion.wav");
     GameAssets.loadSound("win", "/assets/sounds/win.wav");
+
+    GameAssets.loadSound("corruption-bgm", "/assets/bgm/data-corruption.wav");
   }
 }

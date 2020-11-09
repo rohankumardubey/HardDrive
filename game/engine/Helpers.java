@@ -55,4 +55,42 @@ public class Helpers {
   public static double randomRange(double min, double max) {
     return Math.random() * (max - min) + min;
   }
+
+  /**
+   * Test if a value is between two other values.
+   * The order of the two numbers does not matter.
+   *
+   * @param value   Value to test
+   * @param num1    First value in range
+   * @param num2    Second value in range
+   * @return        True if value is between the two numbers
+   */
+  public static boolean isBetween(double value, double num1, double num2) {
+    return Math.min(num1, num2) <= value && Math.max(num1, num2) >= value;
+  }
+
+  /**
+   * Test if an angel is between two other angles
+   *
+   * @param angle   Angle to test
+   * @param a       First angle to test against
+   * @param b       Second angle to test against
+   * @return        True if the angle is between the two angles
+   */
+  public static boolean isAngleBetween(double angle, double a, double b) {
+    final double maxDistance = Math.PI / 2; // 90 degrees
+
+    return Math.abs(normalizeAngle(a - angle)) < maxDistance &&
+        Math.abs(normalizeAngle(b - angle)) < maxDistance;
+  }
+
+  /**
+   * Normalize angle between -PI and +PI radians
+   *
+   * @param angle     Angle to normalize
+   * @return          Normalized angle
+   */
+  public static double normalizeAngle(double angle) {
+    return Math.atan2(Math.sin(angle), Math.cos(angle));
+  }
 }

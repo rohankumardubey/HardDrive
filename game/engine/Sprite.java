@@ -103,7 +103,7 @@ public final class Sprite extends AnimatedImage {
    *
    * @return  Image dimensions
    */
-  private final Dimension getRotatedImageDimensions() {
+  public final Dimension getRotatedImageDimensions() {
 
     double sin = Math.abs(Math.sin(this.angleRadians));
     double cos = Math.abs(Math.cos(this.angleRadians));

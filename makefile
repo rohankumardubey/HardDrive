@@ -28,6 +28,7 @@ CLASSES=\
 	\
 	game/scenes/TitleScene.class \
 	game/scenes/MainScene.class \
+	game/scenes/GameScene.class \
 	\
 	game/entities/StartButton.class \
 	game/entities/Player.class \
@@ -36,6 +37,10 @@ CLASSES=\
 	game/entities/AsteroidExplosion.class \
 	game/entities/PlayerExplosion.class \
 	game/entities/WinSmiley.class \
+	game/entities/Ant.class \
+	game/entities/BinaryExplosion.class \
+	game/entities/AntiVirus.class \
+	game/entities/Worm.class \
 	\
 	game/resources/Score.class
 
@@ -50,7 +55,9 @@ OTHER_FILES=\
 ANONYMOUS_CLASSES=\
 	game/engine/GameFrame.class \
 	game/engine/GameCanvas.class\
-	game/engine/Background\$$1.class
+	game/engine/Background\$$1.class \
+	game/entities/WormPhase.class \
+	game/entities/Worm\$$1.class
 
 ASSETS_FOLDER=assets
 
