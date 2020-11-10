@@ -36,6 +36,16 @@ public final class GameAssets {
   }
 
   /**
+   * Add an image into in-memory cache
+   *
+   * @param name        Name of the image to load
+   * @param image       Image itself
+   */
+  public synchronized static void addImage(String name, BufferedImage image) throws IOException {
+    loadedImages.put(name, image);
+  }
+
+  /**
    * Load a sound into in-memory cache
    *
    * @param name        Name of the sound to load
