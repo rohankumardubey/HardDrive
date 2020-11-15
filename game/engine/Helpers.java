@@ -100,6 +100,7 @@ public class Helpers {
 
   /**
    * Generate a random number in a given range
+   *   Both ends are inclusive
    */
   public static double randomRange(double min, double max) {
     return Math.random() * (max - min) + min;

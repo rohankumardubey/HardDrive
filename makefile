@@ -27,17 +27,13 @@ CLASSES=\
 	game/engine/Vector2d.class \
 	\
 	game/scenes/TitleScene.class \
-	game/scenes/MainScene.class \
 	game/scenes/LoadingScene.class \
 	game/scenes/GameScene.class \
+	game/scenes/Level1.class \
 	\
 	game/entities/StartButton.class \
 	game/entities/Player.class \
 	game/entities/Bullet.class \
-	game/entities/Asteroid.class \
-	game/entities/AsteroidExplosion.class \
-	game/entities/PlayerExplosion.class \
-	game/entities/WinSmiley.class \
 	game/entities/BinaryExplosion.class \
 	game/entities/Ant.class \
 	game/entities/AntSpawner.class \
@@ -46,6 +42,13 @@ CLASSES=\
 	game/entities/Swooper.class \
 	game/entities/Booger.class \
 	game/entities/BoogerExplosion.class \
+	\
+	game/entities/walls/Wall.class \
+	game/entities/walls/Cactus.class \
+	game/entities/walls/Pyramid.class \
+	game/entities/walls/Rock.class \
+	game/entities/walls/SnowTree.class \
+	game/entities/walls/Tree.class \
 	\
 	game/resources/Score.class
 

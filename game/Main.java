@@ -20,7 +20,7 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new LoadingScene(new GameScene()));
+    Game g = new Game(new Level1());
     g.setTitle("Car Game");
     g.run();
   }
