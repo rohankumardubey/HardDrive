@@ -11,37 +11,79 @@ import java.awt.image.*;
 public class Main {
   public static void main(String[] args) {
     try {
-      loadAssets();
+      loadBackgrounds();
+      loadSprites();
+      loadSounds();
     } catch (Exception ex) {
       System.out.println("Failed to load game assets: " + ex);
+      ex.printStackTrace();
       return;
     }
 
-    Game g = new Game(new GameScene());
+    Game g = new Game(new LoadingScene(new GameScene()));
     g.setTitle("Car Game");
     g.run();
   }
 
-  private static void loadAssets() throws Exception {
+  /**
+   * Load all background assets
+   */
+  private static void loadBackgrounds() throws Exception {
     GameAssets.loadImage("grass-bg", "/assets/backgrounds/grass.png");
     GameAssets.loadImage("sand-bg", "/assets/backgrounds/sand.png");
     GameAssets.loadImage("snow-bg", "/assets/backgrounds/snow.png");
     GameAssets.loadImage("dirt-bg", "/assets/backgrounds/dirt.jpg");
     GameAssets.loadImage("rocky-bg", "/assets/backgrounds/rocky.png");
     GameAssets.loadImage("circuit-bg", "/assets/backgrounds/circuit.png");
-    GameAssets.loadImage("space-bg", "/assets/backgrounds/space.jpg");
-    GameAssets.loadImage("stars-tiled", "/assets/backgrounds/stars-tiled.png");
+  }
 
+  /**
+   * Load all sprite assets
+   */
+  private static void loadSprites() throws Exception {
     GameAssets.loadImage("rocket", "/assets/sprites/rocket.png");
     GameAssets.loadImage("rocket-flame", "/assets/sprites/rocket-flame.png");
     GameAssets.loadImage("bullet", "/assets/sprites/bullet.png");
-    GameAssets.loadImage("asteroid", "/assets/sprites/asteroid.png");
-    GameAssets.loadImage("smiley", "/assets/sprites/smiley.png");
 
+    // Antiviruses
     GameAssets.loadImage("worm", "/assets/sprites/worm.png");
     GameAssets.loadImage("swooper", "/assets/sprites/swooper.png");
     GameAssets.loadImage("booger", "/assets/sprites/booger.png");
+    GameAssets.loadImage("amalgamate", "/assets/sprites/amalgamate.png");
+    GameAssets.loadImage("amalgamate-angry", "/assets/sprites/amalgamate-angry.png");
+    GameAssets.loadImage("virus-1", "/assets/sprites/red-virus.png");
+    GameAssets.loadImage("virus-2", "/assets/sprites/yellow-virus.png");
+    GameAssets.loadImage("virus-3", "/assets/sprites/green-virus.png");
+    GameAssets.loadImage("virus-4", "/assets/sprites/blue-virus.png");
+    GameAssets.loadImage("virus-5", "/assets/sprites/pink-virus.png");
 
+    // Walls
+    GameAssets.loadImage("tree", "/assets/sprites/tree.png");
+    GameAssets.loadImage("snow-tree", "/assets/sprites/snow-tree.png");
+    GameAssets.loadImage("rock", "/assets/sprites/rock.png");
+    GameAssets.loadImage("pyramid-1", "/assets/sprites/gold-pyramid-front.png");
+    GameAssets.loadImage("pyramid-2", "/assets/sprites/gold-pyramid-back.png");
+    GameAssets.loadImage("pyramid-3", "/assets/sprites/light-pyramid-front.png");
+    GameAssets.loadImage("pyramid-4", "/assets/sprites/light-pyramid-back.png");
+
+    // Cactus
+    for (int i = 1; i <= 5; i += 1) {
+      GameAssets.loadImage("cactus-" + i, "/assets/sprites/cactus-" + i + ".png");
+    }
+
+    // Components
+    GameAssets.loadImage("transistor", "/assets/sprites/transistor.png");
+    GameAssets.loadImage("capacitor", "/assets/sprites/capacitor.png");
+    GameAssets.loadImage("resistor", "/assets/sprites/resistor.png");
+    GameAssets.loadImage("data-file-1", "/assets/sprites/data-file-1.png");
+    GameAssets.loadImage("data-file-2", "/assets/sprites/data-file-2.png");
+
+    // Chip
+    for (int i = 1; i <= 8; i += 1) {
+      GameAssets.loadImage("chip-" + i, "/assets/sprites/chip-" + i + ".png");
+    }
+
+    // Ant sprite
     for (int i = 1; i <= 8; i += 1) {
       for (int j = 1; j <= 8; j += 1) {
         if (i == 8 && j > 6) { continue; }
@@ -50,20 +92,28 @@ public class Main {
       }
     }
 
+    // Small explosion
     for (int i = 1; i <= 4; i += 1) {
-      GameAssets.loadImage("ship-explosion-" + i,
+      GameAssets.loadImage("small-explosion-" + i,
                            "/assets/sprites/small-explosion/small-explosion-" + i + ".png");
     }
 
+    // Big explosion
     for (int i = 1; i <= 13; i += 1) {
       GameAssets.loadImage("asteroid-explosion-" + i,
                            "/assets/sprites/big-explosion/big-explosion-" + i + ".png");
     }
 
+    // Random binary text
     for (int i = 1; i <= 10; i += 1) {
       GameAssets.addImage("binary-" + i, generateRandomBinaryImage());
     }
+  }
 
+  /**
+   * Load all sound assets
+   */
+  private static void loadSounds() throws Exception {
     GameAssets.loadSound("shoot", "/assets/sounds/shoot.wav");
     GameAssets.loadSound("asteroid-hit", "/assets/sounds/asteroid-hit.wav");
     GameAssets.loadSound("asteroid-explosion", "/assets/sounds/asteroid-explosion.wav");

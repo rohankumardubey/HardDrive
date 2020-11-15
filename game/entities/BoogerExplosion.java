@@ -21,7 +21,7 @@ public class BoogerExplosion extends Entity {
 
     // Load explosion sprites
     for (int i = 1; i <= NUM_EXPLOSION_FRAMES; i += 1) {
-      this.sprite.addFrames(GameAssets.getLoadedImage("ship-explosion-" + i));
+      this.sprite.addFrames(GameAssets.getLoadedImage("small-explosion-" + i));
     }
 
     this.sprite.size.setSize(size);
