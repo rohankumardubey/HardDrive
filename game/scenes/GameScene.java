@@ -55,6 +55,10 @@ public abstract class GameScene extends Scene {
   public static GameScene getLevelScene(int level) {
     if (level == 1) { return new Level1(); }
     if (level == 2) { return new Level2(); }
+    if (level == 3) { return new Level3(); }
+    if (level == 4) { return new Level4(); }
+    if (level == 5) { return new Level5(); }
+    if (level == 6) { return new Level6(); }
     return null;
   }
 
@@ -155,12 +159,22 @@ public abstract class GameScene extends Scene {
       this.clearTimer(-2);
 
       Lives lives = this.getGame().getResouce(Lives.class);
+      Game game   = this.getGame();
       if (lives.playerHasLivesLeft()) {
-        // Go to next scene
-        this.getGame().setScene(new LevelCompleteScene(GameScene.getLevelScene(this.level + 1)));
+        // Mark level as completed
+        UnlockedLevels levels = game.getResouce(UnlockedLevels.class);
+        levels.completeLevel(this.level);
+
+        // Go to next level or the win screen
+        GameScene nextScene = GameScene.getLevelScene(this.level + 1);
+        if (nextScene != null) {
+          game.setScene(new LevelCompleteScene(nextScene));
+        } else {
+          game.setScene(new game.scenes.YouWinScene());
+        }
       } else {
         // Restart this scene
-        this.getGame().setScene(new GameOverScene(GameScene.getLevelScene(this.level)));
+        game.setScene(new GameOverScene(GameScene.getLevelScene(this.level)));
       }
     }
   }

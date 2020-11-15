@@ -1,11 +1,11 @@
 package game.scenes;
 
 /**
- * Level 2: Desert
+ * Level 3: Dirt
  */
-public class Level2 extends GameScene {
-  public Level2() {
-    super("sand-bg", 2);
+public class Level3 extends GameScene {
+  public Level3() {
+    super("dirt-bg", 3);
   }
 
   @Override

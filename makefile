@@ -32,8 +32,13 @@ CLASSES=\
 	game/scenes/GameScene.class \
 	game/scenes/Level1.class \
 	game/scenes/Level2.class \
+	game/scenes/Level3.class \
+	game/scenes/Level4.class \
+	game/scenes/Level5.class \
+	game/scenes/Level6.class \
 	game/scenes/LevelCompleteScene.class \
 	game/scenes/GameOverScene.class \
+	game/scenes/YouWinScene.class \
 	\
 	game/entities/Player.class \
 	game/entities/Bullet.class \
