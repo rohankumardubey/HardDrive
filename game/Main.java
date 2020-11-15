@@ -1,7 +1,7 @@
 package game;
 
 import game.engine.*;
-import game.resources.UnlockedLevels;
+import game.resources.*;
 import game.scenes.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -21,9 +21,10 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new TitleScene());
+    Game g = new Game(new LevelCompleteScene(new Level1()));
     g.setTitle("Hard Drive");
     g.setResource(new UnlockedLevels());
+    g.setResource(new Lives());
     g.run();
   }
 
@@ -77,8 +78,7 @@ public class Main {
     GameAssets.loadImage("transistor", "/assets/sprites/transistor.png");
     GameAssets.loadImage("capacitor", "/assets/sprites/capacitor.png");
     GameAssets.loadImage("resistor", "/assets/sprites/resistor.png");
-    GameAssets.loadImage("data-file-1", "/assets/sprites/data-file-1.png");
-    GameAssets.loadImage("data-file-2", "/assets/sprites/data-file-2.png");
+    GameAssets.loadImage("data-file", "/assets/sprites/data-file.png");
 
     // Chip
     for (int i = 1; i <= 8; i += 1) {

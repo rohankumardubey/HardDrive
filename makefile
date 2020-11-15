@@ -31,23 +31,30 @@ CLASSES=\
 	game/scenes/LoadingScene.class \
 	game/scenes/GameScene.class \
 	game/scenes/Level1.class \
+	game/scenes/Level2.class \
+	game/scenes/LevelCompleteScene.class \
+	game/scenes/GameOverScene.class \
 	\
 	game/entities/Player.class \
 	game/entities/Bullet.class \
 	game/entities/BinaryExplosion.class \
-	game/entities/Ant.class \
-	game/entities/AntSpawner.class \
-	game/entities/AntiVirus.class \
-	game/entities/Worm.class \
-	game/entities/Swooper.class \
-	game/entities/Booger.class \
-	game/entities/BoogerExplosion.class \
+	game/entities/PlayerExplosion.class \
+	game/entities/HealthEntity.class \
+	game/entities/DataFile.class \
+	\
+	game/entities/antivirus/Ant.class \
+	game/entities/antivirus/AntSpawner.class \
+	game/entities/antivirus/AntiVirus.class \
+	game/entities/antivirus/Worm.class \
+	game/entities/antivirus/Swooper.class \
+	game/entities/antivirus/Booger.class \
+	game/entities/antivirus/BoogerExplosion.class \
 	\
 	game/entities/ui/BinaryFlicker.class \
 	game/entities/ui/Button.class \
-	game/entities/ui/StartButton.class \
+	game/entities/ui/ChangeSceneButton.class \
 	game/entities/ui/LevelSelectButton.class \
-	game/entities/ui/BackToTitleButton.class \
+	game/entities/ui/BackToLevelSelectButton.class \
 	\
 	game/entities/walls/Wall.class \
 	game/entities/walls/Cactus.class \
@@ -56,7 +63,7 @@ CLASSES=\
 	game/entities/walls/SnowTree.class \
 	game/entities/walls/Tree.class \
 	\
-	game/resources/Score.class \
+	game/resources/Lives.class \
 	game/resources/UnlockedLevels.class
 
 
@@ -71,8 +78,8 @@ ANONYMOUS_CLASSES=\
 	game/engine/GameFrame.class \
 	game/engine/GameCanvas.class\
 	game/engine/Background\$$1.class \
-	game/entities/WormPhase.class \
-	game/entities/Worm\$$1.class
+	game/entities/antivirus/WormPhase.class \
+	game/entities/antivirus/Worm\$$1.class
 
 ASSETS_FOLDER=assets
 

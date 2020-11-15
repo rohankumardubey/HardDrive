@@ -7,14 +7,14 @@ import java.util.ArrayList;
 /**
  * Rocket ship that you control
  */
-public class Player extends Entity {
+public class Player extends HealthEntity {
 
   // Constants
   private final static int SHIP_PPF    = 15;
   private final static int MAX_BULLETS = 3;
 
   public Player(Point2d position) {
-    super();
+    super(15);
 
     // Initialize player size
     this.sprite.addFrames(GameAssets.getLoadedImage("rocket"));
@@ -32,7 +32,11 @@ public class Player extends Entity {
   protected void onCreate() {}
 
   @Override
-  protected void onDestroy() {}
+  protected void onDestroy() {
+    GameAssets.getLoadedSound("ship-explosion").playSound();
+    this.getScene().createEntity(
+        new PlayerExplosion(this.position, this.sprite.getRotatedImageDimensions()));
+  }
 
   @Override
   protected void onTimer(int timerIndex) {}
@@ -54,6 +58,7 @@ public class Player extends Entity {
     if (game.isKeyPressed(Key.DOWN)) { tryMovementY.y += SHIP_PPF; }
     if (game.isKeyPressed(Key.LEFT)) { tryMovementX.x -= SHIP_PPF; }
     if (game.isKeyPressed(Key.RIGHT)) { tryMovementX.x += SHIP_PPF; }
+    if (game.isKeyPressed(Key.D)) { this.destroy(); }
 
     this.position.add(tryMovementX);
     if (this.collidingWithWall()) { this.position.sub(tryMovementX); }

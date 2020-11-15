@@ -19,7 +19,8 @@ public class TitleScene extends Scene {
   @Override
   protected void onCreate() {
     this.createEntity(new BinaryFlicker());
-    this.createEntity(new StartButton());
+    this.createEntity(new ChangeSceneButton("Start", Color.GREEN, new LevelSelectScene(),
+                                            new Point2d(size.width / 2, size.height - 100)));
   }
 
   @Override
@@ -45,7 +46,7 @@ public class TitleScene extends Scene {
                                new Font("Times", Font.BOLD, 18));
 
     Dimension size = this.size;
-    g2d.drawImage(GameAssets.getLoadedImage("data-file-1"), (size.width / 2) - 64,
+    g2d.drawImage(GameAssets.getLoadedImage("data-file"), (size.width / 2) - 64,
                   (size.height / 2) - 64, 128, 128, null);
   }
 }

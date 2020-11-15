@@ -27,7 +27,7 @@ public class LevelSelectButton extends Button {
   protected void onClick() {
     if (!this.isLevelUnlocked()) { return; }
 
-    GameScene level = this.getLevelScene();
+    GameScene level = GameScene.getLevelScene(this.level);
     if (level != null) { this.getScene().getGame().setScene(new LoadingScene(level)); }
   }
 
@@ -38,14 +38,6 @@ public class LevelSelectButton extends Button {
     UnlockedLevels unlocked = this.getScene().getGame().getResouce(UnlockedLevels.class);
     if (unlocked == null) { return false; }
     return unlocked.isLevelUnlocked(this.level);
-  }
-
-  /**
-   * Get a new instance of the level associated with this button
-   */
-  private GameScene getLevelScene() {
-    if (level == 1) { return new Level1(); }
-    return null;
   }
 
   @Override

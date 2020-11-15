@@ -1,6 +1,7 @@
-package game.entities;
+package game.entities.antivirus;
 
 import game.engine.*;
+import game.entities.*;
 
 /**
  * Worm antivirus program

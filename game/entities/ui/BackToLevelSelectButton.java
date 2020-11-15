@@ -5,23 +5,21 @@ import game.scenes.*;
 import java.awt.*;
 
 /**
- * Button to click to start the game
+ * Go back to the title screen
  */
-public class StartButton extends Button {
+public class BackToLevelSelectButton extends Button {
 
   private static final int BUTTON_WIDTH  = 300;
   private static final int BUTTON_HEIGHT = 50;
 
-  public StartButton() {
-    super("Start", new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    this.setBackgroundColor(Color.GREEN);
+  public BackToLevelSelectButton(String text, Point2d position) {
+    super(text, new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    this.setBackgroundColor(Color.ORANGE);
+    this.position.set(position);
   }
 
   @Override
-  protected void onCreate() {
-    // Move to center of bottom of the screen
-    this.position.setLocation(this.getScene().size.width / 2, this.getScene().size.height - 100);
-  }
+  protected void onCreate() {}
 
   @Override
   protected void onDestroy() {}
@@ -31,6 +29,7 @@ public class StartButton extends Button {
 
   @Override
   protected void onClick() {
+    GameAssets.getLoadedSound("corruption-bgm").stopSound();
     this.getScene().getGame().setScene(new LevelSelectScene());
   }
 }

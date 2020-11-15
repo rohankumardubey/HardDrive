@@ -30,7 +30,8 @@ public class LevelSelectScene extends Scene {
     this.createEntity(new LevelSelectButton(5, new Point2d(2 * width / 3 - (width / 6), 270)));
     this.createEntity(new LevelSelectButton(6, new Point2d(width - (width / 6), 270)));
 
-    this.createEntity(new BackToTitleButton("Go Back"));
+    this.createEntity(new ChangeSceneButton("Go Back", Color.ORANGE, new TitleScene(),
+                                            new Point2d(size.width / 2, size.height - 70)));
   }
 
   @Override

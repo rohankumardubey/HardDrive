@@ -116,7 +116,7 @@ public class LoadingScene extends Scene {
           GameAssets.getLoadedImage("binary-" + (int) Helpers.randomRange(1, 10));
 
       g2d.setComposite(AlphaComposite.SrcOver.derive(1.0f - (float) this.textOpacity));
-      g2d.drawImage(randomBinaryImage, 0, 0, this.size.width, this.size.height, null);
+      g2d.drawImage(randomBinaryImage, 0, -10, this.size.width, this.size.height + 10, null);
     }
   }
 }

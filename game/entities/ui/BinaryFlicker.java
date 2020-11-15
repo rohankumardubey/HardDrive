@@ -18,7 +18,7 @@ public class BinaryFlicker extends Entity {
 
   @Override
   protected void onCreate() {
-    this.setTimer(0, 1, true);
+    this.setTimer(0, 3, true);
   }
 
   @Override

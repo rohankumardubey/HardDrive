@@ -3,6 +3,7 @@ package game.scenes;
 import game.engine.*;
 import game.entities.*;
 import game.entities.walls.*;
+import game.resources.*;
 import java.awt.*;
 import java.awt.image.*;
 
@@ -17,37 +18,68 @@ public abstract class GameScene extends Scene {
 
   private static final int VIEW_THRESHHOLD     = 200;
   private static final int NUM_ZOOM_OUT_FRAMES = 30;
+  private static final int NUM_FADE_OUT_FRAMES = 30;
 
+  /// Level number this game represents
+  private final int level;
+
+  /// Zoom in and zoom out effects
   private int zoomFrameNumber;
+  private int fadeFrameNumber;
+  private Point2d playerStartPosition;
 
   /**
    * Construct a new game scene
    *
    * @param background  Background type for the scene
    */
-  public GameScene(String background) {
+  public GameScene(String background, int level) {
     super(640, 480);
     this.mainView.size.setSize(VIEW_SIZE);
 
     this.background.addFrames(GameAssets.getLoadedImage(background));
     this.background.type = BackgroundType.Tiled;
 
-    this.zoomFrameNumber = 0;
+    this.level               = level;
+    this.zoomFrameNumber     = 0;
+    this.fadeFrameNumber     = 0;
+    this.playerStartPosition = new Point2d();
   }
 
   /**
-   * Create method
+   * Get a new instance of the level scene
+   *
+   * @param   level   Level to get the scene for
+   * @return  Level scene
    */
-  @Override
-  protected void onCreate() {
-    this.defineLevelTiles(this.getLevelLayout());
-    this.setTimer(0, 1, true);
+  public static GameScene getLevelScene(int level) {
+    if (level == 1) { return new Level1(); }
+    if (level == 2) { return new Level2(); }
+    return null;
   }
 
   /**
    * Must override this method to create the level when the view is created
    */
   protected abstract String[] getLevelLayout();
+
+  /**
+   * Create method
+   */
+  @Override
+  protected void onCreate() {
+    resetLives();
+    defineLevelTiles(this.getLevelLayout());
+    this.setTimer(-1, 1, true);
+  }
+
+  /**
+   * Reset the number of player lives
+   */
+  private void resetLives() {
+    Lives lives = this.getGame().getResouce(Lives.class);
+    lives.resetLives();
+  }
 
   /**
    * Define the level tiles one-by-one
@@ -85,19 +117,25 @@ public abstract class GameScene extends Scene {
    * @param   position  Position of the entity in the room
    */
   private final Entity createEntity(char type, Point2d position) {
+    if (type == 's') {
+      this.playerStartPosition = position;
+      return new Player(position);
+    }
+
     if (type == ' ') { return null; }
-    if (type == 's') { return new Player(position); }
     if (type == 't') { return new Tree(position); }
     if (type == 'T') { return new SnowTree(position); }
     if (type == '!') { return new Cactus(position); }
     if (type == '*') { return new Rock(position); }
     if (type == '^') { return new Pyramid(position); }
+    if (type == '#') { return new DataFile(position); }
     return null;
   }
 
   @Override
   protected void onTimer(int timerIndex) {
-    if (timerIndex == 0) { zoomOut(); }
+    if (timerIndex == -1) { zoomOut(); }
+    if (timerIndex == -2) { fadeOut(); }
   }
 
   /**
@@ -105,7 +143,26 @@ public abstract class GameScene extends Scene {
    */
   private void zoomOut() {
     this.zoomFrameNumber += 1;
-    if (this.zoomFrameNumber == NUM_ZOOM_OUT_FRAMES) { this.clearTimer(0); }
+    if (this.zoomFrameNumber == NUM_ZOOM_OUT_FRAMES) { this.clearTimer(-1); }
+  }
+
+  /**
+   * Fade out effect when the level is completed
+   */
+  private void fadeOut() {
+    this.fadeFrameNumber += 1;
+    if (this.fadeFrameNumber == NUM_FADE_OUT_FRAMES) {
+      this.clearTimer(-2);
+
+      Lives lives = this.getGame().getResouce(Lives.class);
+      if (lives.playerHasLivesLeft()) {
+        // Go to next scene
+        this.getGame().setScene(new LevelCompleteScene(GameScene.getLevelScene(this.level + 1)));
+      } else {
+        // Restart this scene
+        this.getGame().setScene(new GameOverScene(GameScene.getLevelScene(this.level)));
+      }
+    }
   }
 
   @Override
@@ -113,15 +170,11 @@ public abstract class GameScene extends Scene {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
     if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
-    if (game.hasKeyBeenPressed(Key.R)) { game.setScene(this.restartLevel()); }
+    if (game.hasKeyBeenPressed(Key.R)) { game.setScene(GameScene.getLevelScene(this.level)); }
 
     moveViewToPlayer();
+    testIfAllDataFilesDestroyed();
   }
-
-  /**
-   * Returns a new instance of the current level
-   */
-  protected abstract GameScene restartLevel();
 
   /**
    * Move the view around to scroll with the player
@@ -152,9 +205,70 @@ public abstract class GameScene extends Scene {
     }
   }
 
+  /**
+   * Test if the level has been completed by destroying all data files
+   */
+  private void testIfAllDataFilesDestroyed() {
+    if ((this.fadeFrameNumber == 0) && (this.zoomFrameNumber == NUM_ZOOM_OUT_FRAMES) &&
+        (this.findEntities(DataFile.class).size() == 0)) {
+
+      // Destroy all entities
+      for (Entity e: this.getAllEntities()) { e.destroy(); }
+
+      this.fadeFrameNumber = 1;
+      this.setTimer(-2, 1, true);
+    }
+  }
+
+  /**
+   * Respawn the player in the room, or end the room
+   */
+  public void respawnPlayer() {
+    Lives lives = this.getGame().getResouce(Lives.class);
+    if (!lives.playerHasLivesLeft()) {
+      // Destroy all entities
+      for (Entity e: this.getAllEntities()) { e.destroy(); }
+
+      // Show fade-out animation
+      this.fadeFrameNumber = 1;
+      this.setTimer(-2, 1, true);
+    } else {
+      this.createEntity(new Player(this.playerStartPosition));
+    }
+  }
+
   @Override
   protected void onDraw(Graphics2D g2d) {
+    drawHud(g2d);
     drawZoomOut(g2d);
+    drawFadeOut(g2d);
+  }
+
+  /**
+   * Draw the game heads-up display
+   */
+  private void drawHud(Graphics2D g2d) {
+    g2d.translate(this.mainView.position.x, this.mainView.position.y);
+
+    // Draw the number of lives left
+    Lives lives    = this.getGame().getResouce(Lives.class);
+    Rectangle rect = new Rectangle(40, 12, 150, 32);
+    g2d.setColor(Color.BLACK);
+    g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
+    g2d.setColor(Color.WHITE);
+    g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
+    Helpers.drawCenteredString(g2d, "Lives: " + lives.getLives(), rect,
+                               new Font("Times", Font.PLAIN, 28));
+
+    // Draw the data files left
+    int dataFilesLeft                 = this.findEntities(DataFile.class).size();
+    int width                         = this.mainView.size.width;
+    final BufferedImage dataFileImage = GameAssets.getLoadedImage("data-file");
+    for (int i = 0; i < dataFilesLeft; i += 1) {
+      g2d.drawImage(dataFileImage, width - (12 + 40 * (i + 1)), 12, 32, 32, null);
+    }
+
+    g2d.translate(-this.mainView.position.x, -this.mainView.position.y);
   }
 
   /**
@@ -172,7 +286,7 @@ public abstract class GameScene extends Scene {
     Graphics2D imageG2d = (Graphics2D) image.getGraphics();
     imageG2d.setColor(Color.BLACK);
     imageG2d.fillRect(0, 0, image.getWidth(), image.getHeight());
-    imageG2d.drawImage(randomBinaryImage, 0, 0, image.getWidth(), image.getHeight(), null);
+    imageG2d.drawImage(randomBinaryImage, 0, -10, image.getWidth(), image.getHeight() + 10, null);
 
     // "Chisel out" the image from the center
     int centerX      = image.getWidth() / 2;
@@ -205,6 +319,32 @@ public abstract class GameScene extends Scene {
     // Now draw the image over the view
     g2d.translate(this.mainView.position.x, this.mainView.position.y);
     g2d.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+    g2d.translate(-this.mainView.position.x, -this.mainView.position.y);
+  }
+
+  /**
+   * Draw the cool binary fade out
+   */
+  private void drawFadeOut(Graphics2D g2d) {
+    if (this.fadeFrameNumber == 0) { return; }
+
+    BufferedImage randomBinaryImage =
+        GameAssets.getLoadedImage("binary-" + (int) Helpers.randomRange(1, 10));
+
+    g2d.translate(this.mainView.position.x, this.mainView.position.y);
+    g2d.setComposite(
+        AlphaComposite.SrcOver.derive(((float) this.fadeFrameNumber) / NUM_FADE_OUT_FRAMES));
+
+    g2d.setColor(Color.BLACK);
+    g2d.fillRect(0, 0, this.mainView.size.width, this.mainView.size.height);
+
+    Lives lives = this.getGame().getResouce(Lives.class);
+    if (lives.playerHasLivesLeft()) {
+      g2d.drawImage(randomBinaryImage, 0, -10, this.mainView.size.width,
+                    this.mainView.size.height + 10, null);
+    }
+
+    g2d.setComposite(AlphaComposite.SrcOver.derive(1.0f));
     g2d.translate(-this.mainView.position.x, -this.mainView.position.y);
   }
 }

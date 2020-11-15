@@ -1,12 +1,13 @@
 package game.scenes;
 
-/**
- * Level 1: Grass
- */
-public class Level1 extends GameScene {
+import game.engine.*;
 
-  public Level1() {
-    super("circuit-bg", 1);
+/**
+ * Level 2: Desert
+ */
+public class Level2 extends GameScene {
+  public Level2() {
+    super("sand-bg", 2);
   }
 
   @Override
