@@ -1,6 +1,7 @@
-package game.entities;
+package game.entities.ui;
 
 import game.engine.*;
+import game.scenes.*;
 import java.awt.*;
 
 /**
@@ -38,7 +39,9 @@ public class StartButton extends Entity {
   @Override
   protected void onStep() {
     Game game = this.getScene().getGame();
-    // if (game.isLeftMousePressed() && this.isMouseInside()) { game.setScene(new MainScene()); }
+    if (game.isLeftMousePressed() && this.isMouseInside()) {
+      game.setScene(new LoadingScene(new Level1()));
+    }
   }
 
   @Override

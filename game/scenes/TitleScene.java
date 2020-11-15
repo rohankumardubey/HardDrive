@@ -1,7 +1,7 @@
 package game.scenes;
 
 import game.engine.*;
-import game.entities.StartButton;
+import game.entities.ui.*;
 import java.awt.*;
 
 /**
@@ -12,12 +12,13 @@ public class TitleScene extends Scene {
   public TitleScene() {
     super(640, 480);
 
-    this.background.addFrames(GameAssets.getLoadedImage("space-bg"));
-    this.background.type = BackgroundType.Stretched;
+    this.background.addFrames(GameAssets.getLoadedImage("circuit-bg"));
+    this.background.type = BackgroundType.Image;
   }
 
   @Override
   protected void onCreate() {
+    this.createEntity(new BinaryFlicker());
     this.createEntity(new StartButton());
   }
 
@@ -33,13 +34,18 @@ public class TitleScene extends Scene {
 
   @Override
   protected void onDraw(Graphics2D g2d) {
+
     g2d.setColor(Color.WHITE);
 
-    Helpers.drawCenteredString(g2d, "Asteroid Navigator", new Rectangle(0, 0, this.size.width, 100),
-                               new Font("Times", Font.BOLD, 48));
+    Helpers.drawCenteredString(g2d, "Hard Drive", new Rectangle(0, 0, this.size.width, 100),
+                               new Font("Times", Font.BOLD, 96));
 
-    Helpers.drawCenteredString(g2d, "Created by Bryan McClain",
+    Helpers.drawCenteredString(g2d, "By Bryan McClain and Caleb Wilson",
                                new Rectangle(0, 50, this.size.width, 150),
-                               new Font("Times", Font.BOLD, 24));
+                               new Font("Times", Font.BOLD, 18));
+
+    Dimension size = this.size;
+    g2d.drawImage(GameAssets.getLoadedImage("data-file-1"), (size.width / 2) - 64,
+                  (size.height / 2) - 64, 128, 128, null);
   }
 }

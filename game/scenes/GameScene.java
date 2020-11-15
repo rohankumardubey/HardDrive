@@ -35,6 +35,9 @@ public abstract class GameScene extends Scene {
     this.zoomFrameNumber = 0;
   }
 
+  /**
+   * Create method
+   */
   @Override
   protected void onCreate() {
     this.defineLevelTiles(this.getLevelLayout());
@@ -109,6 +112,7 @@ public abstract class GameScene extends Scene {
   protected void onStep() {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
+    if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
     if (game.hasKeyBeenPressed(Key.R)) { game.setScene(this.restartLevel()); }
 
     moveViewToPlayer();
@@ -183,6 +187,20 @@ public abstract class GameScene extends Scene {
     imageG2d.setComposite(AlphaComposite.Clear);
     imageG2d.fillRect(leftX, topY, chiselWidth, chiselHeight);
     imageG2d.setComposite(AlphaComposite.SrcOver);
+
+    // Draw the flashing text
+    if (zoomFrameNumber % 10 > 2) {
+      Rectangle rect =
+          new Rectangle(0, 3 * image.getHeight() / 8, image.getWidth(), image.getHeight() / 4);
+
+      imageG2d.setColor(Color.BLACK);
+      imageG2d.fillRect(rect.x, rect.y, rect.width, rect.height);
+      imageG2d.setColor(Color.WHITE);
+      imageG2d.drawRect(rect.x, rect.y, rect.width - 1, rect.height);
+
+      Helpers.drawCenteredString(imageG2d, "Destroy All Data Files...", rect,
+                                 new Font("Times", Font.BOLD, 36));
+    }
 
     // Now draw the image over the view
     g2d.translate(this.mainView.position.x, this.mainView.position.y);

@@ -7,6 +7,10 @@ import game.engine.*;
  */
 public abstract class Wall extends Entity {
 
+  public Wall() {
+    this.drawingPriority = 100;
+  }
+
   @Override
   protected void onCreate() {}
 

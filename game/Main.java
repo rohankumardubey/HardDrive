@@ -20,7 +20,7 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new Level1());
+    Game g = new Game(new TitleScene());
     g.setTitle("Car Game");
     g.run();
   }
@@ -137,8 +137,8 @@ public class Main {
     BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
     FontMetrics metrics = image.getGraphics().getFontMetrics(GRAPHICS_FONT);
-    int numCharWidth    = (int) Math.ceil((double) image.getWidth() / metrics.stringWidth("0"));
-    int numCharHeight   = (int) Math.ceil((double) image.getHeight() / metrics.getHeight());
+    int numCharWidth    = (int) Math.ceil(((double) image.getWidth()) / metrics.stringWidth("0"));
+    int numCharHeight   = (int) Math.ceil(((double) image.getHeight()) / metrics.getHeight()) + 1;
     int charHeight      = metrics.getHeight();
 
     Graphics2D g2d = (Graphics2D) image.getGraphics();

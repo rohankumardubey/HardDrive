@@ -31,7 +31,6 @@ CLASSES=\
 	game/scenes/GameScene.class \
 	game/scenes/Level1.class \
 	\
-	game/entities/StartButton.class \
 	game/entities/Player.class \
 	game/entities/Bullet.class \
 	game/entities/BinaryExplosion.class \
@@ -42,6 +41,9 @@ CLASSES=\
 	game/entities/Swooper.class \
 	game/entities/Booger.class \
 	game/entities/BoogerExplosion.class \
+	\
+	game/entities/ui/BinaryFlicker.class \
+	game/entities/ui/StartButton.class \
 	\
 	game/entities/walls/Wall.class \
 	game/entities/walls/Cactus.class \
