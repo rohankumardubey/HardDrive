@@ -10,13 +10,16 @@ import java.util.Map;
 /**
  * Represents an object in the scene
  */
-public abstract class Entity {
+public abstract class Entity implements Comparable<Entity> {
 
   // Position in the scene
   public Point2d position;
 
   // Graphic to draw
   public Sprite sprite;
+
+  // Drawing priotiry
+  public int drawingPriority;
 
   // Collision mask
   public Mask mask;
@@ -38,13 +41,14 @@ public abstract class Entity {
    * Construct a new entity
    */
   public Entity() {
-    this.position    = new Point2d();
-    this.sprite      = new Sprite();
-    this.mask        = new Mask();
-    this.isVisible   = true;
-    this.isDestroyed = false;
-    this.timers      = new HashMap<>();
-    this.scene       = null;
+    this.position        = new Point2d();
+    this.sprite          = new Sprite();
+    this.drawingPriority = 0;
+    this.mask            = new Mask();
+    this.isVisible       = true;
+    this.isDestroyed     = false;
+    this.timers          = new HashMap<>();
+    this.scene           = null;
   }
 
   /**
@@ -182,5 +186,15 @@ public abstract class Entity {
    */
   public final boolean isDestroyed() {
     return this.isDestroyed;
+  }
+
+  /**
+   * Compare the drawing priorities of two entities
+   *
+   * @param other   Other entity being drawn
+   * @return        Entity object priority
+   */
+  public int compareTo(Entity other) {
+    return Integer.compare(this.drawingPriority, other.drawingPriority);
   }
 }

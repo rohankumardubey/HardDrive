@@ -7,6 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,9 +35,10 @@ public abstract class Scene {
 
   /** List of all entities in the scene */
   private Map<Class<? extends Entity>, Set<Entity>> allEntities;
+  private List<Entity> entityDrawingPriority;
 
   /** Entities to create after the next tick */
-  private List<Entity> toCreate;
+  private Set<Entity> toCreate;
 
   /** Game object for this scene */
   private WeakReference<Game> game;
@@ -47,14 +49,15 @@ public abstract class Scene {
    * @param height
    */
   public Scene(int width, int height) {
-    this.size         = new Dimension(width, height);
-    this.mainView     = new View(new Point2d(0, 0), new Dimension(width, height));
-    this.background   = new Background();
-    this.outsideColor = new Color(0, 0, 0);
-    this.timers       = new HashMap<>();
-    this.allEntities  = new HashMap<>();
-    this.toCreate     = new ArrayList<>();
-    this.game         = null;
+    this.size                  = new Dimension(width, height);
+    this.mainView              = new View(new Point2d(0, 0), new Dimension(width, height));
+    this.background            = new Background();
+    this.outsideColor          = new Color(0, 0, 0);
+    this.timers                = new HashMap<>();
+    this.allEntities           = new HashMap<>();
+    this.entityDrawingPriority = new ArrayList<>();
+    this.toCreate              = new HashSet<>();
+    this.game                  = null;
   }
 
   /**
@@ -88,7 +91,7 @@ public abstract class Scene {
    * @param e   Entity to create
    */
   public final void createEntity(Entity e) {
-    this.toCreate.add(e);
+    if (e != null) { this.toCreate.add(e); }
   }
 
   /**
@@ -177,15 +180,21 @@ public abstract class Scene {
    * Internal method to create new entities in the game
    */
   final void createEntities() {
+    if (this.toCreate.size() == 0) { return; }
+
     // Add every entity to the map
     for (Entity e: this.toCreate) {
       this.addEntityToMap(e);
       e.setScene(this);
     }
 
+    // Update the drawing priority list
+    this.entityDrawingPriority = new ArrayList<Entity>(this.getAllEntities());
+    Collections.sort(this.entityDrawingPriority);
+
     // Clear the list of created entities
-    List<Entity> created = this.toCreate;
-    this.toCreate        = new ArrayList<>();
+    Set<Entity> created = this.toCreate;
+    this.toCreate       = new HashSet<>();
 
     // Call the "onCreate" handler for each new entity
     for (Entity e: created) { e.onCreate(); }
@@ -293,7 +302,7 @@ public abstract class Scene {
     this.background.draw(imgG2d, this.size);
     imgG2d.setTransform(oldTransform);
 
-    for (Entity e: this.getAllEntities()) {
+    for (Entity e: this.entityDrawingPriority) {
       e.draw(imgG2d);
       imgG2d.setTransform(oldTransform);
     }
