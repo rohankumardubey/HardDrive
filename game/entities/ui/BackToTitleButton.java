@@ -5,22 +5,22 @@ import game.scenes.*;
 import java.awt.*;
 
 /**
- * Button to click to start the game
+ * Go back to the title screen
  */
-public class StartButton extends Button {
+public class BackToTitleButton extends Button {
 
   private static final int BUTTON_WIDTH  = 300;
   private static final int BUTTON_HEIGHT = 50;
 
-  public StartButton() {
-    super("Start", new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-    this.setBackgroundColor(Color.GREEN);
+  public BackToTitleButton(String text) {
+    super(text, new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+    this.setBackgroundColor(Color.ORANGE);
   }
 
   @Override
   protected void onCreate() {
     // Move to center of bottom of the screen
-    this.position.setLocation(this.getScene().size.width / 2, this.getScene().size.height - 100);
+    this.position.setLocation(this.getScene().size.width / 2, this.getScene().size.height - 70);
   }
 
   @Override
@@ -31,6 +31,6 @@ public class StartButton extends Button {
 
   @Override
   protected void onClick() {
-    this.getScene().getGame().setScene(new LevelSelectScene());
+    this.getScene().getGame().setScene(new TitleScene());
   }
 }

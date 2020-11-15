@@ -1,6 +1,7 @@
 package game;
 
 import game.engine.*;
+import game.resources.UnlockedLevels;
 import game.scenes.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -21,7 +22,8 @@ public class Main {
     }
 
     Game g = new Game(new TitleScene());
-    g.setTitle("Car Game");
+    g.setTitle("Hard Drive");
+    g.setResource(new UnlockedLevels());
     g.run();
   }
 

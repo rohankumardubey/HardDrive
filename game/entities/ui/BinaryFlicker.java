@@ -13,7 +13,7 @@ public class BinaryFlicker extends Entity {
       this.sprite.addFrames(GameAssets.getLoadedImage("binary-" + i));
     }
 
-    this.drawingPriority = -999;
+    this.drawingPriority = Integer.MIN_VALUE;
   }
 
   @Override

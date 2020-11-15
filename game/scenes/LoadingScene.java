@@ -87,6 +87,7 @@ public class LoadingScene extends Scene {
   protected void onStep() {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
+    if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
   }
 
   /**

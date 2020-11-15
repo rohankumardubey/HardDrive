@@ -27,6 +27,7 @@ CLASSES=\
 	game/engine/Vector2d.class \
 	\
 	game/scenes/TitleScene.class \
+	game/scenes/LevelSelectScene.class \
 	game/scenes/LoadingScene.class \
 	game/scenes/GameScene.class \
 	game/scenes/Level1.class \
@@ -43,7 +44,10 @@ CLASSES=\
 	game/entities/BoogerExplosion.class \
 	\
 	game/entities/ui/BinaryFlicker.class \
+	game/entities/ui/Button.class \
 	game/entities/ui/StartButton.class \
+	game/entities/ui/LevelSelectButton.class \
+	game/entities/ui/BackToTitleButton.class \
 	\
 	game/entities/walls/Wall.class \
 	game/entities/walls/Cactus.class \
@@ -52,7 +56,8 @@ CLASSES=\
 	game/entities/walls/SnowTree.class \
 	game/entities/walls/Tree.class \
 	\
-	game/resources/Score.class
+	game/resources/Score.class \
+	game/resources/UnlockedLevels.class
 
 
 SOURCES=$(CLASSES:%.class=%.java)
