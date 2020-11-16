@@ -46,6 +46,7 @@ public class Main {
   private static void loadSprites() throws Exception {
     GameAssets.loadImage("rocket", "/assets/sprites/rocket.png");
     GameAssets.loadImage("rocket-flame", "/assets/sprites/rocket-flame.png");
+    GameAssets.loadImage("car", "/assets/sprites/car.png");
     GameAssets.loadImage("bullet", "/assets/sprites/bullet.png");
 
     // Antiviruses

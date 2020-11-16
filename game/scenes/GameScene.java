@@ -2,6 +2,7 @@ package game.scenes;
 
 import game.engine.*;
 import game.entities.*;
+import game.entities.component.*;
 import game.entities.walls.*;
 import game.resources.*;
 import java.awt.*;
@@ -59,6 +60,7 @@ public abstract class GameScene extends Scene {
     if (level == 4) { return new Level4(); }
     if (level == 5) { return new Level5(); }
     if (level == 6) { return new Level6(); }
+    if (level == 7) { return null; /* Special Case */ }
     return null;
   }
 
@@ -66,6 +68,13 @@ public abstract class GameScene extends Scene {
    * Must override this method to create the level when the view is created
    */
   protected abstract String[] getLevelLayout();
+
+  /**
+   * Get the friction constant associated with this room
+   */
+  public double getFriction() {
+    return 0.95;
+  }
 
   /**
    * Create method
@@ -128,11 +137,17 @@ public abstract class GameScene extends Scene {
 
     if (type == ' ') { return null; }
     if (type == 't') { return new Tree(position); }
-    if (type == 'T') { return new SnowTree(position); }
+    if (type == 'w') { return new SnowTree(position); }
     if (type == '!') { return new Cactus(position); }
     if (type == '*') { return new Rock(position); }
     if (type == '^') { return new Pyramid(position); }
     if (type == '#') { return new DataFile(position); }
+    if (type == 'r') { return new Resistor(position, false); }
+    if (type == 'R') { return new Resistor(position, true); }
+    if (type == 'T') { return new Transistor(position); }
+    if (type == '0') { return new Capacitor(position); }
+    if (type == 'c') { return new Chip(position, false); }
+    if (type == 'C') { return new Chip(position, true); }
     return null;
   }
 

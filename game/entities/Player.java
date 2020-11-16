@@ -1,7 +1,9 @@
 package game.entities;
 
 import game.engine.*;
+import game.entities.component.*;
 import game.entities.walls.*;
+import game.scenes.GameScene;
 import java.util.ArrayList;
 
 /**
@@ -10,22 +12,25 @@ import java.util.ArrayList;
 public class Player extends HealthEntity {
 
   // Constants
-  private final static int SHIP_PPF    = 15;
-  private final static int MAX_BULLETS = 3;
+  private static final double SPIN_SPEED   = (2 * Math.PI) / 40;
+  private static final double ACCELERATION = 3.0;
+  private static final double MAX_SPEED    = 30;
+  private static final int MAX_DAMAGE      = 20;
+
+  private Vector2d velocity;
 
   public Player(Point2d position) {
     super(15);
 
-    // Initialize player size
-    this.sprite.addFrames(GameAssets.getLoadedImage("rocket"));
-    this.sprite.size.setSize(27, 61);
-    this.sprite.setAngleDegrees(90);
+    // Initialize player size and sprite
+    this.sprite.addFrames(GameAssets.getLoadedImage("car"));
+    this.sprite.size.setSize(64, 32);
+    this.sprite.setAngleDegrees(270);
+    this.mask = sprite.getMask();
 
-    this.mask                    = sprite.getMask();
-    this.mask.size.width         = 44;
-    this.mask.relativePosition.x = -13;
-
+    // Position and velocity
     this.position.setLocation(position);
+    this.velocity = new Vector2d();
   }
 
   @Override
@@ -43,55 +48,108 @@ public class Player extends HealthEntity {
 
   @Override
   protected void onStep() {
-    this.movePlayer();
-    this.clampBoundaries();
+    super.onStep();
 
-    this.createBullet();
+    readInput();
+    movePlayer();
+    applyDrag();
+
+    testForWallCollision();
+    testForComponentCollisions();
+    testForBoundaryCollision();
   }
 
+  /**
+   * Read keyboard input and change the player velocity & direction
+   */
+  private void readInput() {
+    Game game = this.getScene().getGame();
+    if (game.isKeyPressed(Key.UP)) {
+      this.velocity.add(Vector2d.fromPolarCoordinates(ACCELERATION, this.sprite.getAngleRadians()));
+      this.velocity.setDistance(Math.min(MAX_SPEED, this.velocity.polarDistance()));
+    }
+    if (game.isKeyPressed(Key.DOWN)) {
+      this.velocity.sub(Vector2d.fromPolarCoordinates(ACCELERATION, this.sprite.getAngleRadians()));
+      this.velocity.setDistance(Math.min(MAX_SPEED, this.velocity.polarDistance()));
+    }
+    if (game.isKeyPressed(Key.LEFT)) { this.changeAngleByRadians(-SPIN_SPEED); }
+    if (game.isKeyPressed(Key.RIGHT)) { this.changeAngleByRadians(SPIN_SPEED); }
+  }
+
+  /**
+   * Rotate both the player and sprite by a given number of radians.
+   *
+   * Also updates the sprite mask
+   */
+  private void changeAngleByRadians(double radians) {
+    this.sprite.addAngleRadians(radians);
+    this.velocity.rotateBy(radians);
+    this.mask = sprite.getMask();
+  }
+
+  /**
+   * Move the player in the room using the velocity vector
+   */
   private void movePlayer() {
-    Game game            = this.getScene().getGame();
-    Point2d tryMovementX = new Point2d();
-    Point2d tryMovementY = new Point2d();
-
-    if (game.isKeyPressed(Key.UP)) { tryMovementY.y -= SHIP_PPF; }
-    if (game.isKeyPressed(Key.DOWN)) { tryMovementY.y += SHIP_PPF; }
-    if (game.isKeyPressed(Key.LEFT)) { tryMovementX.x -= SHIP_PPF; }
-    if (game.isKeyPressed(Key.RIGHT)) { tryMovementX.x += SHIP_PPF; }
-    if (game.isKeyPressed(Key.D)) { this.destroy(); }
-
-    this.position.add(tryMovementX);
-    if (this.collidingWithWall()) { this.position.sub(tryMovementX); }
-
-    this.position.add(tryMovementY);
-    if (this.collidingWithWall()) { this.position.sub(tryMovementY); }
+    this.position.add(this.velocity);
   }
 
-  private void clampBoundaries() {
-    Scene scene = this.getScene();
-
-    this.position.x = Math.min(Math.max(this.position.x, 0), scene.size.width);
-    this.position.y = Math.min(Math.max(this.position.y, 0), scene.size.height);
+  /**
+   * Apply friction (drag) to the player
+   */
+  private void applyDrag() {
+    GameScene scene = (GameScene) this.getScene();
+    this.velocity.scale(scene.getFriction());
   }
 
-  private void createBullet() {
-    Scene scene = this.getScene();
-    Game game   = scene.getGame();
-
-    if (game.hasKeyBeenPressed(Key.SPACE)) {
-      ArrayList<Bullet> bullets = scene.findEntities(Bullet.class);
-      if (bullets.size() < MAX_BULLETS) {
-        GameAssets.getLoadedSound("shoot").playSound();
-        scene.createEntity(new Bullet(this.position));
-      }
-    }
-  }
-
-  private boolean collidingWithWall() {
+  private void testForWallCollision() {
     for (Wall wall: this.getScene().findEntities(Wall.class)) {
-      if (this.isCollidingWith(wall)) { return true; }
+      if (this.isCollidingWith(wall)) { collideWithWall(); }
     }
+  }
 
-    return false;
+  private void testForComponentCollisions() {
+    for (Component component: this.getScene().findEntities(Component.class)) {
+      if (this.isCollidingWith(component)) { collideWithComponent(component); }
+    }
+  }
+
+  private void testForBoundaryCollision() {
+    Scene scene = this.getScene();
+    if (this.position.x < 0 || this.position.x > scene.size.width || this.position.y < 0 ||
+        this.position.y > scene.size.height) {
+      this.collideWithWall();
+    }
+  }
+
+  /**
+   * Action that occurs when the player collides with a wall
+   */
+  private void collideWithWall() {
+    GameAssets.getLoadedSound("asteroid-hit").playSound();
+    this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 5));
+    this.position.sub(this.velocity);
+    this.velocity.scale(-0.5);
+  }
+
+  /**
+   * Action that occurs when the player collides with a component
+   */
+  private void collideWithComponent(Component component) {
+    int damage = (int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, MAX_DAMAGE);
+
+    int currentHealth = component.getHealth();
+    component.hit(damage);
+    int healthLost = currentHealth - component.getHealth();
+
+    this.velocity.scale(1 - Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 0.1));
+    if (component.isDestroyed()) {
+      GameAssets.getLoadedSound("asteroid-explosion").playSound();
+    } else {
+      GameAssets.getLoadedSound("asteroid-hit").playSound();
+      this.hit((int) Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 4));
+      this.position.sub(this.velocity);
+      this.velocity.scale(-0.5);
+    }
   }
 }

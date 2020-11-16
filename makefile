@@ -45,7 +45,6 @@ CLASSES=\
 	game/entities/BinaryExplosion.class \
 	game/entities/PlayerExplosion.class \
 	game/entities/HealthEntity.class \
-	game/entities/DataFile.class \
 	\
 	game/entities/antivirus/Ant.class \
 	game/entities/antivirus/AntSpawner.class \
@@ -67,6 +66,13 @@ CLASSES=\
 	game/entities/walls/Rock.class \
 	game/entities/walls/SnowTree.class \
 	game/entities/walls/Tree.class \
+	\
+	game/entities/component/Component.class \
+	game/entities/component/Resistor.class \
+	game/entities/component/Transistor.class \
+	game/entities/component/Capacitor.class \
+	game/entities/component/Chip.class \
+	game/entities/component/DataFile.class \
 	\
 	game/resources/Lives.class \
 	game/resources/UnlockedLevels.class

@@ -422,4 +422,35 @@ public class Point2d extends Point2D.Double {
   public final double polarAngle() {
     return Math.atan2(this.y, this.x);
   }
+
+  /**
+   * Set the angle of this point without changing the distance
+   *
+   * @param theta   New angle
+   */
+  public final void setAngle(double theta) {
+    double distance = this.polarDistance();
+    this.x          = distance * Math.cos(theta);
+    this.y          = distance * Math.sin(theta);
+  }
+
+  /**
+   * Set the distance of this point without changing the angle
+   *
+   * @param distance    New distance
+   */
+  public final void setDistance(double distance) {
+    double theta = this.polarAngle();
+    this.x       = distance * Math.cos(theta);
+    this.y       = distance * Math.sin(theta);
+  }
+
+  /**
+   * Rotate the point without changing the distance
+   *
+   * @param r   Amount to rotate by
+   */
+  public final void rotateBy(double r) {
+    this.setAngle(this.polarAngle() + r);
+  }
 }

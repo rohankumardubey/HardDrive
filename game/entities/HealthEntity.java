@@ -24,12 +24,21 @@ public abstract class HealthEntity extends Entity {
   }
 
   /**
+   * Get the current eneity health
+   * @return    Entity health
+   */
+  public int getHealth() {
+    return this.health;
+  }
+
+  /**
    * Cause damage to this health entity
    *
    * @param damage    Amount of damage to cause
    */
   public void hit(int damage) {
     this.health = Math.max(0, this.health - damage);
+    checkNoHealth();
   }
 
   /**
