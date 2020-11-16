@@ -15,7 +15,8 @@ public class Booger extends AntiVirus {
     this.position.set(start);
     this.sprite.addFrames(GameAssets.getLoadedImage("booger"));
     this.sprite.size.setSize(64, 64);
-    this.mask = this.sprite.getMask();
+    this.mask            = this.sprite.getMask();
+    this.drawingPriority = 150;
   }
 
   @Override

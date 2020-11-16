@@ -21,7 +21,7 @@ public class Main {
       return;
     }
 
-    Game g = new Game(new TitleScene());
+    Game g = new Game(new Level1());
     g.setTitle("Hard Drive");
     g.setResource(new UnlockedLevels());
     g.setResource(new Lives());

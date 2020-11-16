@@ -42,6 +42,9 @@ public class BinaryExplosion extends Entity {
   @Override
   protected void onStep() {
     this.shrinkExplosion();
+    this.sprite.nextFrame();
+
+    // When to destroy the explosion?
     if (currentWidth <= 1 || currentHeight <= 1) {
       this.sprite.size.setSize(1, 1);
       this.destroy();
@@ -55,6 +58,5 @@ public class BinaryExplosion extends Entity {
     this.currentWidth -= shrinkWidth;
     this.currentHeight -= shrinkHeight;
     this.sprite.size.setSize(currentWidth, currentHeight);
-    this.sprite.nextFrame();
   }
 }

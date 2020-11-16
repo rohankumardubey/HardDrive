@@ -53,6 +53,8 @@ CLASSES=\
 	game/entities/antivirus/Swooper.class \
 	game/entities/antivirus/Booger.class \
 	game/entities/antivirus/BoogerExplosion.class \
+	game/entities/antivirus/Amalgamate.class \
+	game/entities/antivirus/TinyVirus.class \
 	\
 	game/entities/ui/BinaryFlicker.class \
 	game/entities/ui/Button.class \

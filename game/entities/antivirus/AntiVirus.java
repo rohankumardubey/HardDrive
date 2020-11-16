@@ -34,6 +34,5 @@ public abstract class AntiVirus extends HealthEntity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    // TODO: Play Sound
   }
 }

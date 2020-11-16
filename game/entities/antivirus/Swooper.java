@@ -17,8 +17,9 @@ public class Swooper extends AntiVirus {
     super(SWOOPER_HEALTH);
 
     this.sprite.addFrames(GameAssets.getLoadedImage("swooper"));
-    this.mask     = sprite.getMask();
-    this.velocity = new Vector2d();
+    this.mask            = sprite.getMask();
+    this.velocity        = new Vector2d();
+    this.drawingPriority = 400;
   }
 
   @Override

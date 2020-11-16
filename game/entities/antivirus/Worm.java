@@ -32,6 +32,7 @@ public class Worm extends AntiVirus {
     this.sprite.size.setSize(128, 64);
     this.mask                    = sprite.getMask();
     this.sprite.mirrorHorizontal = true;
+    this.drawingPriority         = 300;
   }
 
   @Override

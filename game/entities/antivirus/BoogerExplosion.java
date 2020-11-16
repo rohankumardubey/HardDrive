@@ -25,6 +25,7 @@ public class BoogerExplosion extends Entity {
     }
 
     this.sprite.size.setSize(size);
+    this.drawingPriority = 140;
   }
 
   @Override
