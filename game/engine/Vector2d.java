@@ -137,4 +137,14 @@ public class Vector2d extends Point2d {
   public static final Vector2d add(Vector2d v1, Vector2d v2) {
     return new Vector2d (v1.x + v2.x, v1.y + v2.y);
   }	
+
+ /**
+  *   Scale by the given factor
+  *
+  *   @param scalar scaling factor
+  */
+  public final void scaleBy(double scalar) {
+    this.x *= scalar;
+    this.y *= scalar;
+  }
 }

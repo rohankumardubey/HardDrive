@@ -11,6 +11,13 @@ import java.awt.image.*;
  */
 public class Main {
   public static void main(String[] args) {
+
+	Vector2d v = new Vector2d (1, 2);
+	v.scaleBy (2);
+	System.out.println (v.x + ", " + v.y + "\n");
+}
+
+/*
     try {
       loadBackgrounds();
       loadSprites();
@@ -27,6 +34,7 @@ public class Main {
     g.setResource(new Lives());
     g.run();
   }
+*/
 
   /**
    * Load all background assets

@@ -21,11 +21,7 @@ public abstract class MassiveEntity extends Entity
 	//apply kinematics
 	protected void onStep()
 	{
-		if 
 		this.velocity += this.acceleration;
-
-		this.friction;
-
 		this.position += this.velocity;
 
 		this.ang_pos += this.ang_vel;
