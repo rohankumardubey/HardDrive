@@ -157,7 +157,8 @@ public abstract class GameScene extends Scene {
     if (type == '0') { return new Capacitor(position); }
     if (type == 'c') { return new Chip(position, false); }
     if (type == 'C') { return new Chip(position, true); }
-    if (type == 'A') { return new AntSpawner(position); }
+    if (type == 'a') { return new AntSpawner(position, false); }
+    if (type == 'A') { return new AntSpawner(position, true); }
     return null;
   }
 
@@ -256,6 +257,8 @@ public abstract class GameScene extends Scene {
 
     for (Entity e: this.findEntities(Wall.class)) { this.addEntityToWall(e); }
     for (Entity e: this.findEntities(game.entities.component.Component.class)) {
+      // Ant spawners don't count as walls (Special case)
+      if (e.getClass() == AntSpawner.class) { continue; }
       this.addEntityToWall(e);
     }
   }

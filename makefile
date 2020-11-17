@@ -41,13 +41,11 @@ CLASSES=\
 	game/scenes/YouWinScene.class \
 	\
 	game/entities/Player.class \
-	game/entities/Bullet.class \
 	game/entities/BinaryExplosion.class \
 	game/entities/PlayerExplosion.class \
 	game/entities/HealthEntity.class \
 	\
 	game/entities/antivirus/Ant.class \
-	game/entities/antivirus/AntSpawner.class \
 	game/entities/antivirus/AntiVirus.class \
 	game/entities/antivirus/Worm.class \
 	game/entities/antivirus/Swooper.class \
@@ -75,6 +73,7 @@ CLASSES=\
 	game/entities/component/Capacitor.class \
 	game/entities/component/Chip.class \
 	game/entities/component/DataFile.class \
+	game/entities/component/AntSpawner.class \
 	\
 	game/resources/Lives.class \
 	game/resources/UnlockedLevels.class

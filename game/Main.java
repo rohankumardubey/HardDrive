@@ -44,10 +44,8 @@ public class Main {
    * Load all sprite assets
    */
   private static void loadSprites() throws Exception {
-    GameAssets.loadImage("rocket", "/assets/sprites/rocket.png");
-    GameAssets.loadImage("rocket-flame", "/assets/sprites/rocket-flame.png");
+    // Player
     GameAssets.loadImage("car", "/assets/sprites/car.png");
-    GameAssets.loadImage("bullet", "/assets/sprites/bullet.png");
 
     // Antiviruses
     GameAssets.loadImage("worm", "/assets/sprites/worm.png");
@@ -121,10 +119,7 @@ public class Main {
     GameAssets.loadSound("hit", "/assets/sounds/hit.wav");
     GameAssets.loadSound("large-explosion", "/assets/sounds/large-explosion.wav");
     GameAssets.loadSound("small-explosion", "/assets/sounds/small-explosion.wav");
-    GameAssets.loadSound("win", "/assets/sounds/win.wav");
-
     GameAssets.loadSound("typing", "/assets/sounds/typing.wav");
-
     GameAssets.loadSound("corruption-bgm", "/assets/bgm/data-corruption.wav");
   }
 

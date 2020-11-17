@@ -1,8 +1,5 @@
 package game.scenes;
 
-import game.engine.*;
-import game.entities.antivirus.*;
-
 /**
  * Level 1: Grass
  */
