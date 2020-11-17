@@ -139,12 +139,21 @@ public class Vector2d extends Point2d {
   }	
 
  /**
-  *   Scale by the given factor
+  *   Scale by the given factor.
   *
   *   @param scalar scaling factor
   */
   public final void scaleBy(double scalar) {
     this.x *= scalar;
     this.y *= scalar;
+  }
+
+ /**
+  *   Scale to the given length; direction reverses on negative input.
+  *
+  *   @param length length to scale to
+  */
+  public final void scaleTo(double length) {
+    this.scaleBy (length / this.length());
   }
 }

@@ -12,29 +12,29 @@ import java.awt.image.*;
 public class Main {
   public static void main(String[] args) {
 
-	Vector2d v = new Vector2d (1, 2);
-	v.scaleBy (2);
-	System.out.println (v.x + ", " + v.y + "\n");
-}
-
-/*
-    try {
-      loadBackgrounds();
-      loadSprites();
-      loadSounds();
-    } catch (Exception ex) {
-      System.out.println("Failed to load game assets: " + ex);
-      ex.printStackTrace();
-      return;
-    }
-
-    Game g = new Game(new TitleScene());
-    g.setTitle("Hard Drive");
-    g.setResource(new UnlockedLevels());
-    g.setResource(new Lives());
-    g.run();
+    Vector2d v = new Vector2d(1, 2);
+    v.scaleTo(2);
+    System.out.println(v.x + ", " + v.y + "\n");
   }
-*/
+
+  /*
+      try {
+        loadBackgrounds();
+        loadSprites();
+        loadSounds();
+      } catch (Exception ex) {
+        System.out.println("Failed to load game assets: " + ex);
+        ex.printStackTrace();
+        return;
+      }
+
+      Game g = new Game(new TitleScene());
+      g.setTitle("Hard Drive");
+      g.setResource(new UnlockedLevels());
+      g.setResource(new Lives());
+      g.run();
+    }
+  */
 
   /**
    * Load all background assets
@@ -172,4 +172,5 @@ public class Main {
     }
     return str;
   }
+}
 }
