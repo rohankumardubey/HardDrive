@@ -70,14 +70,14 @@ public class Point2d extends Point2D.Double {
   }
 
   /**
-   * Sets the value of this point to the vector sum of points t1 and t2.
+   * Returns the sum of points t1 and t2.
    *
    * @param t1 the first point
    * @param t2 the second point
+	* @return   the sum of the two points
    */
-  public final void add(Point2d t1, Point2d t2) {
-    this.x = t1.x + t2.x;
-    this.y = t1.y + t2.y;
+  public static final Point2d add(Point2d t1, Point2d t2) {
+    return new Point2d (t1.x + t2.x, t1.y + t2.y);
   }
 
   /**

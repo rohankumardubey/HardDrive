@@ -117,26 +117,16 @@ public class Vector2d extends Point2d {
     return ((double) (Math.acos(vDot)));
   }
 
- /**
-  *   Adds the other vector to this vector.
-  *
-  *   @param v1 the other vector
-  */
-  public final void add(Vector2d v1) {
-    this.x += v1.x;
-	 this.y += v1.y;
-  }
-
   /**
-   *   Returns the sum of the two vectors.
+   * Returns the sum of vectors v1 and v2.
    *
-   *   @param v1 the first vector
-   *   @param v2 the second vector
-   *   @return   the sum of the vectors
+   * @param t1 the first point
+   * @param t2 the second point
+	* @return   the sum of the two points
    */
   public static final Vector2d add(Vector2d v1, Vector2d v2) {
     return new Vector2d (v1.x + v2.x, v1.y + v2.y);
-  }	
+  }
 
  /**
   *   Scale by the given factor.

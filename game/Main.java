@@ -11,10 +11,10 @@ import java.awt.image.*;
  */
 public class Main {
   public static void main(String[] args) {
-
     Vector2d v = new Vector2d(1, 2);
-    v.scaleTo(2);
-    System.out.println(v.x + ", " + v.y + "\n");
+    Vector2d w = new Vector2d(3, 4);
+    Vector2d x = Vector2d.add(v, w);
+    System.out.println(x.x + ", " + x.y + "\n");
   }
 
   /*
