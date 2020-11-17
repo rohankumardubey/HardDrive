@@ -57,6 +57,16 @@ public class Vector2d extends Point2d {
   }
 
   /**
+   * Rotates the vector by the given angle.
+   *
+   * @param theta the angle in radians
+   */
+  public final void rotate(Vector2d v1) {
+    this.x = (this.x * Math.cos(theta)) - (this.y * Math.sin(theta));
+	 this.y = (this.x * Math.sin(theta)) + (this.y * Math.cos(theta));
+  }
+
+  /**
    * Computes the dot product of the this vector and vector v1.
    *
    * @param v1 the other vector
