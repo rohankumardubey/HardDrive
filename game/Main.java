@@ -103,7 +103,7 @@ public class Main {
 
     // Big explosion
     for (int i = 1; i <= 13; i += 1) {
-      GameAssets.loadImage("asteroid-explosion-" + i,
+      GameAssets.loadImage("large-explosion-" + i,
                            "/assets/sprites/big-explosion/big-explosion-" + i + ".png");
     }
 
@@ -118,9 +118,9 @@ public class Main {
    */
   private static void loadSounds() throws Exception {
     GameAssets.loadSound("shoot", "/assets/sounds/shoot.wav");
-    GameAssets.loadSound("asteroid-hit", "/assets/sounds/asteroid-hit.wav");
-    GameAssets.loadSound("asteroid-explosion", "/assets/sounds/asteroid-explosion.wav");
-    GameAssets.loadSound("ship-explosion", "/assets/sounds/ship-explosion.wav");
+    GameAssets.loadSound("hit", "/assets/sounds/hit.wav");
+    GameAssets.loadSound("large-explosion", "/assets/sounds/large-explosion.wav");
+    GameAssets.loadSound("small-explosion", "/assets/sounds/small-explosion.wav");
     GameAssets.loadSound("win", "/assets/sounds/win.wav");
 
     GameAssets.loadSound("typing", "/assets/sounds/typing.wav");

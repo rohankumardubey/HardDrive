@@ -12,8 +12,8 @@ public class Amalgamate extends AntiVirus {
   private static final double AMALGAMATE_DRAG    = 0.90;
   private static final double RANDOM_ANGLE_RANGE = Math.PI / 4;
 
-  private static final int MIN_POPPING_TIME = 50;
-  private static final int MAX_POPPING_TIME = 200;
+  private static final int MIN_POPPING_TIME = 20;
+  private static final int MAX_POPPING_TIME = 50;
   private static final int MIN_TINY_VIRUS   = 10;
   private static final int MAX_TINY_VIRUS   = 30;
   private static final int INITIAL_SPEED    = 100;
@@ -22,7 +22,7 @@ public class Amalgamate extends AntiVirus {
   private boolean chasingPlayer;
   private boolean popping;
 
-  public Amalgamate(Point2d start) {
+  public Amalgamate() {
     super(1);
 
     this.sprite.addFrames(GameAssets.getLoadedImage("amalgamate"));
@@ -30,7 +30,6 @@ public class Amalgamate extends AntiVirus {
     this.sprite.size.setSize(128, 128);
     this.drawingPriority = 200;
 
-    this.position.set(start);
     this.mask = this.sprite.getMask();
 
     this.velocity      = new Vector2d();
@@ -40,12 +39,43 @@ public class Amalgamate extends AntiVirus {
 
   @Override
   protected void onCreate() {
+    while (this.isOutsideScene()) { this.randomCornerStartingPosition(); }
     pointTowardsPlayer();
+  }
+
+  /**
+   * Start the amalgamate in a random corner
+   */
+  private void randomCornerStartingPosition() {
+    View view = this.getScene().mainView;
+
+    // X coordinate
+    if (Math.random() > 0.5) {
+      this.position.x = view.getLeftBoundary() - this.sprite.size.width / 2;
+    } else {
+      this.position.x = view.getRightBoundary() + this.sprite.size.width / 2;
+    }
+
+    // Y coordinate
+    if (Math.random() > 0.5) {
+      this.position.y = view.getTopBoundary() - this.sprite.size.height / 2;
+    } else {
+      this.position.y = view.getBottomBoundary() + this.sprite.size.height / 2;
+    }
+  }
+
+  /**
+   * Test if the amalgamate spawned outside of the scene
+   */
+  private boolean isOutsideScene() {
+    Scene scene = this.getScene();
+    return this.position.x < 0 || this.position.x > scene.size.width || this.position.y < 0 ||
+        this.position.y > scene.size.height;
   }
 
   @Override
   protected void onDestroy() {
-    GameAssets.getLoadedSound("ship-explosion").playSound();
+    GameAssets.getLoadedSound("small-explosion").playSound();
     this.getScene().createEntity(
         new BoogerExplosion(this.position, this.sprite.getRotatedImageDimensions()));
 
@@ -148,6 +178,8 @@ public class Amalgamate extends AntiVirus {
     if (this.popping) { return; }
 
     Player player = this.getScene().findFirstEntity(Player.class);
+    if (player == null) { return; }
+
     if (this.isCollidingWith(player)) {
       this.popping = true;
       this.sprite.nextFrame();

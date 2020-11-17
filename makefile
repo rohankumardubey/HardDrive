@@ -92,7 +92,8 @@ ANONYMOUS_CLASSES=\
 	game/engine/GameCanvas.class\
 	game/engine/Background\$$1.class \
 	game/entities/antivirus/WormPhase.class \
-	game/entities/antivirus/Worm\$$1.class
+	game/entities/antivirus/Worm\$$1.class \
+	game/entities/antivirus/Node.class
 
 ASSETS_FOLDER=assets
 

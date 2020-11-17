@@ -19,4 +19,10 @@ public class DataFile extends Component {
     this.mask = sprite.getMask();
     this.position.set(position);
   }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    ((GameScene) this.getScene()).dataFileDestroyed();
+  }
 }

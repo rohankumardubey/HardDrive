@@ -1,6 +1,8 @@
 package game.entities.antivirus;
 
 import game.engine.*;
+import game.entities.BinaryExplosion;
+import game.entities.Player;
 import java.awt.*;
 
 /**
@@ -25,6 +27,7 @@ public class BoogerExplosion extends Entity {
     }
 
     this.sprite.size.setSize(size);
+    this.mask            = sprite.getMask();
     this.drawingPriority = 140;
   }
 
@@ -51,5 +54,24 @@ public class BoogerExplosion extends Entity {
   }
 
   @Override
-  protected void onStep() {}
+  protected void onStep() {
+    testPlayerCollision();
+  }
+
+  private void testPlayerCollision() {
+    Player player = this.getScene().findFirstEntity(Player.class);
+    if (player == null) { return; }
+
+    if (this.isCollidingWith(player)) {
+      Sound hit = GameAssets.getLoadedSound("hit");
+      if (!hit.isPlaying()) { hit.playSound(); }
+
+      player.hit((int) Helpers.randomRange(2, 5));
+
+      this.getScene().createEntity(
+          new BinaryExplosion(this.position, this.sprite.getRotatedImageDimensions()));
+
+      this.destroy();
+    }
+  }
 }

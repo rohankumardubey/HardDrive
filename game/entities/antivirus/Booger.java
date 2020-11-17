@@ -25,8 +25,15 @@ public class Booger extends AntiVirus {
   }
 
   @Override
-  protected void onTimer(int timerIndex) {
+  protected void onDestroy() {
+    Sound explode = GameAssets.getLoadedSound("small-explosion");
+    if (!explode.isPlaying()) { explode.playSound(); }
+
     this.getScene().createEntity(new BoogerExplosion(this.position, this.sprite.size));
+  }
+
+  @Override
+  protected void onTimer(int timerIndex) {
     this.destroy();
   }
 

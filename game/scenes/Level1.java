@@ -13,16 +13,10 @@ public class Level1 extends GameScene {
   }
 
   @Override
-  protected void onCreate() {
-    super.onCreate();
-    this.createEntity(new Amalgamate(new Point2d(100, 100)));
-  }
-
-  @Override
   protected String[] getLevelLayout() {
     return new String[] {
         "                                                                                                                                       ",
-        "                                                       ",
+        "                             #                         ",
         "                                                       ",
         "                                                       ",
         "      t                                                ",
@@ -33,22 +27,22 @@ public class Level1 extends GameScene {
         "                            T             0   0 R        ",
         "                                   s                 ",
         "                                                 ",
-        "                            T           #     R       ",
+        "                            T           #     R                                     A",
         "          r                               0        ",
         "                                                 ",
-        "                                                       ",
+        "     #                                                 ",
         "                                                       ",
         "                                                       ",
         "         * *                                           ",
         "                   T T                                                c            C     C     C        c       ",
-        "                                                       ",
+        "                                         #             ",
         "                                                       ",
         "                  T  T                                 ",
         "                                                       ",
         "                                    ^  ^  ^  ^         ",
         "                                                       ",
-        "                                                       ",
-        "                                                       ",
+        "                                                                    #",
+        "    #                                                  ",
         "                                                       ",
         "    *                                                  ",
         "                           ! !  ",

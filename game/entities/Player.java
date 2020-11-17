@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class Player extends HealthEntity {
 
   // Constants
+  private static final int PLAYER_HEALTH   = 25;
   private static final double SPIN_SPEED   = (2 * Math.PI) / 40;
   private static final double ACCELERATION = 3.0;
   private static final double MAX_SPEED    = 30;
@@ -20,7 +21,7 @@ public class Player extends HealthEntity {
   private Vector2d velocity;
 
   public Player(Point2d position) {
-    super(15);
+    super(PLAYER_HEALTH);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -38,7 +39,7 @@ public class Player extends HealthEntity {
 
   @Override
   protected void onDestroy() {
-    GameAssets.getLoadedSound("ship-explosion").playSound();
+    GameAssets.getLoadedSound("small-explosion").playSound();
     this.getScene().createEntity(
         new PlayerExplosion(this.position, this.sprite.getRotatedImageDimensions()));
   }
@@ -126,7 +127,7 @@ public class Player extends HealthEntity {
    * Action that occurs when the player collides with a wall
    */
   private void collideWithWall() {
-    GameAssets.getLoadedSound("asteroid-hit").playSound();
+    GameAssets.getLoadedSound("hit").playSound();
     this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 5));
     this.position.sub(this.velocity);
     this.velocity.scale(-0.5);
@@ -144,9 +145,9 @@ public class Player extends HealthEntity {
 
     this.velocity.scale(1 - Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 0.1));
     if (component.isDestroyed()) {
-      GameAssets.getLoadedSound("asteroid-explosion").playSound();
+      GameAssets.getLoadedSound("large-explosion").playSound();
     } else {
-      GameAssets.getLoadedSound("asteroid-hit").playSound();
+      GameAssets.getLoadedSound("hit").playSound();
       this.hit((int) Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 4));
       this.position.sub(this.velocity);
       this.velocity.scale(-0.5);

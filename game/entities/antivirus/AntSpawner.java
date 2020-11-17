@@ -6,7 +6,7 @@ import game.engine.*;
  * Spawns ants into the game
  */
 public class AntSpawner extends Entity {
-  private final static int MAX_ANTS        = 20;
+  private final static int MAX_ANTS        = 30;
   private final static int ANT_SPAWN_DELAY = 10;
 
   public AntSpawner(Point2d position) {

@@ -61,7 +61,7 @@ public abstract class HealthEntity extends Entity {
    */
   @Override
   protected void onDestroy() {
-    GameAssets.getLoadedSound("ship-explosion").playSound();
+    GameAssets.getLoadedSound("small-explosion").playSound();
     this.getScene().createEntity(
         new BinaryExplosion(this.position, this.sprite.getRotatedImageDimensions()));
   }

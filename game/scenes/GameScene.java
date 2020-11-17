@@ -2,6 +2,7 @@ package game.scenes;
 
 import game.engine.*;
 import game.entities.*;
+import game.entities.antivirus.*;
 import game.entities.component.*;
 import game.entities.walls.*;
 import game.resources.*;
@@ -20,9 +21,14 @@ public abstract class GameScene extends Scene {
   private static final int VIEW_THRESHHOLD     = 200;
   private static final int NUM_ZOOM_OUT_FRAMES = 30;
   private static final int NUM_FADE_OUT_FRAMES = 30;
+  private static final int SWOOPER_TIME        = 300;
+  private static final int AMALGAMATE_TIME     = 450;
 
   /// Level number this game represents
   private final int level;
+
+  /// Used by ants for path finding
+  private boolean[][] walls;
 
   /// Zoom in and zoom out effects
   private int zoomFrameNumber;
@@ -83,7 +89,10 @@ public abstract class GameScene extends Scene {
   protected void onCreate() {
     resetLives();
     defineLevelTiles(this.getLevelLayout());
+    recomputeWalls();
+
     this.setTimer(-1, 1, true);
+    this.setTimer(-3, 100, true);
   }
 
   /**
@@ -148,6 +157,7 @@ public abstract class GameScene extends Scene {
     if (type == '0') { return new Capacitor(position); }
     if (type == 'c') { return new Chip(position, false); }
     if (type == 'C') { return new Chip(position, true); }
+    if (type == 'A') { return new AntSpawner(position); }
     return null;
   }
 
@@ -155,6 +165,15 @@ public abstract class GameScene extends Scene {
   protected void onTimer(int timerIndex) {
     if (timerIndex == -1) { zoomOut(); }
     if (timerIndex == -2) { fadeOut(); }
+    if (timerIndex == -3) { recomputeWalls(); }
+    if (timerIndex == -4) {
+      this.createEntity(new Swooper());
+      this.setTimer(-4, SWOOPER_TIME, false);
+    }
+    if (timerIndex == -5) {
+      this.setTimer(-5, AMALGAMATE_TIME, false);
+      this.createEntity(new Amalgamate());
+    }
   }
 
   /**
@@ -191,6 +210,93 @@ public abstract class GameScene extends Scene {
         // Restart this scene
         game.setScene(new GameOverScene(GameScene.getLevelScene(this.level)));
       }
+    }
+  }
+
+  /**
+   * Perform actions when each data file is destroyed
+   */
+  public final void dataFileDestroyed() {
+    int dataFilesLeft = this.findEntities(DataFile.class).size();
+    if (dataFilesLeft == 5) { this.setTimer(-5, 1, false); }
+    if (dataFilesLeft == 3) { this.setTimer(-4, 1, false); }
+    if (dataFilesLeft % 2 == 0) { this.createEntity(new Worm()); }
+  }
+
+  /**
+   * Get the number of tiles wide for this room
+   * @return   Tiles wide
+   */
+  public final int getTilesWide() {
+    return (int) Math.ceil(((double) this.size.width) / TILE_SIZE);
+  }
+
+  /**
+   * Get the number of tiles height for the screen
+   * @return   Tiles high
+   */
+  public final int getTilesHigh() {
+    return (int) Math.ceil(((double) this.size.height) / TILE_SIZE);
+  }
+
+  /**
+   * Get the boolean array of all walls in this scene
+   */
+  public boolean[][] getWallsMap() {
+    return this.walls;
+  }
+
+  /**
+   * Recompute the array used for the walls
+   */
+  private void recomputeWalls() {
+    int tilesWide = this.getTilesWide();
+    int tilesHigh = this.getTilesHigh();
+    this.walls    = new boolean[tilesWide][tilesHigh];
+
+    for (Entity e: this.findEntities(Wall.class)) { this.addEntityToWall(e); }
+    for (Entity e: this.findEntities(game.entities.component.Component.class)) {
+      this.addEntityToWall(e);
+    }
+  }
+
+  /**
+   * Mark all of the tiles an entity occupies to "true"
+   */
+  private void addEntityToWall(Entity entity) {
+    int tilesWide = this.getTilesWide();
+    int tilesHigh = this.getTilesHigh();
+
+    // Get tile index
+    int entityTileX =
+        (int) Math.floor((entity.position.x + entity.mask.relativePosition.x) / TILE_SIZE);
+    int entityTileY =
+        (int) Math.floor((entity.position.y + entity.mask.relativePosition.y) / TILE_SIZE);
+
+    int entityTilesWide = (int) Math.ceil(((double) entity.mask.size.width) / TILE_SIZE);
+    int entityTilesHigh = (int) Math.ceil(((double) entity.mask.size.height) / TILE_SIZE);
+
+    for (int row = 0; row < entityTilesHigh; row += 1) {
+      int tileY = row + entityTileY;
+      if (tileY < 0 || tileY >= tilesHigh) { continue; }
+      for (int col = 0; col < entityTilesWide; col += 1) {
+        int tileX = col + entityTileX;
+        if (tileX < 0 || tileX >= tilesWide) { continue; }
+        this.walls[tileX][tileY] = true;
+      }
+    }
+  }
+
+  /**
+   * Debug method to print out the wall map
+   */
+  private void printWallMap() {
+    int tilesWide = this.getTilesWide();
+    int tilesHigh = this.getTilesHigh();
+
+    for (int y = 0; y < tilesHigh; y += 1) {
+      for (int x = 0; x < tilesWide; x += 1) { System.out.print(this.walls[x][y] ? 'X' : ' '); }
+      System.out.println("");
     }
   }
 

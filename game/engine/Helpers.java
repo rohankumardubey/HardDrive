@@ -143,4 +143,11 @@ public class Helpers {
   public static double normalizeAngle(double angle) {
     return Math.atan2(Math.sin(angle), Math.cos(angle));
   }
+
+  /**
+   * Comptue the manhattan distance between two points
+   */
+  public static double manhattanDistance(Point one, Point two) {
+    return Math.abs(two.x - one.x) + Math.abs(two.y - one.y);
+  }
 }

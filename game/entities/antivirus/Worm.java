@@ -17,6 +17,7 @@ public class Worm extends AntiVirus {
   private WormPhase state;
   private Vector2d chargingVector;
   private boolean insideView;
+  private boolean hasCollided;
 
   // Used for computing straffing
   double leftChargingAngle, rightChargingAngle;
@@ -27,6 +28,7 @@ public class Worm extends AntiVirus {
     this.state          = WormPhase.Spinning;
     this.chargingVector = new Vector2d();
     this.insideView     = false;
+    this.hasCollided    = false;
 
     this.sprite.addFrames(GameAssets.getLoadedImage("worm"));
     this.sprite.size.setSize(128, 64);
@@ -79,6 +81,8 @@ public class Worm extends AntiVirus {
         this.chargeWorm();
         break;
     }
+
+    testForPlayerCollision();
   }
 
   /**
@@ -100,6 +104,7 @@ public class Worm extends AntiVirus {
       this.leftChargingAngle  = targetAngle - MAX_STRAF;
       this.rightChargingAngle = targetAngle + MAX_STRAF;
       this.state              = WormPhase.Charging;
+      this.hasCollided        = false;
     } else {
       // Angle is not yet aligned
       this.sprite.angleRadians = newAngle;
@@ -126,6 +131,11 @@ public class Worm extends AntiVirus {
     this.chargingVector      = Vector2d.fromPolarCoordinates(CHARGING_SPEED, targetAngle);
   }
 
+  /**
+   * Not Used: Move angle while charging to steer towards player
+   *
+   * Doesn't really work that well, too powerful
+   */
   private void matchAngleToPlayer() {
     Vector2d targetVector = this.getTargetVector();
     if (targetVector == null) { return; }
@@ -164,6 +174,28 @@ public class Worm extends AntiVirus {
         this.state      = WormPhase.Spinning;
         this.insideView = false;
       }
+    }
+  }
+
+  /**
+   * Test if the worm is colliding with the player, and do hits
+   */
+  private void testForPlayerCollision() {
+    if (this.hasCollided) { return; }
+
+    Player player = this.getScene().findFirstEntity(Player.class);
+    if (player == null) { return; }
+
+    if (this.isCollidingWith(player)) {
+      Sound hit = GameAssets.getLoadedSound("hit");
+      if (!hit.isPlaying()) { hit.playSound(); }
+
+      player.hit((int) Helpers.randomRange(2, 5));
+
+      // this.getScene().createEntity(
+      //     new BinaryExplosion(this.position, this.sprite.getRotatedImageDimensions()));
+
+      this.hasCollided = true;
     }
   }
 }
