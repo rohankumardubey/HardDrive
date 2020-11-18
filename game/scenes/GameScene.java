@@ -18,11 +18,11 @@ public abstract class GameScene extends Scene {
   public static final int TILE_SIZE       = 32;
   public static final Dimension VIEW_SIZE = new Dimension(640, 480);
 
-  private static final int VIEW_THRESHHOLD     = 200;
+  private static final int VIEW_THRESHHOLD     = 300;
   private static final int NUM_ZOOM_OUT_FRAMES = 30;
   private static final int NUM_FADE_OUT_FRAMES = 30;
-  private static final int SWOOPER_TIME        = 300;
-  private static final int AMALGAMATE_TIME     = 450;
+  private static final int SWOOPER_TIME        = 200;
+  private static final int AMALGAMATE_TIME     = 160;
 
   /// Level number this game represents
   private final int level;
@@ -147,7 +147,7 @@ public abstract class GameScene extends Scene {
     if (type == ' ') { return null; }
     if (type == 't') { return new Tree(position); }
     if (type == 'w') { return new SnowTree(position); }
-    if (type == '!') { return new Cactus(position); }
+    if (type == '@') { return new Cactus(position); }
     if (type == '*') { return new Rock(position); }
     if (type == '^') { return new Pyramid(position); }
     if (type == '#') { return new DataFile(position); }
@@ -155,8 +155,8 @@ public abstract class GameScene extends Scene {
     if (type == 'R') { return new Resistor(position, true); }
     if (type == 'T') { return new Transistor(position); }
     if (type == '0') { return new Capacitor(position); }
-    if (type == 'c') { return new Chip(position, false); }
-    if (type == 'C') { return new Chip(position, true); }
+    if (type == '-') { return new Chip(position, false); }
+    if (type == '|') { return new Chip(position, true); }
     if (type == 'a') { return new AntSpawner(position, false); }
     if (type == 'A') { return new AntSpawner(position, true); }
     return null;

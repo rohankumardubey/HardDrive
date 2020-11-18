@@ -4,7 +4,6 @@ import game.engine.*;
 import game.entities.component.*;
 import game.entities.walls.*;
 import game.scenes.GameScene;
-import java.util.ArrayList;
 
 /**
  * Rocket ship that you control
@@ -128,7 +127,7 @@ public class Player extends HealthEntity {
    */
   private void collideWithWall() {
     GameAssets.getLoadedSound("hit").playSound();
-    this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 5));
+    this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 3));
     this.position.sub(this.velocity);
     this.velocity.scale(-0.5);
   }
@@ -148,7 +147,7 @@ public class Player extends HealthEntity {
       GameAssets.getLoadedSound("large-explosion").playSound();
     } else {
       GameAssets.getLoadedSound("hit").playSound();
-      this.hit((int) Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 4));
+      this.hit((int) Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 3));
       this.position.sub(this.velocity);
       this.velocity.scale(-0.5);
     }
