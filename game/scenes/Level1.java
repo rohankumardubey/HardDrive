@@ -165,4 +165,8 @@ public class Level1 extends GameScene {
         "                                                                                                                                                                                                        ",
     };
   }
+
+  public double getFriction() {
+    return 0.95;
+  }
 }

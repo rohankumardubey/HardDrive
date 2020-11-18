@@ -78,9 +78,7 @@ public abstract class GameScene extends Scene {
   /**
    * Get the friction constant associated with this room
    */
-  public double getFriction() {
-    return 0.95;
-  }
+  public abstract double getFriction();
 
   /**
    * Create method
