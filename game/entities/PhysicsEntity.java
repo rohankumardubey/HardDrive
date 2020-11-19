@@ -85,7 +85,8 @@ public abstract class PhysicsEntity extends Entity
 	/*
 		apply the given force for a frame
 
-		also works for momentum, since a continuous force is simulated by repeated
+		also works for instantaneous momentum, since a continuous force is
+		simulated by repeated
 		applications of momentum
 	*/
 	protected void applyForce (Vector2d force)
