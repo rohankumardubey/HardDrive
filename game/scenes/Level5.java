@@ -7,6 +7,7 @@ public class Level5 extends GameScene {
 
   public Level5() {
     super("rocky-bg", 5);
+	 this.setFriction (0.88);
   }
 
   @Override
@@ -164,9 +165,5 @@ public class Level5 extends GameScene {
         "                                        *                                                                                                                                                               ",
         "                                                                                                                                                                                                        ",
     };
-  }
-
-  public double getFriction() {
-    return 0.88;
   }
 }

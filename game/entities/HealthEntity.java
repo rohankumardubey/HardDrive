@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Represents an entity that has a health bar
  */
-public abstract class HealthEntity extends Entity {
+public abstract class HealthEntity extends PhysicsEntity {
 
   private static final int HEALTH_BAR_HEIGHT = 10;
 
@@ -72,6 +72,7 @@ public abstract class HealthEntity extends Entity {
   @Override
   protected void onStep() {
     checkNoHealth();
+	 super.onStep();
   }
 
   private void checkNoHealth() {

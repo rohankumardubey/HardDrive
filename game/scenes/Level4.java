@@ -7,6 +7,7 @@ public class Level4 extends GameScene {
 
   public Level4() {
     super("snow-bg", 4);
+	 this.setFriction(0.999);
   }
 
   @Override
@@ -164,9 +165,5 @@ public class Level4 extends GameScene {
         "                                                                                                                                                                       w                                ",
         "                                                                                                                                                                                                        ",
     };
-  }
-
-  public double getFriction() {
-    return 0.999;
   }
 }

@@ -11,30 +11,23 @@ import java.awt.image.*;
  */
 public class Main {
   public static void main(String[] args) {
-    Vector2d v = new Vector2d(1, 2);
-    Vector2d w = new Vector2d(3, 4);
-    Vector2d x = Vector2d.add(v, w);
-    System.out.println(x.x + ", " + x.y + "\n");
-  }
 
-  /*
-      try {
-        loadBackgrounds();
-        loadSprites();
-        loadSounds();
-      } catch (Exception ex) {
-        System.out.println("Failed to load game assets: " + ex);
-        ex.printStackTrace();
-        return;
-      }
-
-      Game g = new Game(new TitleScene());
-      g.setTitle("Hard Drive");
-      g.setResource(new UnlockedLevels());
-      g.setResource(new Lives());
-      g.run();
+    try {
+      loadBackgrounds();
+      loadSprites();
+      loadSounds();
+    } catch (Exception ex) {
+      System.out.println("Failed to load game assets: " + ex);
+      ex.printStackTrace();
+      return;
     }
-  */
+
+    Game g = new Game(new TitleScene());
+    g.setTitle("Hard Drive");
+    g.setResource(new UnlockedLevels());
+    g.setResource(new Lives());
+    g.run();
+  }
 
   /**
    * Load all background assets

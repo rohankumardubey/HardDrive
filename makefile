@@ -44,6 +44,7 @@ CLASSES=\
 	game/entities/BinaryExplosion.class \
 	game/entities/PlayerExplosion.class \
 	game/entities/HealthEntity.class \
+	game/entities/PhysicsEntity.class \
 	\
 	game/entities/antivirus/Ant.class \
 	game/entities/antivirus/AntiVirus.class \

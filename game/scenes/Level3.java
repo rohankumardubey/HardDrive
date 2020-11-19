@@ -7,6 +7,7 @@ public class Level3 extends GameScene {
 
   public Level3() {
     super("dirt-bg", 3);
+	 this.setFriction (0.90);
   }
 
   @Override
@@ -164,9 +165,5 @@ public class Level3 extends GameScene {
         "                                                                                                                                                                                                        ",
         "                                                                                                                                                                                                        ",
     };
-  }
-
-  public double getFriction() {
-    return 0.90;
   }
 }

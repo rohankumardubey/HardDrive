@@ -6,18 +6,16 @@ import game.entities.walls.*;
 import game.scenes.GameScene;
 
 /**
- * Rocket ship that you control
+ * Car that you control
  */
 public class Player extends HealthEntity {
 
   // Constants
   private static final int PLAYER_HEALTH   = 25;
-  private static final double SPIN_SPEED   = (2 * Math.PI) / 40;
+  private static final double TURN_RADIUS  = 40;
   private static final double ACCELERATION = 3.0;
   private static final double MAX_SPEED    = 30;
   private static final int MAX_DAMAGE      = 20;
-
-  private Vector2d velocity;
 
   public Player(Point2d position) {
     super(PLAYER_HEALTH);
@@ -28,9 +26,10 @@ public class Player extends HealthEntity {
     this.sprite.setAngleDegrees(270);
     this.mask = sprite.getMask();
 
-    // Position and velocity
+    // Position, mass, and weight
     this.position.setLocation(position);
-    this.velocity = new Vector2d();
+	 this.mass = 10;
+
   }
 
   @Override
@@ -48,11 +47,9 @@ public class Player extends HealthEntity {
 
   @Override
   protected void onStep() {
-    super.onStep();
-
     readInput();
-    movePlayer();
-    applyDrag();
+
+    super.onStep();
 
     testForWallCollision();
     testForComponentCollisions();
@@ -60,20 +57,40 @@ public class Player extends HealthEntity {
   }
 
   /**
-   * Read keyboard input and change the player velocity & direction
+   * Read keyboard input and change the player velocity and direction
    */
-  private void readInput() {
-    Game game = this.getScene().getGame();
-    if (game.isKeyPressed(Key.UP)) {
-      this.velocity.add(Vector2d.fromPolarCoordinates(ACCELERATION, this.sprite.getAngleRadians()));
-      this.velocity.setDistance(Math.min(MAX_SPEED, this.velocity.polarDistance()));
-    }
-    if (game.isKeyPressed(Key.DOWN)) {
-      this.velocity.sub(Vector2d.fromPolarCoordinates(ACCELERATION, this.sprite.getAngleRadians()));
-      this.velocity.setDistance(Math.min(MAX_SPEED, this.velocity.polarDistance()));
-    }
-    if (game.isKeyPressed(Key.LEFT)) { this.changeAngleByRadians(-SPIN_SPEED); }
-    if (game.isKeyPressed(Key.RIGHT)) { this.changeAngleByRadians(SPIN_SPEED); }
+	private void readInput() {
+		Game game = this.getScene().getGame();
+
+		//get inputs as ints
+		int forward  = (game.isKeyPressed (Key.UP))    ? 1 : 0;
+		int backward = (game.isKeyPressed (Key.DOWN))  ? 1 : 0;
+	 	int left     = (game.isKeyPressed (Key.LEFT))  ? 1 : 0;
+		int right    = (game.isKeyPressed (Key.RIGHT)) ? 1 : 0;
+
+		System.out.println (forward + " " + backward + " " + left + " " + right + "\n");
+
+		//get angular velocity
+		this.angularVelocity = this.velocity.length() / this.TURN_RADIUS;
+		this.angularVelocity *= (right - left);
+
+		//get tangiental acceleration
+		this.acceleration = Vector2d.fromPolarCoordinates
+		(
+			this.ACCELERATION * (forward - backward),
+			this.angle
+		);
+
+		/*
+			Centripetal acceleration should be a consequence of friction, as defined
+			in class PhysicsEntity. Drifting is implemented by reducing the car's
+			coefficient of friction while the drift button is pressed.
+		*/
+
+		this.frictionCoefficient.set (masterFrictionCoefficient);
+
+		if (game.isKeyPressed (Key.SPACE))
+			this.frictionCoefficient.scaleBy (0.5);
   }
 
   /**
@@ -85,21 +102,6 @@ public class Player extends HealthEntity {
     this.sprite.addAngleRadians(radians);
     this.velocity.rotateBy(radians);
     this.mask = sprite.getMask();
-  }
-
-  /**
-   * Move the player in the room using the velocity vector
-   */
-  private void movePlayer() {
-    this.position.add(this.velocity);
-  }
-
-  /**
-   * Apply friction (drag) to the player
-   */
-  private void applyDrag() {
-    GameScene scene = (GameScene) this.getScene();
-    this.velocity.scale(scene.getFriction());
   }
 
   private void testForWallCollision() {

@@ -9,18 +9,20 @@ public abstract class PhysicsEntity extends Entity
 	public Vector2d velocity;
 	public Vector2d acceleration;
 
-	public int ang_pos = 0;
-	public int ang_vel = 0;
+	public double angle = 0;
+	public double angularVelocity = 0;
 
-	private int mass = 0;
-	private int weight = 0; // Calculated from Scene's gravitational acceleration
+	protected int mass = 0;
+	protected double weight = 0; // From Scene's gravitational acceleration
 
-	private Point2d myFrictionCoefficient; // Original general coefficient of friction in relative x, y directions
-	private Point2d frictionCoefficient;   // Current specific coefficient of friction with scene in relative x y directions
-	private Vector2d friction;             // Current force of friction
+	protected Vector2d originalFrictionCoefficient;
+	protected Vector2d masterFrictionCoefficient; // Specific coefficient of friction with scene in relative x y directions
+	protected Vector2d frictionCoefficient; // Current coefficient of friction
+
+	private Vector2d friction; // Current force of friction
 
 	// Constructor
-	public PhysicsEntity()
+	public PhysicsEntity (Vector2d fricCoef, int mass)
 	{
 		super();
 
@@ -28,10 +30,29 @@ public abstract class PhysicsEntity extends Entity
 		this.velocity     = new Vector2d();
 		this.acceleration = new Vector2d();
 
-		this.myFrictionCoefficient = new Point2d();
-		this.frictionCoefficient   = new Point2d();
+		this.originalFrictionCoefficient = new Vector2d (fricCoef);
+		this.masterFrictionCoefficient   = new Vector2d (fricCoef);
+		this.frictionCoefficient         = new Vector2d (fricCoef);
+
+		this.friction = new Vector2d();
 
 	} //end Constructor
+
+	/*
+		Set master friction coefficient to the average of original friction
+		coefficient and the incoming friction coefficient from the scene.
+	*/
+	public void setFriction setFriction (double friction);
+	{
+		this.masterFrictionCoefficient.set
+		(
+			(this.originalFrictionCoefficient.x + friction) / 2,
+			(this.originalFrictionCoefficient.y + friction) / 2
+		);
+
+		this.frictionCoefficient.set (this.masterFrictionCoefficient)
+	
+	}
 
 	//apply kinematics
 	protected void onStep()
@@ -39,9 +60,12 @@ public abstract class PhysicsEntity extends Entity
 		this.velocity.add (this.acceleration);
 		this.position.add (this.velocity);
 
-		this.ang_pos += this.ang_vel;
+		this.angle += this.angularVelocity;
+		this.sprite.addAngleRadians (this.angle);
 
 		this.applyFriction();
+
+		this.mask = sprite.getMask();
 
 	} //end onStep()
 
@@ -49,11 +73,11 @@ public abstract class PhysicsEntity extends Entity
 	protected void applyFriction()
 	{
 		//get friction direction
-		this.friction.set (this.frictionCeofficient);
-		this.friction.rotate (this.ang_pos);
+		this.friction.set (this.frictionCoefficient);
+		this.friction.rotate (this.angle);
 
 		//get friction magnitude
-		this.friction.scaleBy (this.weight)
+		this.friction.scaleBy (this.weight);
 
 		//make friction oppose movement
 		if (this.velocity.x > 0)
@@ -70,12 +94,12 @@ public abstract class PhysicsEntity extends Entity
 		this.friction.scaleBy (1 / this.mass);
 
 		//apply friction without overshooting
-		if (Math.abs(this.friction.x) > (Math.abs(this.velocity.x))
+		if (Math.abs(this.friction.x) > (Math.abs(this.velocity.x)))
 			this.velocity.x = 0;
 		else
 			this.velocity.x += this.friction.x;
 
-		if (Math.abs(this.friction.y) > (Math.abs(this.velocity.y))
+		if (Math.abs(this.friction.y) > (Math.abs(this.velocity.y)))
 			this.velocity.y = 0;
 		else
 			this.velocity.y += this.friction.y;
@@ -98,3 +122,5 @@ public abstract class PhysicsEntity extends Entity
 		this.velocity.add (force);
 
 	} //end applyingForce()
+
+} //end class PhysicsEntity

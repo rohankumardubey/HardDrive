@@ -7,6 +7,7 @@ public class Level6 extends GameScene {
 
   public Level6() {
     super("circuit-bg", 6);
+	 this.setFriction(0.95);
   }
 
   @Override
@@ -164,9 +165,5 @@ public class Level6 extends GameScene {
         "                                                                                                                                                                                                        ",
         "                                                                                                                                                                                                        ",
     };
-  }
-
-  public double getFriction() {
-    return 0.95;
   }
 }

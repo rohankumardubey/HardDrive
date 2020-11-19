@@ -35,6 +35,10 @@ public abstract class GameScene extends Scene {
   private int fadeFrameNumber;
   private Point2d playerStartPosition;
 
+  /// Physics
+  protected double gravity;
+  private   double frictionCoefficient;
+
   /**
    * Construct a new game scene
    *
@@ -482,4 +486,23 @@ public abstract class GameScene extends Scene {
     g2d.setComposite(AlphaComposite.SrcOver.derive(1.0f));
     g2d.translate(-this.mainView.position.x, -this.mainView.position.y);
   }
+
+  /**
+   * Get the friction coefficient
+   */
+	protected double getFriction()
+	{
+		return this.frictionCoefficient;
+	}
+
+  /**
+   * Set the friction coefficient and notify PhysicsEntities
+   */
+	protected void setFriction (double newFrictionCoefficient)
+	{
+		this.frictionCoefficient = newFrictionCoefficient;
+
+      for (PhysicsEntity e: this.findEntities (PhysicsEntity.class))
+			e.setFriction (this.frictionCoefficient);
+	}
 }
