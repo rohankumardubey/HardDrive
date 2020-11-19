@@ -306,7 +306,6 @@ public abstract class GameScene extends Scene {
     Game game = this.getGame();
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
     if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
-    if (game.hasKeyBeenPressed(Key.R)) { game.setScene(GameScene.getLevelScene(this.level)); }
 
     moveViewToPlayer();
     testIfAllDataFilesDestroyed();
