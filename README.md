@@ -1,6 +1,13 @@
-# CSCI-437 Fall 2020 - Game Engine
+# CSCI-437 Fall 2020 - Final Project
 
-Game Engine
+"Hard Drive"
+
+<br />
+
+## Game Engine Structure
+
+Check out the [Game Engine Documentation](Engine.md) to learn about the basic structure of the game engine.
+All of the objects and rooms in this game are subclasses of these base engine components.
 
 <br />
 
@@ -35,310 +42,70 @@ make clean
 make
 ```
 
-<br />
-
-## Game Engine Structure
-
-The main structure of my game engine consists of 3 main classes:
-
-- **Game** - Abstract data type for the entire game engine.
-- **Scene** - "Room", "Location", or "Level" inside a game. Every game must start in a scene.
-- **Entity** - Object that interacts in the game.
-
-`Scene` and `Entity` are abstract classes that must be subclassed to fit the specific needs of your game.
-They define several methods that need to be implemented:
-
-- **onCreate()** - Called once when the entity or scene is first created
-- **onDestroy()** - Called when an entity is destroyed. Not found on the scene class.
-- **onTimer(timerIndex)** - Called when a timer is fired.
-- **onStep()** - Called on every game tick.
-- **onDraw(graphics)** - Add additional logic to the drawing code. Abstract in the scene, not abstract in the entity.
-
-The general idea is that a scene creates the entities in the `onCreate()` method.
-Then, the `onStep()` method in the entity handles things like keyboard events and collisions.
-The `onTimer()` method is used for periodic events, like updating sprite animations or cutscenes.
-
-There are also additional concrete classes to help with other aspects of the game:
-
-- **AnimatedImage** - List of images that can also be transformed in several ways, like mirroring.
-- **Sprite** - Subclass of `AnimatedImage` used by entities in the game. Sprites can be rotated and have improved collision detection.
-- **Background** - Subclass of `AnimatedImage` used for the scene background image.
-- **Mask** - Bounding box collision mask, used by entity. Has a relative offset and a rectangle size.
-- **View** - Rectangular portion of the scene visible to the game.
-- **GameAssets** - Singleton class for storing all game assets (images and sounds).
-- **Sound** - Wrapper for the Java sound library, which is complicated to use by itself.
-- **Helpers** - Utility class (like Math), cannot be instantiated. Has various generic helper functions.
-
-<br />
-
-## Game Class
-
-![Game UML](img/Game-UML.png)
-
-The game object defines the abstract data type for the entire game engine.
-The game stores a JFrame that is used to actually render the game, and encapsulates the JFrame complexities.
-As such, all keyboard and mouse input comes from the Game object.
-The class also defines some methods like `setTile()`, which changes the title string on the window.
-Game has methods like `setFullscreen()` and `setWindowed()` to toggle between fullscreen mode and windowed mode.
-
-One useful feature of the Game object is to store global game resources.
-A resource is a wrapper for some sort of global state, such as a score counter.
-You need to implement the `Resource` marker interface on a class to make it a valid resource.
-Calling `setResource()` adds the resource into the game database, and `getResource()` retrieves it from the database.
-There can only be one instance of each resource class in the game, as it uses the Java `class Class` to retrieve the resource.
-For example:
-
-```Java
-class Score implements Resource {
-  /* Class implementation */
-}
-
-Game game = /* Get Game */;
-game.setResource(new Score());  /* Store into the database */
-
-/* Other Code */
-
-Score score = game.getResource(Score.class);  /* Retrieve from the database */
-```
-
-Each game always has one active scene. To change the active scene, you can call the `setScene()` method.
-This will switch to the new scene after the current event handler has finished.
-
-Finally, to run the game, simply call the `run()` method. This will open the JFrame and start the game.
-The game will continue to run even if the main method exits.
-To terminate the game and kill the program at any time, call the `end()` method, which simply closes the JFrame window.
-After the game is running, all game events should be handled by the `Scene` and `Entity` components.
-
-## Scene Class
-
-![Scene UML](img/Scene-UML.png)
-
-The abstract scene class is the concept of a "level", "room" or "location" inside the game.
-Each scene is linked with the parent game, so you can call `getGame()` to retrieve the main Game instance.
-Do **NOT** call this method until after the `onCreate()` method has been called, or the game will be null.
-
-Each scene has a size and also has a "view" into the scene. The view does not need to be the same size as the scene.
-To create scrolling, you can move the view around in the scene.
-You can set the outside color (background color shown outside the scene), background color (color shown inside the scene),
-and background image of the scene.
-
-Since the scene is an abstract class, you need to create a subclass of scene and implement the following methods:
-
-- **onCreate()** - Called once when the scene is first created
-- **onTimer(timerIndex)** - Called when a timer is fired
-- **onStep()** - Called on every game tick
-- **onDraw(graphics)** - Add additional logic to the drawing code
-
-Each scene draws the game in the following order:
-
-1. **Outside Color** - Color of the background when the view is outside the scene
-2. **Background Color** - Color of the background inside the scene
-3. **Background** - Background image of the scene
-4. **Entities** - All entities inside the scene
-5. **Scene `onDraw()` method** - Draw on top of everything else in the scene
-
-The scene stores the list of entities inside the room indexed by the Java `class Class`.
-This allows you to call `findEntities(class)` to search for all entities by a class.
-You create a new entity with the `createEntity()` method, which will create the entity on the next event tick.
-You can also get a list of all entities with the `getAllEntities()` method.
-Since entities are created at a specific time in the event loop, the scene object uses a `toCreate` list to store
-the entities that will be created on the next game tick.
-
-The scene class has a built-in timer feature that can fire the `onTimer()` method after a given number of ticks.
-To set a timer, use the `setTimer()` method. A timer can be a one-time event or a looped timer.
-Each timer is indexed by an integer. Calling this method will replace any existing time left.
-Use the `clearTimer()` method to stop a timer from firing.
-
-The scene `onDraw()` method is the last thing drawn to the scene, so it has the highest drawing priority.
-As such, it can be used to implement features like heads-up displays or a score counter.
-
-## Entity Class
-
-![Entity UML](img/Entity-UML.png)
-
-The entity class represents a game object inside the scene, like a "player" or an "enemy" object.
-Each entity is linked with the parent scene, so you can call `getScene()` to retrieve the scene instance.
-Do **NOT** call this method until after the `onCreate()` method has been called, or the scene will be null.
-
-Since the entity is an abstract class, you need to create a subclass of entity and implement the following methods:
-
-- **onCreate()** - Called once when the entity is first created
-- **onDestroy()** - Called when an entity is destroyed
-- **onTimer(timerIndex)** - Called when a timer is fired
-- **onStep()** - Called on every game tick
-- **onDraw(graphics)** - Add additional logic to the drawing code
-
-Notice that the `onDraw()` method is not actually abstract. The default draw method draws the entity sprite at the current position.
-If you do not want this behavior, you can override this method and implement your own drawing behavior.
-However, if you still want the sprite to be drawn, you will need to call `super.onDraw()`.
-
-By default, each entity has a position, sprite, and a mask. The position is the absolute `(x,y)` position of the object in the scene.
-This is relative to `(0,0)` in the scene, not `(0,0)` of the view. This point is the **CENTER** of the entity, **NOT** the top left point.
-The mask is the collision box of the entity, used for collision detection. The offset position of the mask is the **TOP LEFT** corner of the mask,
-**NOT** the center of the entity. The sprite is the graph used for the entity. You can also use the `onVisible` flag to hide the entity
-sprite and disable collision detection.
-
-To implement entity animation, you need to periodically call the `sprite.nextFrame()` method. This can be done in a timer or the step function.
-The default entity does **NOT** update the mask when you update the sprite, so your entity code will need to manually update the mask.
-Typically, if the sprite does not change, you can set the mask in the `onCreate()` method and never need to change it.
-Notice that sprite has a helper method called `getMask()` which computes the mask based on the sprite image size **AND** image rotation.
-This may cause problems if your sprite is not mostly circular, as the rectangle of a rotated sprite will typically be much bigger than the original image.
-If you want the mask to be smaller than the current image, you will need to compute the mask and offset manually.
-
-Movement should be implemented using the Game keyboard and mouse methods.
-You can get the game object by calling `this.getScene().getGame()`.
-Checking for pressed keys should happen in the `onStep()` method so they occur during every game tick.
-
-For collision detection, this should be handled by the `onStep()` method. Entities have a helpful method called `isCollidingWith()` that
-use the entity mask for detecting collision. You can use the `findEntities()` method from the scene to get the list of all entities to check.
-There is also a related method `isMouseInside()` that checks if the mouse pointer is currently inside the entity mask relative to the view.
-This is useful for implementing buttons and entities that you can click on.
-
-Like with the scele class, the entity class has a built-in timer feature that can fire the `onTimer()` method after a given number of ticks.
-To set a timer, use the `setTimer()` method. A timer can be a one-time event or a looped timer.
-Each timer is indexed by an integer. Calling this method will replace any existing time left.
-Use the `clearTimer()` method to stop a timer from firing.
-
-Entities can be destroyed by calling the `destroy()` method, which will cause the entity to be destroyed after the event handler finishes.
-A destroyed entity no longer partipates in collision detection.
-Since entities are destroyed at a specific time in the event loop, there is an `isDestroyed` flag used to indicate which entities should be destroyed.
-
-## Game Assets
-
-![Game Assets UML](img/GameAssets-UML.png)
-
-This class serves as a "database" for all image and sound files in your game. Sounds and images can be loaded by calling `loadImage()` and `loadSound()`.
-Each image and sound should have an associated unique name. (_Though sounds can have the same names as images because they use different lookup tables._)
-Then, you can call `getLoadedImage()` and `getLoadedSound()` to retrieve the files stored in memory.
-All of these functions are static, so they can be called in any context in the game.
-
-Since Java sounds are difficult to work with, the game engine uses a wrapper `Sound` class.
-This can either play a sound once (`playSound()`) or play a sound looped until told to stop (`loopSound()`).
-The `stopSound()` method stops the sound whether it is currently playing or not. Unfortunately, one of the limitations of Java sounds
-is that each sound instance can only play one sound simultaneously. So while you can have multiple sounds at once (like an explosion and coin collected),
-you cannot have the same sound playing simultaneously (two explosion sounds at once).
-_I might try to fix this in a future version, but that is one of the game engine limitations for now._
-
-## Animated Image Classes
-
-![Animated Image UML](img/AnimatedImage-UML.png)
-
-The AnimatedImage class is a wrapper around a collection of images. It can be used to create animation and apply basic image transformations.
-AnimatedImage has the following properties:
-
-- **Size** - Used to scale the image
-- **Mirror Vertical** - Flip the image vertically
-- **Mirror Horizontal** - Flip the image horizontally
-
-To load frames into the animated image, you can use the `addFrames()` method, which accepts a variable number of arguments.
-You can go to the next frame by calling `nextFrame()`, which automatically loops around when the last image is reached.
-Or, you can set the frame index manually using the `setFrameIndex()` method.
-The `autoSize()` method sets the `size` parameter to the width and height of the first image in the list of frames.
-
-This class has two main subclasses: Sprite and Background. Sprite should be used for entitiy graphics, and Background for the scene background.
-
-Sprite has the following additional properties:
-
-- **Angle Radians** - Rotation of the sprite in radians
-
-Background has the following additional properties:
-
-- **Background Type** - Modifies how to draw the background in the room
-
-Supported background types include the following:
-
-- **None** - Do not draw the background image
-- **Image** - Simply draw the image starting at (0,0) in the scene
-- **Tiled** - Repeatedly tile the background across the entire scene
-- **Stretched** - Stretch the background and distort the image to fill the whole scene
-
-AnimatedImage has a `getMask()` which computes the bounded box mask using the width and height of the image.
-This method assumes that the entity position is in the **CENTER** of the image, **NOT** the top left corner of the image.
-The Sprite class overrides this method to also compute the bounded box mask based on the image rotation.
-If the image is not approximately circular, this can cause problems for collisions, so be careful with bounded boxes of rotated sprites.
-
-## Animated Image Classes
-
-![Other Classes UML](img/OtherClasses-UML.png)
-
-View is a representation of a "viewport" into the scene. It has a position in the scene, relative to the top left corner (0,0) of the scene,
-and a size for the view.
-
-Mask is used for bounded box collision detection. It has a position relative to the **CENTER** of the entity, **NOT** the top left corner of
-the entity, and a size for the rectangle. Mask also has useful helper methods `isCollidingWith()` and `isPointInside()` that can be used
-if you want to implement custom collision detection logic.
-
-<br />
-
-## Event Loop
-
-The game engine runs the following event loop during each game tick.
-Ticks occur every 50 milliseconds, meaning the game runs at 20 FPS.
-Every tick, the following actions occur in this order:
-
-1. Possibly switch to a new scene and call the scene `onCreate()` method
-2. Tick all timers in the current scene. If a timer fires, call the `onTimer()` handler for the scene.
-3. Call the `onStep()` method for the scene.
-4. Create all entities in the scene, and call the `onCreate()` method on each entity
-5. Destroy any entities marked to be destroyed, and call the `onDestroy()` method on each entity
-6. Tick all timers for all entities in the current scene. If a timer fires, call the `onTimer()` handler for that entity.
-7. Call the `onStep()` method for all entities in the current scene.
-8. Draw the scene
-
-The scene is drawn in the following order:
-
-1.  **Outside Color** - Color of the background when the view is outside the scene
-2.  **Background Color** - Color of the background inside the scene
-3.  **Background** - Background image of the scene
-4.  **Entities** - All entities inside the scene
-5.  **Scene `onDraw()` method** - Draw on top of everything else in the scene
-
-## Features to Add
-
-There are several things I would like to add in a future version of this game engine:
-
-- Multiple backgrounds in a scene
-- Multiple views (for multiplayer games)
-- Background offsets (for parallax scrolling)
-- Better sound engine (play multiple instances of same sound at once)
-- Support for background tiles (Not just a tiled image)
-- Multithreading event handling
-- Entity drawing priority
-- Different types of collision detection (like radial collision)
-- More powerful drawing and collision utilities
-
 <br/>
 
-## Demo Game - Asteroid Navigator
+## "Hard Drive"
 
 ![Title Screen](img/TitleScreen.png)
 
-![Main Screen](img/MainScreen.png)
+![Main Screen](img/Gameplay.png)
 
-Using my game engine, I built a demo game named "Asteroid Navigator". You use the `arrow keys` to move the spaceship
-and press the `space bar` to shoot. You can also press `escape` to quit the game, or `F4` to toggle between windowed and fullscreen mode.
-The goal is to get to the other side of the asteroid field.
+In "Hard Drive" you control a hacker program represented by a car, and you are trying to destory all of the data files on the server.
+The server environments are simulated environments with both natural elements (like trees and rocks) and electronic components (like transistors and chips).
+As you continue to destroy data files, antivirus programs attack to prevent you from succeeding.
+You must destory all data files in 6 different servers to win.
 
-The demo game demonstrates how to use the following features of the game engine:
+The basic game controls are as follows:
 
-- Basic movement
-- Collision detection
-- Scrolling views
-- Global game resources (Score object)
-- Custom drawing code (StartButton and the score counter)
-- Timer events (PlayerExplosion and AsteroidExplosion)
-- Custom mouse events (StartButton)
-- Stretched and tiled backgrounds
-- Sprite animations and rotations
-- Playing sounds
+- `Up` - Drive forward
+- `Down` - Reverse and drive backward
+- `Right` - Spin the car clockwise
+- `Left` - Spin the car counter-clockwise
+- `F4` - Toggle fullscreen mode
+- `Escape` - Close the game
 
-I tried to structure the project in an idiomatic way based on the game engine design.
-The code should be fairly easy to follow once you understand how the game engine works.
+<br />
+
+## Original Design Documents
+
+![Design Document 1](img/design-1.png)
+
+![Design Document 2](img/design-2.png)
+
+![Design Document 3](img/design-3.png)
+
+These are scans of our original game design when we first met about the game.
+While some of the ideas have changed over time, this was the starting point for our game.
+
+**Bryan's Jobs**
+
+- Overall structure of game
+- Antivirus behavior and AI
+- Game scenes and levels
+- Game assets
+- Maintain game engine repository
+
+**Caleb's Jobs**
+
+- Player car movement
+- Physics engine for pushable electronics components
+- Friction and gravity for individual levels
+
+**Project Timeline**
+
+- **Tuesday, November 3** - First in-person meeting, come up with basic game idea and assign roles
+- **Sunday, November 8** - Finish refining basic idea and start writing the program
+- **Thursday, November 12** - Meet in-person to follow-up on the progress of the game engine
+- **Monday, November 16** - Bryan should have the basic game structure and Caleb should have the physics engine
+- **Remaining Week** - Minor tweaks and improvements as we finish the game
+
+<br />
+
+## Project structure:
+
+The project is structured in an idiomatic way based on the game engine design.
 The main entry point to the game is in `game/Main.java`.
-For the assets, all of the images are from [Open Game Art](https://opengameart.org/), and
-all of the sound effects are generated from [jxfr](https://jfxr.frozenfractal.com/) or recorded by myself with Audacity.
-
-**Project structure:**
+All of the main game components are `Scenes`, `Entities`, and `Resources`.
 
 - **game/scenes** - All game scenes
 - **game/entities** - All game entities
@@ -346,22 +113,181 @@ all of the sound effects are generated from [jxfr](https://jfxr.frozenfractal.co
 - **assets/sprites** - Sprite graphics
 - **assets/backgrounds** - Background graphics
 - **assets/sounds** - Sound effects
+- **assets/bgm** - Background music
 
-**Game Scenes:**
+Some of the entities are organized into subpackages to help keep things sorted:
+
+- **game/entities/antivirus** - All of the antivirus enemies in the game
+- **game/entities/component** - The various electronics components that you can destroy
+- **game/entities/ui** - User-interface components, such as buttons and the background binary flickering effect
+- **game/entities/walls** - Immovable walls that the player can collide with
+
+<br/>
+
+## Game Scenes:
+
+![State Transition Diagram](img/StateTransition.png)
 
 - **Title Scene** - Shows the game title and a play button
-- **Main Scene** - The gameplay itself with the asteroids and spaceship
+- **Level Select Scene** - Choose which level to play
+- **Loading Scene** - Shows the cool server loading animation before starting a level
+- **Level Scene** - The actual levels in the game
+- **Game Over Scene** - Shown when you lose the level
+- **Level Complete Scene** - Shown once you complete a level
+- **You Win Screen** - Shown after you complete all levels in the game
 
-**Game Entities:**
+To keep consistancy between the levels, each level scene is actually a subclass of `GameScene`.
+The `GameScene` object handles things such as:
 
-- **StartButton** - Button object you click to start the game
-- **Player** - Space ship that you control
-- **Asteroid** - Asteroid in the asteroid belt
-- **Bullet** - Player shoots this at objects
-- **PlayerExplosion** - Creates animation when player collides with an asteroid
-- **AsteroidExplosion** - Creates animation when asteroid is destroyed
-- **WinSmiley** - You win animation
+- Building the level layout from a string when the level first starts
+- Drawing the heads-up display (HUD) on each level
+- The fade-in and fade-out effects for starting and ending the level
+- Scrolling the main view as the player moves
+- Creating certain antiviruses (`Worm` and `Amalgamate`) at periodic intervals
+- Computing the position of walls for the `Ant` A\* pathfinding algorithm
 
-**Global Resources:**
+Each concrete implementation of `GameScene` must implement the following methods:
 
-- **Score** - Keep track of the global score based on how many asteroids you destroy
+- `getLevelLayout()` - String array for the position of tiles in the level
+- `getFriction()` - Get the friction coefficient for the level
+
+There are a total of 6 different levels in the game, each with slightly different physics properties:
+
+1. **Grass** - Normal movement
+2. **Desert** - Higher friction because it is hard to drive on sand
+3. **Dirt** - Slightly less friction than desert, but still hard to drive on
+4. **Snow** - The car slides around as though it is driving on ice
+5. **Stone** - Higher friction just like the desert
+6. **Circuit** - Normal movement
+
+<br />
+
+## Game Entities
+
+The game defines several abstract entities that are subclassed into concrete types.
+The antivirus entities will be explained in more detail below.
+
+- **HealthEntity** - Abstract entity that also has a health counter. It automatically draws the health bar on top of the entity sprite.
+- **Player** - Player that you control in the game.
+- **BinaryExplosion** - Cool binary effect that displays when you destory components or antiviruses
+- **PlayerExplosion** - Special case of `BinaryExplosion` that respawns the player when the animation finishes
+- **AntiVirus** - Abstract parent class of all antivirus enemies in the game
+- **Component** - Abstract parent class of all the destructable electronics components
+- **Wall** - Abstract parent class of all the wall components
+- **Button** - Abstract class for a UI button interface
+- **BinaryFlicker** - Cool effect used on the title screen and level select screen for the background
+
+Most of the code for the wall and component entities is fairly straightforward.
+However, the antiviruses themselves have more complex behavior which is explained below.
+
+<br />
+
+## Antiviruses
+
+### Amalgamate
+
+![Amalgamate](assets/sprites/amalgamate.png)
+
+This enemy swaps back and forth through two phases:
+
+1. **Target the player** - Forms a vector pointing towards the player and moves along the vector
+2. **Target close to the player** - Forms a vector towards the player that can vary by `+/- N-degrees`. This creates a bit of variability and randomness in the movement.
+
+The Amalgamate then charges quickly towards the player but slows down with a drag coefficient before changing direction.
+This makes it seem to float back and forth across the screen in the general approximation towards the player.
+
+![Angry Amalgamate](assets/sprites/amalgamate-angry.png)
+
+If the player touches the Amalgamate, it becomes angry and quickly explodes into many `Tiny Viruses`.
+
+The Amalgamate becomes active after destroying the first data file, and continues to respawn every 8 seconds.
+Eventually, the entire level becomes filled with tiny viruses, so you can't afford to take too long to destroy
+the data files.
+
+### Tiny Virus
+
+![Red Virus](assets/sprites/red-virus.png)
+![Yellow Virus](assets/sprites/yellow-virus.png)
+![Green Virus](assets/sprites/green-virus.png)
+![Blue Virus](assets/sprites/blue-virus.png)
+![Pink Virus](assets/sprites/pink-virus.png)
+
+These little viruses float back and forth across the level. The basic algorithm is:
+
+1. Pick a random angle from 0 to 2Pi
+2. Charge in the direction of the angle
+3. Repeat
+
+The virus charging angle is very fast, but the drag coefficient is also very large.
+This creates very fast and rapid motion that is hard to dodge.
+This is the exact same movement as the Amalgamate, but the viruses do not target the player.
+
+_The color of the virus does not matter, although the original idea was to have different colored viruses move in different ways._
+
+### Ant
+
+![Ant](assets/sprites/ant/row-1-col-1.png)
+
+Ants are created by an ant spawner, which looks just like a regular computer chip.
+Each ant uses an A\* pathfinding algorithm to navigate around walls and target the player.
+Although each ant is weak, they swarm the player very quickly and can deal damage in large numbers.
+
+Since A\* can become slow if the search size is too large, the Ant destroys itself if the player
+is more than 40 game tiles away. In addition, the A\* algorithm times out after 1000 iterations
+to avoid freezing the game with too much computation. Finally, I only run the algorithm every 5 ticks
+to keep the ant from becoming too smart.
+
+### Swooper
+
+![Swooper](assets/sprites/swooper.png)
+
+Periodically, this antivirus swarms across the level and drops `Boogers ` on the player.
+This is basically the hacker version of an air strike. The player cannot be damaged
+by the Swooper itself, but is damaged by the exploding boogers. The Swooper is activated after destroying
+the third data file and attacks the player every 10 seconds.
+
+### Booger
+
+![Booger](assets/sprites/booger.png)
+
+The Booger is dropped by the Swooper and explodes when it hits the ground.
+The player is not damaged by the Booger itself but by the booger explosion.
+
+### Worm
+
+![Worm](assets/sprites/worm.png)
+
+A new worm is created after every even-numbered data file you destroy.
+It starts off screen, and the basic algorithm is as follows:
+
+1. Spin the angle of the worm until it lines up with the player
+2. Charge across the view without changing direction
+3. Once the worm is out of the view, go back to step 1 and repeat
+
+The player can only be damaged once by the worm for each time it darts across the screen,
+but the worm can inflict significant damage if you fail to avoid it.
+
+_Originally, the worm changed it's angle slightly while charging to move towards the player, but this movement made it too hard to avoid._
+
+<br />
+
+## Global Resources:
+
+- **Lives** - Keep track of the player lives during the level
+- **UnlockedLevels** - Which levels are currently unlocked in the game
+
+The `UnlockedLevels` resource automaticaly uses a `save.dat` file to save and load the game state.
+That way, you don't lose any progress if you close the game and reload.
+To prevent the user from tampering with the binary save file data, the file also stores an integrity hash.
+This value is the `SHA-256` hash value of the save data and a secret value defined in the program.
+If the file has been tampered with, then the hash value will not match and the save file will fail to be loaded.
+_In theory,_ the user should not be able to find the secret value and re-compute the hash for the modified save file
+
+<br />
+
+## Asset Credits
+
+- All of the sprites and backgrounds are from [Open Game Art](https://opengameart.org/) (_with a few exceptions_)
+- The transistor, capacitor, and resistor sprites are from [NeedlePix](https://www.needpix.com/) and are royalty-free public domain images
+- The sound effects were generated from [jxfr](https://jfxr.frozenfractal.com/)
+- The background music "Data Corruption" is composed by [FoxSynergy](https://opengameart.org/content/data-corruption)

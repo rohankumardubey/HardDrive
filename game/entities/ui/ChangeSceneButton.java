@@ -1,7 +1,6 @@
 package game.entities.ui;
 
 import game.engine.*;
-import game.scenes.*;
 import java.awt.*;
 
 /**
@@ -23,10 +22,7 @@ public class ChangeSceneButton extends Button {
   }
 
   @Override
-  protected void onCreate() {
-    // Move to center of bottom of the screen
-    // this.position.setLocation(this.getScene().size.width / 2, this.getScene().size.height - 70);
-  }
+  protected void onCreate() {}
 
   @Override
   protected void onDestroy() {}
