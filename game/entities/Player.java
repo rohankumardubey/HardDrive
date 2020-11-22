@@ -8,7 +8,7 @@ import game.scenes.GameScene;
 /**
  * Car that you control
  */
-public class Player extends HealthEntity {
+public class Player extends PhysicsEntity {
 
   // Constants
   private static final int PLAYER_HEALTH   = 25;
@@ -16,9 +16,10 @@ public class Player extends HealthEntity {
   private static final double ACCELERATION = 3.0;
   private static final double MAX_SPEED    = 30;
   private static final int MAX_DAMAGE      = 20;
+  private static final double PLAYER_MASS  = 10;
 
   public Player(Point2d position) {
-    super(PLAYER_HEALTH);
+    super(new Vector2d (10, 0.1), PLAYER_MASS, PLAYER_HEALTH);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -28,6 +29,7 @@ public class Player extends HealthEntity {
 
     // Position, mass, and weight
     this.position.setLocation(position);
+	 this.angle = Math.toRadians(270.0);
 	 this.mass = 10;
 
   }
@@ -68,8 +70,6 @@ public class Player extends HealthEntity {
 	 	int left     = (game.isKeyPressed (Key.LEFT))  ? 1 : 0;
 		int right    = (game.isKeyPressed (Key.RIGHT)) ? 1 : 0;
 
-		System.out.println (forward + " " + backward + " " + left + " " + right + "\n");
-
 		//get angular velocity
 		this.angularVelocity = this.velocity.length() / this.TURN_RADIUS;
 		this.angularVelocity *= (right - left);
@@ -80,6 +80,8 @@ public class Player extends HealthEntity {
 			this.ACCELERATION * (forward - backward),
 			this.angle
 		);
+
+		System.out.println ("player: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
 
 		/*
 			Centripetal acceleration should be a consequence of friction, as defined

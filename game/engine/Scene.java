@@ -198,7 +198,7 @@ public abstract class Scene {
   /**
    * Internal method to create new entities in the game
    */
-  final void createEntities() {
+  protected final void createEntities() {
     if (this.toCreate.size() == 0) { return; }
 
     // Add every entity to the map

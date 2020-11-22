@@ -12,6 +12,7 @@ import java.awt.image.*;
 public class Main {
   public static void main(String[] args) {
 
+/*
     try {
       loadBackgrounds();
       loadSprites();
@@ -28,6 +29,16 @@ public class Main {
     g.setResource(new Lives());
     g.run();
   }
+ */
+
+	for (double i = 0; i < 6.3; i += 0.1)
+	{
+		Vector2d v = new Vector2d (1, 0);
+		v.rotate(i);
+		System.out.println ("Angle " + i + "(" + v.x + ", " + v.y + "), Length " + v.length() + "\n");
+	}
+}
+
 
   /**
    * Load all background assets

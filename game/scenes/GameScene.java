@@ -44,7 +44,8 @@ public abstract class GameScene extends Scene {
    *
    * @param background  Background type for the scene
    */
-  public GameScene(String background, int level) {
+  public GameScene(String background, int level,/* double gravity,*/ double friction)
+  {
     super(640, 480);
     this.mainView.size.setSize(VIEW_SIZE);
 
@@ -52,6 +53,8 @@ public abstract class GameScene extends Scene {
     this.background.type = BackgroundType.Tiled;
 
     this.level               = level;
+//	 this.gravity             = gravity;
+	 this.frictionCoefficient = friction;
     this.zoomFrameNumber     = 0;
     this.fadeFrameNumber     = 0;
     this.playerStartPosition = new Point2d();
@@ -82,7 +85,10 @@ public abstract class GameScene extends Scene {
   /**
    * Get the friction constant associated with this room
    */
-  public abstract double getFriction();
+  public double getFriction()
+  {
+    return this.frictionCoefficient;
+  }
 
   /**
    * Create method
@@ -91,6 +97,7 @@ public abstract class GameScene extends Scene {
   protected void onCreate() {
     resetLives();
     defineLevelTiles(this.getLevelLayout());
+	 this.broadcastFriction();
     recomputeWalls();
 
     this.setTimer(-1, 1, true);
@@ -488,21 +495,17 @@ public abstract class GameScene extends Scene {
   }
 
   /**
-   * Get the friction coefficient
-   */
-	protected double getFriction()
-	{
-		return this.frictionCoefficient;
-	}
-
-  /**
    * Set the friction coefficient and notify PhysicsEntities
    */
-	protected void setFriction (double newFrictionCoefficient)
+	protected void broadcastFriction()
 	{
-		this.frictionCoefficient = newFrictionCoefficient;
+		System.out.println ("Setting friction in scene\n");
+
+		super.createEntities();
 
       for (PhysicsEntity e: this.findEntities (PhysicsEntity.class))
+		{
 			e.setFriction (this.frictionCoefficient);
+		}
 	}
 }
