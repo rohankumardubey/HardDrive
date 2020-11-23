@@ -55,8 +55,6 @@ public abstract class PhysicsEntity extends HealthEntity
 		);
 
 		this.frictionCoefficient.set (this.masterFrictionCoefficient);
-
-		System.out.println ("Friction set to (" + this.frictionCoefficient.x + ", " + this.frictionCoefficient.y + ")\n");
 	
 	} //end setFriction()
 

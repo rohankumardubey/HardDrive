@@ -64,12 +64,11 @@ public class Player extends PhysicsEntity {
    */
 	private void move() {
 		Game game = this.getScene().getGame();
-
 		//get inputs as ints
-		int forward  = (game.isKeyPressed (Key.UP))    ? 1 : 0;
-		int backward = (game.isKeyPressed (Key.DOWN))  ? 1 : 0;
-	 	int left     = (game.isKeyPressed (Key.LEFT))  ? 1 : 0;
-		int right    = (game.isKeyPressed (Key.RIGHT)) ? 1 : 0;
+		int forward  = game.isKeyPressed (Key.UP)    ? 1 : 0;
+		int backward = game.isKeyPressed (Key.DOWN)  ? 1 : 0;
+	 	int left     = game.isKeyPressed (Key.LEFT)  ? 1 : 0;
+		int right    = game.isKeyPressed (Key.RIGHT) ? 1 : 0;
 
 		//get angular velocity
 		this.angularVelocity = this.velocity.length() / this.TURN_RADIUS;
@@ -90,10 +89,10 @@ public class Player extends PhysicsEntity {
 
 		this.frictionCoefficient.set (masterFrictionCoefficient);
 
-		if (game.isKeyPressed (Key.SPACE))
+		if (game.isKeyPressed (Key.D))
 		{
 			this.isDrifting = true;
-			this.frictionCoefficient.scaleTo (0);
+			this.frictionCoefficient.scaleBy (0.05);
 		}
 		//if the player just stopped drifting, send them in the right direction
 		else if (this.isDrifting)
@@ -110,8 +109,6 @@ public class Player extends PhysicsEntity {
 		{
 			this.velocity.scaleTo (this.MAX_SPEED);
 		}
-
-		System.out.println ("player: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
   }
 
   /**
