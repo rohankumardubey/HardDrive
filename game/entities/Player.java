@@ -11,18 +11,18 @@ import game.scenes.GameScene;
 public class Player extends PhysicsEntity {
 
   // Constants
-  private static final int PLAYER_HEALTH   = 25;
-  private static final double TURN_RADIUS  = 80;
-  private static final double ACCELERATION = 3.0;
-  private static final double MAX_SPEED    = 30;
-  private static final int MAX_DAMAGE      = 20;
-  private static final double PLAYER_MASS  = 10;
+  private static final int    PLAYER_HEALTH =  25;
+  private static final double   TURN_RADIUS = 120;
+  private static final double  ACCELERATION = 3.0;
+  private static final double     MAX_SPEED =  30;
+  private static final int       MAX_DAMAGE =  20;
+  private static final double   PLAYER_MASS =  10;
+  private static Vector2d        DRIFT_REC;
 
-  // Track whether the player is currently drifting
-  private boolean isDrifting = false;
+  private double driftBoost = 0;
 
   public Player(Point2d position) {
-    super(new Vector2d (0.1, 100), PLAYER_MASS, PLAYER_HEALTH);
+    super(new Vector2d (0.1, 50), PLAYER_MASS, PLAYER_HEALTH);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -34,6 +34,10 @@ public class Player extends PhysicsEntity {
     this.position.setLocation(position);
 	 this.angle = Math.toRadians(270.0);
 	 this.mass = 10;
+
+	 // How quickly the car recovers from drift
+	 this.DRIFT_REC = new Vector2d (this.masterFrictionCoefficient);
+	 this.DRIFT_REC.scaleBy (0.0125);
 
   }
 
@@ -87,18 +91,33 @@ public class Player extends PhysicsEntity {
 			coefficient of friction while the drift button is pressed.
 		*/
 
-		this.frictionCoefficient.set (masterFrictionCoefficient);
+//		this.frictionCoefficient.set (masterFrictionCoefficient);
 
+		//if drifting
 		if (game.isKeyPressed (Key.D))
 		{
-			this.isDrifting = true;
-			this.frictionCoefficient.scaleBy (0.05);
+			//disable friction
+			this.frictionCoefficient.scaleTo (0);
+
+			//increase drift boost, with cap
+			if (this.driftBoost + this.velocity.length() > 2 * this.MAX_SPEED)
+			{
+				this.driftBoost = (this.MAX_SPEED * 2) - this.velocity.length();
+			}
+
+			else this.driftBoost += 1;
+
 		}
-		//if the player just stopped drifting, send them in the right direction
-		else if (this.isDrifting)
+
+		//gradually recover from drift
+		else
 		{
-			this.isDrifting = false;
-			this.velocity.setAngle (this.angle);
+			//apply and reset drift boost
+			this.velocity.add (Vector2d.fromPolarCoordinates(this.driftBoost, this.angle));
+			this.driftBoost = 0;
+
+			if (this.frictionCoefficient.x < this.masterFrictionCoefficient.x)
+				this.frictionCoefficient.add (this.DRIFT_REC);
 		}
 
 		//apply kinematics
@@ -107,7 +126,10 @@ public class Player extends PhysicsEntity {
 		//enforce speed limit
 		if (this.velocity.length() > this.MAX_SPEED)
 		{
-			this.velocity.scaleTo (this.MAX_SPEED);
+			if (this.velocity.length() - this.ACCELERATION < this.MAX_SPEED)
+				this.velocity.scaleTo (this.MAX_SPEED);
+			else
+				this.velocity.scaleTo (this.velocity.length() - this.ACCELERATION);
 		}
   }
 
