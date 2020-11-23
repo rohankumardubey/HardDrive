@@ -522,7 +522,7 @@ public abstract class GameScene extends Scene {
 
     //get the zoom level based on the player's velocity
     double zoom = 1 / this.findEntities(Player.class).get(0).getVelocity().length();
-    imgG2d.scale (2, 2); //zoom, zoom);
+    imgG2d.scale (0.5, 0.5); //zoom, zoom);
 
 	 return imgG2d;
   }
