@@ -508,4 +508,22 @@ public abstract class GameScene extends Scene {
 			e.setFriction (this.frictionCoefficient);
 		}
 	}
+
+  /**
+   * Get the affine transformation, applying zoom
+   *
+   * @return the affine transformation
+   */
+  @Override
+  protected Graphics2D getTransform (BufferedImage viewImage) {
+
+	 //get the default transformation
+    Graphics2D imgG2d = super.getTransform (viewImage);
+
+    //get the zoom level based on the player's velocity
+    double zoom = this.findEntities(Player.class).get(0).getVelocity().length();
+    imgG2d.scale (zoom, zoom);
+
+	 return imgG2d;
+  }
 }

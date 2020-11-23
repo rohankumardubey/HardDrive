@@ -40,8 +40,23 @@ public abstract class PhysicsEntity extends HealthEntity
 
 	} //end Constructor
 
+	public Vector2d getPosition()
+	{
+		return new Vector2d (this.position);
+	}
+
+	public Vector2d getVelocity()
+	{
+		return new Vector2d (this.velocity);
+	}
+
+	public Vector2d getAcceleration()
+	{
+		return new Vector2d (this.acceleration);
+	}
+
 	/*
-		Called from GameScene subclass constructors.
+		Called from GameScene subclass setFriction().
 
 		Set master friction coefficient to the average of original friction
 		coefficient and the incoming friction coefficient from the scene.
