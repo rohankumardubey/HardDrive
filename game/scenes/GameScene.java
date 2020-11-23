@@ -521,8 +521,8 @@ public abstract class GameScene extends Scene {
     Graphics2D imgG2d = super.getTransform (viewImage);
 
     //get the zoom level based on the player's velocity
-    double zoom = this.findEntities(Player.class).get(0).getVelocity().length();
-    imgG2d.scale (zoom, zoom);
+    double zoom = 1 / this.findEntities(Player.class).get(0).getVelocity().length();
+    imgG2d.scale (2, 2); //zoom, zoom);
 
 	 return imgG2d;
   }
