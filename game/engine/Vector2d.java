@@ -62,8 +62,11 @@ public class Vector2d extends Point2d {
    * @param theta the angle in radians
    */
   public final void rotate(double theta) {
-    this.x = (this.x * Math.cos(theta)) - (this.y * Math.sin(theta));
-	 this.y = (this.x * Math.sin(theta)) + (this.y * Math.cos(theta));
+    double x = (this.x * Math.cos(theta)) - (this.y * Math.sin(theta));
+	 double y = (this.x * Math.sin(theta)) + (this.y * Math.cos(theta));
+
+	 this.x = x;
+	 this.y = y;
   }
 
   /**
@@ -154,6 +157,11 @@ public class Vector2d extends Point2d {
   *   @param length length to scale to
   */
   public final void scaleTo(double length) {
-    this.scaleBy (length / this.length());
+    if (this.length() == 0) {
+	   this.set (length, length);
+	}
+	else {
+	   this.scaleBy (length / this.length());
+	 }
   }
 }

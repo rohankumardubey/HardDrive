@@ -6,8 +6,7 @@ package game.scenes;
 public class Level6 extends GameScene {
 
   public Level6() {
-    super("circuit-bg", 6);
-	 this.setFriction(0.95);
+    super("circuit-bg", 6, 0.95);
   }
 
   @Override

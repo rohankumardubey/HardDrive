@@ -87,10 +87,12 @@ public abstract class PhysicsEntity extends HealthEntity
 	{
 		//get friction direction
 		this.friction.set (this.frictionCoefficient);
-		this.friction.rotate (this.angle);
 
 		//get friction magnitude
-		this.friction.scaleBy (this.weight);
+		this.friction.scaleBy (this.weight / this.mass);
+
+		//rotate velocity to original orientation
+		this.velocity.rotate (-1 * this.angle);
 
 		//make friction oppose movement
 		if (this.velocity.x > 0)
@@ -105,11 +107,6 @@ public abstract class PhysicsEntity extends HealthEntity
 
 		System.out.println ("(" + this.friction.x + ", " + this.friction.y + ")\n");
 
-		//friction currently a force; convert to acceleration
-		this.friction.scaleBy (1 / this.mass);
-
-		System.out.println ("(" + this.friction.x + ", " + this.friction.y + ")\n");
-
 		//apply friction without overshooting
 		if (Math.abs(this.friction.x) > (Math.abs(this.velocity.x)))
 			this.velocity.x = 0;
@@ -120,6 +117,9 @@ public abstract class PhysicsEntity extends HealthEntity
 			this.velocity.y = 0;
 		else
 			this.velocity.y += this.friction.y;
+
+		//rotate friction'd velocity to current orientation
+		this.velocity.rotate (this.angle);
 
 	} //end applyFriction()
 

@@ -6,9 +6,7 @@ package game.scenes;
 public class Level2 extends GameScene {
 
   public Level2() {
-    super("sand-bg", 2);
-
-	 this.setFriction(0.90);
+    super("sand-bg", 2, 0.90);
   }
 
   @Override
