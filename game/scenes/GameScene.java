@@ -42,6 +42,7 @@ public abstract class GameScene extends Scene {
 
   /// Zoom in and out with speed
   private double   zoomRate;
+  private double   currentZoom;
   private double[] recentSpeeds;
   private int      speedIndex = 0;
 
@@ -398,10 +399,33 @@ public abstract class GameScene extends Scene {
 
   @Override
   protected void onDraw(Graphics2D g2d) {
+//    calculateZoom();
     drawHud(g2d);
     drawZoomOut(g2d);
     drawFadeOut(g2d);
   }
+
+    /**
+     * Calculate the zoom level based on the player's speed
+	  */
+	 private void calculateZoom() {
+
+	   //update recentSpeeds with newest speed
+      recentSpeeds [this.speedIndex] =
+	     this.findEntities(Player.class).get(0).getVelocity().length();
+    
+	   this.speedIndex ++;
+	   this.speedIndex %= SPEED_MEMORY_SIZE;
+
+	   //get average of recentSpeeds
+      double avgSpeed = 0;
+	   for (double speed : recentSpeeds)
+	 	  avgSpeed += speed;
+      avgSpeed /= SPEED_MEMORY_SIZE;
+
+	   //calculate zoom level
+	   this.currentZoom = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
+    }
 
   /**
    * Draw the game heads-up display
@@ -535,32 +559,13 @@ public abstract class GameScene extends Scene {
    */
   @Override
   protected void transformView (Graphics2D imgG2d) {
-
-    /* Get the zoom level based on the player's velocity */
-
-	 //update recentSpeeds with newest speed
-    recentSpeeds [this.speedIndex] =
-	   this.findEntities(Player.class).get(0).getVelocity().length();
-    
-	 this.speedIndex ++;
-	 this.speedIndex %= SPEED_MEMORY_SIZE;
-
-	 //get average of recentSpeeds
-    double avgSpeed = 0;
-	 for (double speed : recentSpeeds)
-	 	avgSpeed += speed;
-    avgSpeed /= SPEED_MEMORY_SIZE;
-
-	 //calculate zoom level
-	 double zoom = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
-//	 double zoom = 0.5;
-
-	 //scale the view
-    imgG2d.scale (zoom, zoom);
-
 	 //move view so that car is in the center of the old view, which is now the
 	 //upper left area of the scaled view
+	 calculateZoom();
     super.transformView (imgG2d);
+
+	 //scale view
+	 imgG2d.scale (this.currentZoom, this.currentZoom);
 
 	 //move the view so that the car is in the top left corner of the scaled view
 	 imgG2d.translate (
@@ -570,8 +575,8 @@ public abstract class GameScene extends Scene {
 
 	 //move the view so that the car is in the middle of the scaled view
 	 imgG2d.translate (
-	 	(this.mainView.size.width  / zoom) / 2,
-		(this.mainView.size.height / zoom) / 2
+	 	(this.mainView.size.width  / this.currentZoom) / 2,
+		(this.mainView.size.height / this.currentZoom) / 2
     );
   }
 }
