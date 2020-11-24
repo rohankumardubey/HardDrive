@@ -109,7 +109,7 @@ public class Player extends PhysicsEntity {
 			this.frictionCoefficient.scaleTo (0);
 
 			//increase drift boost, with cap
-			if (this.driftBoost + this.velocity.length() > 2 * this.MAX_SPEED)
+			if (this.driftBoost + this.velocity.length() > 1.5 * this.MAX_SPEED)
 			{
 				this.driftBoost = (this.MAX_SPEED * 2) - this.velocity.length();
 			}
@@ -135,10 +135,14 @@ public class Player extends PhysicsEntity {
 		//enforce speed limit
 		if (this.velocity.length() > this.MAX_SPEED)
 		{
-			if (this.velocity.length() - ACCELERATION < this.MAX_SPEED)
+			System.out.println ("TOO FAST");
+			if (this.velocity.length() - (ACCELERATION * 2) < this.MAX_SPEED)
 				this.velocity.scaleTo (this.MAX_SPEED);
 			else
-				this.velocity.scaleTo (this.velocity.length() - ACCELERATION);
+			{
+				System.out.println (", SLOW DOWN\n");
+				this.velocity.scaleTo (this.velocity.length() - (ACCELERATION * 2));
+			}
 		}
   }
 
