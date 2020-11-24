@@ -19,6 +19,7 @@ public abstract class GameScene extends Scene {
   public static final Dimension VIEW_SIZE = new Dimension(640, 480);
 
   private static final int VIEW_THRESHHOLD     = 300;
+  private static final int SPEED_MEMORY_SIZE   = 15;
   private static final int NUM_ZOOM_OUT_FRAMES = 30;
   private static final int NUM_FADE_OUT_FRAMES = 30;
   private static final int SWOOPER_TIME        = 200;
@@ -39,6 +40,11 @@ public abstract class GameScene extends Scene {
   protected double gravity;
   private   double frictionCoefficient;
 
+  /// Zoom in and out with speed
+  private double   zoomRate;
+  private double[] recentSpeeds;
+  private int      speedIndex = 0;
+
   /**
    * Construct a new game scene
    *
@@ -58,6 +64,8 @@ public abstract class GameScene extends Scene {
     this.zoomFrameNumber     = 0;
     this.fadeFrameNumber     = 0;
     this.playerStartPosition = new Point2d();
+
+	 this.recentSpeeds = new double [SPEED_MEMORY_SIZE];
   }
 
   /**
@@ -97,8 +105,13 @@ public abstract class GameScene extends Scene {
   protected void onCreate() {
     resetLives();
     defineLevelTiles(this.getLevelLayout());
-	 this.broadcastFriction();
+	 broadcastFriction();
+	 computeZoomRate();
     recomputeWalls();
+
+	 //initialize recentSpeeds
+	 for (int i = 0; i < SPEED_MEMORY_SIZE; i++)
+	 	this.recentSpeeds[i] = 0;
 
     this.setTimer(-1, 1, true);
     this.setTimer(-3, 100, true);
@@ -508,22 +521,57 @@ public abstract class GameScene extends Scene {
 	}
 
   /**
+   * Calculate the rate at which zoom increases with velocity
+   */
+  public void computeZoomRate() {
+	 double playerMaxSpeed = this.findEntities(Player.class).get(0).getMaxSpeed();
+	 this.zoomRate = -0.5 / playerMaxSpeed;
+  }
+
+  /**
    * Get the affine transformation, applying zoom
    *
    * @return the affine transformation
    */
   @Override
-  protected Graphics2D getTransform (BufferedImage viewImage) {
+  protected void transformView (Graphics2D imgG2d) {
 
-	 //get the default transformation
-    Graphics2D imgG2d = super.getTransform (viewImage);
+    /* Get the zoom level based on the player's velocity */
 
-    //get the zoom level based on the player's velocity
-    double zoom = 1 / this.findEntities(Player.class).get(0).getVelocity().length();
-    imgG2d.scale (1, 1); //zoom, zoom);
+	 //update recentSpeeds with newest speed
+    recentSpeeds [this.speedIndex] =
+	   this.findEntities(Player.class).get(0).getVelocity().length();
+    
+	 this.speedIndex ++;
+	 this.speedIndex %= SPEED_MEMORY_SIZE;
 
-    imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
+	 //get average of recentSpeeds
+    double avgSpeed = 0;
+	 for (double speed : recentSpeeds)
+	 	avgSpeed += speed;
+    avgSpeed /= SPEED_MEMORY_SIZE;
 
-	 return imgG2d;
+	 //calculate zoom level
+	 double zoom = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
+//	 double zoom = 0.5;
+
+	 //scale the view
+    imgG2d.scale (zoom, zoom);
+
+	 //move view so that car is in the center of the old view, which is now the
+	 //upper left area of the scaled view
+    super.transformView (imgG2d);
+
+	 //move the view so that the car is in the top left corner of the scaled view
+	 imgG2d.translate (
+	 	-1 * this.mainView.size.width  / 2,
+		-1 * this.mainView.size.height / 2
+	 );
+
+	 //move the view so that the car is in the middle of the scaled view
+	 imgG2d.translate (
+	 	(this.mainView.size.width  / zoom) / 2,
+		(this.mainView.size.height / zoom) / 2
+    );
   }
 }

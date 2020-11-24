@@ -308,7 +308,8 @@ public abstract class Scene {
     BufferedImage viewImage = new BufferedImage(this.mainView.size.width, this.mainView.size.height,
                                                 BufferedImage.TYPE_INT_ARGB);
 	 // Get the affine transformation
-    Graphics2D imgG2d = this.getTransform (viewImage);  
+    Graphics2D imgG2d = (Graphics2D) viewImage.getGraphics();
+    this.transformView (imgG2d);
 
     // Save the affine transformation so drawing methods do NOT mess anything up
     final AffineTransform oldTransform = imgG2d.getTransform();
@@ -333,14 +334,11 @@ public abstract class Scene {
   }
 
   /**
-   * Get the affine transformation
+   * Transform the view to the correct size and location
    *
    * @return the affine transformation
    */
-  protected Graphics2D getTransform (BufferedImage viewImage) {
-    Graphics2D imgG2d       = (Graphics2D) viewImage.getGraphics();
+  protected void transformView (Graphics2D imgG2d) {
     imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
-
-	 return imgG2d;
   }
 }

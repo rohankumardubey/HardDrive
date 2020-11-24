@@ -22,7 +22,7 @@ public class Player extends PhysicsEntity {
   private double driftBoost = 0;
 
   public Player(Point2d position) {
-    super(new Vector2d (0.1, 10), PLAYER_MASS, PLAYER_HEALTH);
+    super(new Vector2d (0.1, 50), PLAYER_MASS, PLAYER_HEALTH);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -64,6 +64,15 @@ public class Player extends PhysicsEntity {
   }
 
   /**
+   * Get the max speed of the car
+   *
+   * @return the max speed
+   */
+  public double getMaxSpeed() {
+    return this.MAX_SPEED;
+ }
+
+  /**
    * Read keyboard input and change the player velocity and direction
    */
 	private void move() {
@@ -81,7 +90,7 @@ public class Player extends PhysicsEntity {
 		//get tangiental acceleration
 		this.acceleration = Vector2d.fromPolarCoordinates
 		(
-			this.ACCELERATION * (forward - backward),
+			ACCELERATION * (forward - backward),
 			this.angle
 		);
 
@@ -126,10 +135,10 @@ public class Player extends PhysicsEntity {
 		//enforce speed limit
 		if (this.velocity.length() > this.MAX_SPEED)
 		{
-			if (this.velocity.length() - this.ACCELERATION < this.MAX_SPEED)
+			if (this.velocity.length() - ACCELERATION < this.MAX_SPEED)
 				this.velocity.scaleTo (this.MAX_SPEED);
 			else
-				this.velocity.scaleTo (this.velocity.length() - this.ACCELERATION);
+				this.velocity.scaleTo (this.velocity.length() - ACCELERATION);
 		}
   }
 
