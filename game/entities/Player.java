@@ -22,7 +22,7 @@ public class Player extends PhysicsEntity {
   private double driftBoost = 0;
 
   public Player(Point2d position) {
-    super(new Vector2d (0.1, 50), PLAYER_MASS, PLAYER_HEALTH);
+    super(new Vector2d (0.1, 10), PLAYER_MASS, PLAYER_HEALTH);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
