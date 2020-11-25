@@ -3,7 +3,7 @@ package game.entities;
 import game.engine.*;
 import game.scenes.MainScene;
 
-public abstract class PhysicsEntity extends HealthEntity
+public abstract class PhysicsEntity extends Entity
 {
 	//pblc Point2d position inherited from Entity
 	public Vector2d velocity;
@@ -22,9 +22,9 @@ public abstract class PhysicsEntity extends HealthEntity
 	private Vector2d friction; // Current force of friction
 
 	// Constructor
-	public PhysicsEntity (Vector2d fricCoef, double mass, int health)
+	public PhysicsEntity (Vector2d fricCoef, double mass)
 	{
-		super (health);
+		super();
 
 		this.position     = new Vector2d();
 		this.velocity     = new Vector2d();
@@ -76,8 +76,6 @@ public abstract class PhysicsEntity extends HealthEntity
 	//apply kinematics and friction
 	protected void onStep()
 	{
-		super.onStep();
-
 		this.velocity.add (this.acceleration);
 		this.position.add (this.velocity);
 

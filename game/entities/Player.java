@@ -8,7 +8,7 @@ import game.scenes.GameScene;
 /**
  * Car that you control
  */
-public class Player extends PhysicsEntity {
+public class Player extends HealthEntity {
 
   // Constants
   private static final int    PLAYER_HEALTH =  25;
