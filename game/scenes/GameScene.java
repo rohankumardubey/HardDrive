@@ -42,6 +42,7 @@ public abstract class GameScene extends Scene {
 
   /// Zoom in and out with speed
   private double   zoomRate;
+  private double   zoomLevel = 1;
   private double[] recentSpeeds;
   private int      speedIndex = 0;
 
@@ -398,6 +399,7 @@ public abstract class GameScene extends Scene {
 
   @Override
   protected void onDraw(Graphics2D g2d) {
+    computeZoomLevel();
     drawHud(g2d);
     drawZoomOut(g2d);
     drawFadeOut(g2d);
@@ -407,8 +409,8 @@ public abstract class GameScene extends Scene {
    * Draw the game heads-up display
    */
   private void drawHud(Graphics2D g2d) {
-    g2d.translate(this.mainView.position.x, this.mainView.position.y);
 
+    this.undoTransformView (g2d);
     // Draw the number of lives left
     Lives lives    = this.getGame().getResouce(Lives.class);
     Rectangle rect = new Rectangle(40, 12, 150, 32);
@@ -427,7 +429,7 @@ public abstract class GameScene extends Scene {
       g2d.drawImage(dataFileImage, width - (12 + 40 * (i + 1)), 12, 32, 32, null);
     }
 
-    g2d.translate(-this.mainView.position.x, -this.mainView.position.y);
+    this.transformView (g2d);
   }
 
   /**
@@ -528,15 +530,8 @@ public abstract class GameScene extends Scene {
 	 this.zoomRate = -0.5 / playerMaxSpeed;
   }
 
-  /**
-   * Get the affine transformation, applying zoom
-   *
-   * @return the affine transformation
-   */
-  @Override
-  protected void transformView (Graphics2D imgG2d) {
-
     /* Get the zoom level based on the player's velocity */
+  private void computeZoomLevel() {
 
 	 //update recentSpeeds with newest speed
     recentSpeeds [this.speedIndex] =
@@ -552,11 +547,17 @@ public abstract class GameScene extends Scene {
     avgSpeed /= SPEED_MEMORY_SIZE;
 
 	 //calculate zoom level
-	 double zoom = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
-//	 double zoom = 0.5;
+	 this.zoomLevel = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
+  }
+
+  /**
+   * Get the affine transformation, applying zoom
+   */
+  @Override
+  protected void transformView (Graphics2D imgG2d) {
 
 	 //scale the view
-    imgG2d.scale (zoom, zoom);
+    imgG2d.scale (this.zoomLevel, this.zoomLevel);
 
 	 //move view so that car is in the center of the old view, which is now the
 	 //upper left area of the scaled view
@@ -570,8 +571,32 @@ public abstract class GameScene extends Scene {
 
 	 //move the view so that the car is in the middle of the scaled view
 	 imgG2d.translate (
-	 	(this.mainView.size.width  / zoom) / 2,
-		(this.mainView.size.height / zoom) / 2
+	 	(this.mainView.size.width  / this.zoomLevel) / 2,
+		(this.mainView.size.height / this.zoomLevel) / 2
     );
+  }
+
+  /**
+   * Undo affine transformation
+   */
+  private void undoTransformView (Graphics2D imgG2d) {
+
+	 //move the view so that the car is in the top left corner of the scaled view
+	 imgG2d.translate (
+	 	-1 * (this.mainView.size.width  / this.zoomLevel) / 2,
+		-1 * (this.mainView.size.height / this.zoomLevel) / 2
+    );
+
+	 //move the view so that the car is in the middle of the original view
+	 imgG2d.translate (
+	 	this.mainView.size.width  / 2,
+		this.mainView.size.height / 2
+	 );
+
+	 //translate backwards
+    imgG2d.translate(this.mainView.position.x, this.mainView.position.y);
+
+	 //un-scale the view
+    imgG2d.scale (1 / this.zoomLevel, 1 / this.zoomLevel);
   }
 }
