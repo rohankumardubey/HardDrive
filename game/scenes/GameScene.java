@@ -19,7 +19,7 @@ public abstract class GameScene extends Scene {
   public static final Dimension VIEW_SIZE = new Dimension(640, 480);
 
   private static final int VIEW_THRESHHOLD     = 300;
-  private static final int SPEED_MEMORY_SIZE   = 15;
+  private static final int SPEED_MEMORY_SIZE   = 20;
   private static final int NUM_ZOOM_OUT_FRAMES = 30;
   private static final int NUM_FADE_OUT_FRAMES = 30;
   private static final int SWOOPER_TIME        = 200;

@@ -58,15 +58,15 @@ public abstract class PhysicsEntity extends HealthEntity
 	/*
 		Called from GameScene subclass setFriction().
 
-		Set master friction coefficient to the average of original friction
+		Set master friction coefficient to the product of original friction
 		coefficient and the incoming friction coefficient from the scene.
 	*/
 	public void setFriction (double friction)
 	{
 		this.masterFrictionCoefficient.set
 		(
-			(this.originalFrictionCoefficient.x + friction) / 2,
-			(this.originalFrictionCoefficient.y + friction) / 2
+			this.originalFrictionCoefficient.x * friction,
+			this.originalFrictionCoefficient.y * friction
 		);
 
 		this.frictionCoefficient.set (this.masterFrictionCoefficient);

@@ -6,7 +6,7 @@ package game.scenes;
 public class Level5 extends GameScene {
 
   public Level5() {
-    super("rocky-bg", 5, 0.88);
+    super("rocky-bg", 5, 1.5);
   }
 
   @Override
