@@ -11,7 +11,7 @@ public class TitleScene extends Scene {
 
   private int hintIndex = 0;
 
-  private static final Font HINT_FONT = new Font("monospace", Font.BOLD, 16);
+  private static final Font HINT_FONT = new Font("monospace", Font.PLAIN, 18);
   private static final int HINT_DELAY = 75;
   private static final String[] HINTS = new String[] {
 
