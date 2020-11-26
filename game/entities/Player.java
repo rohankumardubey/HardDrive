@@ -21,6 +21,8 @@ public class Player extends PhysicsEntity {
 
   private double driftBoost = 0;
 
+  private boolean collidedWithWall;
+
   public Player(Point2d position) {
     super (PLAYER_HEALTH, new Vector2d (0.25, 50), PLAYER_MASS);
 
@@ -57,15 +59,13 @@ public class Player extends PhysicsEntity {
   @Override
   protected void onStep() {
     move();
-/*
+
 	 System.out.println ("-\n\nPosition: (" + this.position.x + ", " + this.position.y + ")\n");
 	 System.out.println ("Velocity: (" + this.velocity.x + ", " + this.velocity.y + ")\n");
 	 System.out.println ("Acceleration: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
 	 System.out.println ("Angle: " + this.angle);
-*/
 
     testForWallCollision();
-    testForBoundaryCollision();
   }
 
   /**
@@ -170,8 +170,6 @@ public class Player extends PhysicsEntity {
 	 {
       GameAssets.getLoadedSound("large-explosion").playSound();
 
-		System.out.print ("Healed " + momentum.length() + " from " + this.health + " to ");
-
 	   this.heal ((int) momentum.length());
 
 		System.out.println (this.health);
@@ -184,26 +182,41 @@ public class Player extends PhysicsEntity {
   }
 
   private void testForWallCollision() {
+	 boolean collision = false;
     for (Wall wall: this.getScene().findEntities(Wall.class)) {
-      if (this.isCollidingWith(wall)) { collideWithWall(); }
+      if (this.isCollidingWith(wall)) {
+	 System.out.println (this.collidedWithWall);
+		  collideWithWall(wall);
+		  collision = true;
+		}
     }
-  }
-
-  private void testForBoundaryCollision() {
-    Scene scene = this.getScene();
-    if (this.position.x < 0 || this.position.x > scene.size.width || this.position.y < 0 ||
-        this.position.y > scene.size.height) {
-      this.collideWithWall();
-    }
+	 this.collidedWithWall = collision;
+    System.out.println("Setting to " + collision);
+	 System.out.println (this.collidedWithWall);
   }
 
   /**
    * Action that occurs when the player collides with a wall
    */
-  private void collideWithWall() {
-    GameAssets.getLoadedSound("hit").playSound();
-    this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 3));
-    this.position.sub(this.velocity);
-    this.velocity.scale(-0.5);
+  private void collideWithWall(Wall wall) {
+	 	System.out.println("Colliding");
+	 if (this.collidedWithWall) {
+	 	System.out.println("Shunting");
+	   Vector2d shuntAngleVector = new Vector2d();
+	   shuntAngleVector.sub (this.position, wall.position);
+
+      Point2d shunt = Point2d.fromPolarCoordinates (
+	     (this.mask.size.width + this.mask.size.height) / 4,
+		  shuntAngleVector.polarAngle()
+	   );
+
+	   this.position.add (shunt);
+	 }
+    else {
+      GameAssets.getLoadedSound("hit").playSound();
+      this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 3));
+
+      this.velocity.scale(-0.5);
+	 }
   }
 }
