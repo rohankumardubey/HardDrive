@@ -123,7 +123,7 @@ public abstract class Entity implements Comparable<Entity> {
    * @param other   Other entity to check
    * @return        True if they are colliding
    */
-  protected boolean isCollidingWith(Entity other) {
+  public boolean isCollidingWith(Entity other) {
     if (!this.isVisible || !other.isVisible) { return false; }
     return this.mask.isCollidingWith(other.mask, this.position, other.position);
   }

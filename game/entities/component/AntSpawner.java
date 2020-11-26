@@ -10,9 +10,9 @@ import java.awt.image.*;
  * Spawns ants into the game
  */
 public class AntSpawner extends Component {
-  private final static    int ANT_SPAWNER_HEALTH   = 30;
-  private final static double ANT_SPAWNER_FRICTION = 15;
-  private final static double ANT_SPAWNER_MASS     = 50;
+  private final static    int ANT_SPAWNER_HEALTH   = 50;
+  private final static double ANT_SPAWNER_FRICTION = 2;
+  private final static double ANT_SPAWNER_MASS     = 20;
 
   private final static int MAX_ANTS        = 30;
   private final static int ANT_SPAWN_DELAY = 10;

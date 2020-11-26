@@ -10,9 +10,9 @@ import java.awt.image.*;
  */
 public class Chip extends Component {
 
-  private final static    int CHIP_HEALTH   = 30;
-  private final static double CHIP_FRICTION = 15;
-  private final static double CHIP_MASS     = 50;
+  private final static    int CHIP_HEALTH   = 50;
+  private final static double CHIP_FRICTION = 2;
+  private final static double CHIP_MASS     = 20;
   private final static Dimension SIZE =
       new Dimension(6 * GameScene.TILE_SIZE, 3 * GameScene.TILE_SIZE);
 

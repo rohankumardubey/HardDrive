@@ -10,7 +10,7 @@ import java.awt.*;
 public class Capacitor extends Component {
 
   private static final      int CAPACITOR_HEALTH   = 20;
-  private static final Vector2d CAPACITOR_FRICTION = new Vector2d (5, 10);
+  private static final Vector2d CAPACITOR_FRICTION = new Vector2d (1.5, 3);
   private static final   double CAPACITOR_MASS     = 20;
 
   private static final Dimension SIZE =

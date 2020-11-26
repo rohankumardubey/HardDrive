@@ -10,8 +10,8 @@ import java.awt.*;
 public class Transistor extends Component {
 
   private static final      int TRANSISTOR_HEALTH   = 13;
-  private static final Vector2d TRANSISTOR_FRICTION = new Vector2d (5, 15);
-  private static final   double TRANSISTOR_MASS     = 10;
+  private static final Vector2d TRANSISTOR_FRICTION = new Vector2d (0.2, 2);
+  private static final   double TRANSISTOR_MASS     = 1;
 
   private static final Dimension SIZE = new Dimension(GameScene.TILE_SIZE, 2 * GameScene.TILE_SIZE);
 

@@ -11,18 +11,18 @@ import game.scenes.GameScene;
 public class Player extends PhysicsEntity {
 
   // Constants
-  private static final int    PLAYER_HEALTH =  25;
+  private static final int    PLAYER_HEALTH =  50;
   private static final double   TURN_RADIUS = 120;
   private static final double  ACCELERATION = 3.0;
   private static final double     MAX_SPEED =  30;
   private static final int       MAX_DAMAGE =  20;
-  private static final double   PLAYER_MASS =  10;
+  private static final double   PLAYER_MASS =   5;
   private static Vector2d        DRIFT_REC;
 
   private double driftBoost = 0;
 
   public Player(Point2d position) {
-    super (PLAYER_HEALTH, new Vector2d (0.5, 25), PLAYER_MASS);
+    super (PLAYER_HEALTH, new Vector2d (0.25, 50), PLAYER_MASS);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -57,14 +57,14 @@ public class Player extends PhysicsEntity {
   @Override
   protected void onStep() {
     move();
-
+/*
 	 System.out.println ("-\n\nPosition: (" + this.position.x + ", " + this.position.y + ")\n");
 	 System.out.println ("Velocity: (" + this.velocity.x + ", " + this.velocity.y + ")\n");
 	 System.out.println ("Acceleration: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
 	 System.out.println ("Angle: " + this.angle);
+*/
 
     testForWallCollision();
-    testForComponentCollisions();
     testForBoundaryCollision();
   }
 
@@ -140,14 +140,10 @@ public class Player extends PhysicsEntity {
 		//enforce speed limit
 		if (this.velocity.length() > this.MAX_SPEED)
 		{
-			System.out.println ("TOO FAST");
 			if (this.velocity.length() - (ACCELERATION * 2) < this.MAX_SPEED)
 				this.velocity.scaleTo (this.MAX_SPEED);
 			else
-			{
-				System.out.println (", SLOW DOWN\n");
 				this.velocity.scaleTo (this.velocity.length() - (ACCELERATION * 2));
-			}
 		}
   }
 
@@ -162,26 +158,34 @@ public class Player extends PhysicsEntity {
     this.mask = sprite.getMask();
   }
 
-  protected void applyCollisionDamage (PhysicsEntity e)
+  //only take damage if other entity is not destroyed, and heal if it is
+  protected void applyCollisionDamages (PhysicsEntity e)
   {
-	 double health = e.getHealth();
-    e.hit ((int) this.getMomentum (PhysicsEntity.COLLISION_DAMAGE).length());
+	 Vector2d momentum = this.getMomentum (COLLISION_DAMAGE);
+	 momentum.sub (e.getMomentum (COLLISION_DAMAGE));
+
+    e.hit ((int) momentum.length());
 
 	 if (e.isDestroyed())
-	   this.heal ((int) health);
+	 {
+      GameAssets.getLoadedSound("large-explosion").playSound();
+
+		System.out.print ("Healed " + momentum.length() + " from " + this.health + " to ");
+
+	   this.heal ((int) momentum.length());
+
+		System.out.println (this.health);
+	 }
     else
-		this.hit ((int) e.getMomentum(PhysicsEntity.COLLISION_DAMAGE).length());
+	 {
+		this.hit ((int) momentum.length());
+      GameAssets.getLoadedSound("hit").playSound();
+	 }
   }
 
   private void testForWallCollision() {
     for (Wall wall: this.getScene().findEntities(Wall.class)) {
       if (this.isCollidingWith(wall)) { collideWithWall(); }
-    }
-  }
-
-  private void testForComponentCollisions() {
-    for (Component component: this.getScene().findEntities(Component.class)) {
-      if (this.isCollidingWith(component)) { collideWithComponent(component); }
     }
   }
 
@@ -201,26 +205,5 @@ public class Player extends PhysicsEntity {
     this.hit((int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, 3));
     this.position.sub(this.velocity);
     this.velocity.scale(-0.5);
-  }
-
-  /**
-   * Action that occurs when the player collides with a component
-   */
-  private void collideWithComponent(Component component) {
-    int damage = (int) Helpers.map(this.velocity.polarDistance(), 0, MAX_SPEED, 0, MAX_DAMAGE);
-
-    int currentHealth = component.getHealth();
-    component.hit(damage);
-    int healthLost = currentHealth - component.getHealth();
-
-    this.velocity.scale(1 - Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 0.1));
-    if (component.isDestroyed()) {
-      GameAssets.getLoadedSound("large-explosion").playSound();
-    } else {
-      GameAssets.getLoadedSound("hit").playSound();
-      this.hit((int) Helpers.map(healthLost, 0, MAX_DAMAGE, 0, 3));
-      this.position.sub(this.velocity);
-      this.velocity.scale(-0.5);
-    }
   }
 }

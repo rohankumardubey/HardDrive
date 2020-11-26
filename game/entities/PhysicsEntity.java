@@ -7,7 +7,7 @@ public abstract class PhysicsEntity extends HealthEntity
 {
 	//collision elasticity and damage
 	protected static final double COLLISION_ELASTICITY = 0.5;
-	protected static final double COLLISION_DAMAGE = 1;
+	protected static final double COLLISION_DAMAGE = 0.05;
 
 	//public Point2d position inherited from Entity
 	public Vector2d velocity;
@@ -140,7 +140,7 @@ public abstract class PhysicsEntity extends HealthEntity
 	} //end applyFriction()
 
 	//collide with another PhysicsEntity
-	protected void collideWith (PhysicsEntity e)
+	public void collideWith (PhysicsEntity e)
 	{
 		this.applyCollisionDamages (e);
 		this.applyCollisionForces  (e);
@@ -216,8 +216,11 @@ public abstract class PhysicsEntity extends HealthEntity
 	//apply the damage done by a force
 	protected void applyCollisionDamages (PhysicsEntity e)
 	{
-		e.hit ((int) this.getMomentum(COLLISION_DAMAGE).length());
-		this.hit ((int) e.getMomentum(COLLISION_DAMAGE).length());
+		Vector2d momentum = this.getMomentum (COLLISION_DAMAGE);
+		momentum.sub (e.getMomentum (COLLISION_DAMAGE));
+
+		e.hit    ((int) momentum.length());
+		this.hit ((int) momentum.length());
 	}
 
 } //end class PhysicsEntity

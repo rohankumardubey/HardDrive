@@ -11,7 +11,7 @@ public class Resistor extends Component {
 
   private static final      int RESISTOR_HEALTH   = 8;
   private static final Vector2d RESISTOR_FRICTION = new Vector2d (10, 5);
-  private static final   double RESISTOR_MASS     = 5;
+  private static final   double RESISTOR_MASS     = 1;
   private static final Dimension SIZE = new Dimension(3 * GameScene.TILE_SIZE, GameScene.TILE_SIZE);
 
   public Resistor(Point2d position, boolean isVertical) {

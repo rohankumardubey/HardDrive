@@ -8,6 +8,7 @@ import game.entities.walls.*;
 import game.resources.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.util.ArrayList;
 
 /**
  * Parent class of all game levels
@@ -332,9 +333,42 @@ public abstract class GameScene extends Scene {
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
     if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
 
+	 checkPhysicsCollisions();
     moveViewToPlayer();
     testIfAllDataFilesDestroyed();
   }
+
+  //detect and resolve all collisions between PhysicsEntities
+  private void checkPhysicsCollisions() {
+    Player player = this.findFirstEntity(Player.class);
+	 if (player == null) return;
+
+    ArrayList<PhysicsEntity> physicsEntities = this.findEntities (PhysicsEntity.class);
+
+	 int size = physicsEntities.size();
+
+	 //for each PhysicsEntity
+	 for (int i = 0; i < size; i++)
+	 {
+		if (physicsEntities.get(i) != player)
+		{
+		  //check if the player is colliding with it
+	     if (player.isCollidingWith (physicsEntities.get(i)))
+		    player.collideWith (physicsEntities.get(i));
+
+		  //check if it is colliding with every remaining non-player PhysicsEntity
+	     for (int j = i + 1; j < size; j++)
+		  {
+		    if (physicsEntities.get(j) != player)
+			 {
+		      if (physicsEntities.get(i).isCollidingWith(physicsEntities.get(j)))
+		        physicsEntities.get(i).collideWith(physicsEntities.get(j));
+          }
+        }
+		}
+	 }
+  }
+
 
   /**
    * Move the view around to scroll with the player
@@ -526,7 +560,7 @@ public abstract class GameScene extends Scene {
    * Calculate the rate at which zoom increases with velocity
    */
   public void computeZoomRate() {
-	 double playerMaxSpeed = this.findEntities(Player.class).get(0).getMaxSpeed();
+	 double playerMaxSpeed = this.findFirstEntity(Player.class).getMaxSpeed();
 	 this.zoomRate = -0.5 / playerMaxSpeed;
   }
 
@@ -534,8 +568,11 @@ public abstract class GameScene extends Scene {
   private void computeZoomLevel() {
 
 	 //update recentSpeeds with newest speed
-    recentSpeeds [this.speedIndex] =
-	   this.findEntities(Player.class).get(0).getVelocity().length();
+    Player player = this.findFirstEntity(Player.class);
+	 if (player == null)
+      recentSpeeds [this.speedIndex] = 0;
+	 else
+      recentSpeeds [this.speedIndex] = player.getVelocity().length();
     
 	 this.speedIndex ++;
 	 this.speedIndex %= SPEED_MEMORY_SIZE;
