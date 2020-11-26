@@ -1,6 +1,7 @@
 package game.entities;
 
 import game.engine.*;
+import game.scenes.GameScene;
 import java.awt.Dimension;
 
 /**
@@ -62,6 +63,11 @@ public abstract class PhysicsEntity extends HealthEntity {
 
   public Vector2d getAcceleration() {
     return new Vector2d(this.acceleration);
+  }
+
+  protected void onCreate() {
+    GameScene scene = (GameScene) this.getScene();
+    this.setFriction(scene.getFriction());
   }
 
   /*

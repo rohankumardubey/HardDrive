@@ -1,9 +1,7 @@
 package game.entities;
 
 import game.engine.*;
-import game.entities.component.*;
 import game.entities.walls.*;
-import game.scenes.GameScene;
 
 /**
  * Car that you control
@@ -14,8 +12,7 @@ public class Player extends PhysicsEntity {
   private static final int PLAYER_HEALTH   = 100;
   private static final double TURN_RADIUS  = 120;
   private static final double ACCELERATION = 3.0;
-  private static final double MAX_SPEED    = 30;
-  private static final int MAX_DAMAGE      = 20;
+  public static final double MAX_SPEED     = 30;
   private static final double PLAYER_MASS  = 5;
   private static Vector2d DRIFT_REC;
 
@@ -43,9 +40,6 @@ public class Player extends PhysicsEntity {
   }
 
   @Override
-  protected void onCreate() {}
-
-  @Override
   protected void onDestroy() {
     GameAssets.getLoadedSound("small-explosion").playSound();
     this.getScene().createEntity(
@@ -59,15 +53,6 @@ public class Player extends PhysicsEntity {
   protected void onStep() {
     move();
     testForWallCollision();
-  }
-
-  /**
-   * Get the max speed of the car
-   *
-   * @return the max speed
-   */
-  public double getMaxSpeed() {
-    return this.MAX_SPEED;
   }
 
   /**

@@ -40,6 +40,7 @@ public class AntSpawner extends Component {
 
   @Override
   protected void onCreate() {
+    super.onCreate();
     this.setTimer(0, ANT_SPAWN_DELAY, true);
   }
 

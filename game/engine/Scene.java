@@ -198,7 +198,7 @@ public abstract class Scene {
   /**
    * Internal method to create new entities in the game
    */
-  protected final void createEntities() {
+  final void createEntities() {
     if (this.toCreate.size() == 0) { return; }
 
     // Add every entity to the map
@@ -309,7 +309,7 @@ public abstract class Scene {
                                                 BufferedImage.TYPE_INT_ARGB);
     // Get the affine transformation
     Graphics2D imgG2d = (Graphics2D) viewImage.getGraphics();
-    this.transformView(imgG2d);
+    imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
 
     // Save the affine transformation so drawing methods do NOT mess anything up
     final AffineTransform oldTransform = imgG2d.getTransform();
