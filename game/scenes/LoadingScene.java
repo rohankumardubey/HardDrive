@@ -3,6 +3,7 @@ package game.scenes;
 import game.engine.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Scene effect to show logging into the game
@@ -14,6 +15,39 @@ public class LoadingScene extends Scene {
 
   private static final Font GRAPHICS_FONT   = new Font("monospace", Font.PLAIN, 40);
   private static final Color GRAPHICS_COLOR = new Color(0, 255, 0);
+
+  private static final Font HINT_FONT = new Font ("monospace", Font.PLAIN, 20);
+  private int hintIndex = 0;
+  private static final String[] HINTS = new String[]
+  {
+
+
+
+
+
+
+
+    "Hold D to drift.",
+	 "Drifting completely eliminates friction.",
+	 "Drift around corners for a speed boost at the end!",
+	 "The longer you drift, the bigger the speed boost!",
+	 "Destroying a component heals you more if you hit it at higher speeds.",
+	 "You only take damage from hitting a component if it doesn't break.",
+	 "Drive through a large group of small components to quickly restore health.",
+	 "Some obstacles are indestructible. Watch out!", 
+	 "Try drifting without accelerating to turn around without changing direction.",
+	 "It takes a couple seconds to completely recover from a drift.",
+	 "If you hit a boundary, you'll bounce off without taking damage.",
+	 "The faster you're going when you hit a component, the more damage it takes.",
+	 "Try drift boosting into components to deal extra damage!",
+	 "Be careful; not every environment has the same friction!",
+	 "Watch out for Anti-Viruses!",
+	 "Drive faster to see more of the environment and find data files more easily.",
+	 "Drift and accelerate while staying aimed at a specific point to do donuts!",
+	 "Some computer chips can spawn enemies.",
+	 "Cylindrical components roll more easily than they slide.",
+	 "Try to avoid heavy components; some of them can't be destroyed in one hit!"
+  };
 
   // Timers
   private static final int TYPING_TIMER     = 0;
@@ -44,6 +78,8 @@ public class LoadingScene extends Scene {
   protected void onCreate() {
     GameAssets.getLoadedSound("typing").playSound();
     this.setTimer(TYPING_TIMER, TYPING_SPEED, true);
+    this.hintIndex = 8;
+    //this.hintIndex = ThreadLocalRandom.current().nextInt(0, HINTS.length);
   }
 
   @Override
@@ -109,6 +145,10 @@ public class LoadingScene extends Scene {
     // Draw the server text
     Helpers.drawCenteredString(g2d, line1, new Rectangle(0, 75, 640, 150), GRAPHICS_FONT);
     Helpers.drawCenteredString(g2d, line2, new Rectangle(0, 150, 640, 250), GRAPHICS_FONT);
+
+	 // Draw hint
+    Helpers.drawCenteredString(g2d,  "HINT:", new Rectangle(0, 300, 640, 150), HINT_FONT);
+    Helpers.drawCenteredString(g2d, HINTS[hintIndex], new Rectangle(0, 330, 640, 150), HINT_FONT);
 
     // Draw the binary text
     if (this.textOpacity < 1.0) {
