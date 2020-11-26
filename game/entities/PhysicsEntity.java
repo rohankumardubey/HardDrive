@@ -2,6 +2,7 @@ package game.entities;
 
 import game.engine.*;
 import game.scenes.MainScene;
+import java.awt.Dimension;
 
 public abstract class PhysicsEntity extends HealthEntity
 {
@@ -94,11 +95,96 @@ public abstract class PhysicsEntity extends HealthEntity
 		this.angle += this.angularVelocity;
 		this.sprite.addAngleRadians (this.angularVelocity);
 
+		this.checkBoundaryCollision();
+
 		this.applyFriction();
 
 		this.mask = sprite.getMask();
 
 	} //end onStep()
+
+	//don't let the entity go out of the map
+	protected void checkBoundaryCollision()
+	{
+		Scene scene = this.getScene();
+
+		if (this.position.x < 0 || this.position.x > scene.size.width)
+		{
+			GameAssets.getLoadedSound("hit").playSound();
+
+			//reflect about y-axis
+			this.velocity.x *= -0.5;
+
+			this.angle -= Math.toRadians(90);
+			this.angle *= -1;
+			this.angle += Math.toRadians(90);
+
+			this.sprite.setAngleRadians (this.angle);
+
+			//teleport back inside
+			if (this.position.x < 0)
+			{
+				this.getScene().createEntity (
+					new BinaryExplosion (
+						new Point2d (0, this.position.y),
+						new Dimension (50, 50)
+					)
+				);
+
+				this.position.x += this.mask.size.width;
+			}
+			else
+			{
+				this.getScene().createEntity (
+					new BinaryExplosion (
+						new Point2d (scene.size.width, this.position.y),
+						new Dimension (50, 50)
+					)
+				);
+
+				this.position.x -= this.mask.size.width;
+			}
+		}
+
+		if (this.position.y < 0 || this.position.y > scene.size.height)
+		{
+			GameAssets.getLoadedSound("hit").playSound();
+			this.getScene().createEntity (
+				new BinaryExplosion (this.position, new Dimension (50, 50))
+			);
+
+			//reflect about y-axis
+
+			//reflect about x-axis
+			this.velocity.y *= -0.5;
+			this.angle *= -1;
+			this.sprite.setAngleRadians (this.angle);
+
+			//teleport back inside
+			if (this.position.y < 0)
+			{
+				this.getScene().createEntity (
+					new BinaryExplosion (
+						new Point2d (this.position.x, 0),
+						new Dimension (50, 50)
+					)
+				);
+
+				this.position.y += this.mask.size.height;
+			}
+			else
+			{
+				this.getScene().createEntity (
+					new BinaryExplosion (
+						new Point2d (this.position.x, scene.size.height),
+						new Dimension (50, 50)
+					)
+				);
+
+				this.position.y -= this.mask.size.height;
+			}
+		}
+	}
 
 	//apply friction
 	protected void applyFriction()
