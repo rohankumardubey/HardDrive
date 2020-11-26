@@ -9,15 +9,15 @@ import java.awt.*;
  */
 public class Capacitor extends Component {
 
-  private static final      int CAPACITOR_HEALTH   = 20;
-  private static final Vector2d CAPACITOR_FRICTION = new Vector2d (1.5, 3);
-  private static final   double CAPACITOR_MASS     = 20;
+  private static final int CAPACITOR_HEALTH        = 20;
+  private static final Vector2d CAPACITOR_FRICTION = new Vector2d(1.5, 3);
+  private static final double CAPACITOR_MASS       = 20;
 
   private static final Dimension SIZE =
       new Dimension(2 * GameScene.TILE_SIZE, GameScene.TILE_SIZE * 3);
 
   public Capacitor(Point2d position) {
-    super (CAPACITOR_HEALTH, CAPACITOR_FRICTION, CAPACITOR_MASS);
+    super(CAPACITOR_HEALTH, CAPACITOR_FRICTION, CAPACITOR_MASS);
 
     this.sprite.addFrames(GameAssets.getLoadedImage("capacitor"));
 

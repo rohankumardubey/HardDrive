@@ -39,35 +39,34 @@ public abstract class GameScene extends Scene {
 
   /// Physics
   protected double gravity;
-  private   double frictionCoefficient;
+  private double frictionCoefficient;
 
   /// Zoom in and out with speed
-  private double   zoomRate;
-  private double   zoomLevel = 1;
+  private double zoomRate;
+  private double zoomLevel = 1;
   private double[] recentSpeeds;
-  private int      speedIndex = 0;
+  private int speedIndex = 0;
 
   /**
    * Construct a new game scene
    *
    * @param background  Background type for the scene
    */
-  public GameScene(String background, int level,/* double gravity,*/ double friction)
-  {
+  public GameScene(String background, int level, /* double gravity,*/ double friction) {
     super(640, 480);
     this.mainView.size.setSize(VIEW_SIZE);
 
     this.background.addFrames(GameAssets.getLoadedImage(background));
     this.background.type = BackgroundType.Tiled;
 
-    this.level               = level;
-//	 this.gravity             = gravity;
-	 this.frictionCoefficient = friction;
+    this.level = level;
+    //	 this.gravity             = gravity;
+    this.frictionCoefficient = friction;
     this.zoomFrameNumber     = 0;
     this.fadeFrameNumber     = 0;
     this.playerStartPosition = new Point2d();
 
-	 this.recentSpeeds = new double [SPEED_MEMORY_SIZE];
+    this.recentSpeeds = new double[SPEED_MEMORY_SIZE];
   }
 
   /**
@@ -95,8 +94,7 @@ public abstract class GameScene extends Scene {
   /**
    * Get the friction constant associated with this room
    */
-  public double getFriction()
-  {
+  public double getFriction() {
     return this.frictionCoefficient;
   }
 
@@ -107,13 +105,12 @@ public abstract class GameScene extends Scene {
   protected void onCreate() {
     resetLives();
     defineLevelTiles(this.getLevelLayout());
-	 broadcastFriction();
-	 computeZoomRate();
+    broadcastFriction();
+    computeZoomRate();
     recomputeWalls();
 
-	 //initialize recentSpeeds
-	 for (int i = 0; i < SPEED_MEMORY_SIZE; i++)
-	 	this.recentSpeeds[i] = 0;
+    // initialize recentSpeeds
+    for (int i = 0; i < SPEED_MEMORY_SIZE; i++) this.recentSpeeds[i] = 0;
 
     this.setTimer(-1, 1, true);
     this.setTimer(-3, 100, true);
@@ -333,42 +330,37 @@ public abstract class GameScene extends Scene {
     if (game.isKeyPressed(Key.ESCAPE)) { game.end(); }
     if (game.hasKeyBeenPressed(Key.F4)) { game.toggleFullscreen(); }
 
-	 checkPhysicsCollisions();
+    checkPhysicsCollisions();
     moveViewToPlayer();
     testIfAllDataFilesDestroyed();
   }
 
-  //detect and resolve all collisions between PhysicsEntities
+  // detect and resolve all collisions between PhysicsEntities
   private void checkPhysicsCollisions() {
     Player player = this.findFirstEntity(Player.class);
-	 if (player == null) return;
+    if (player == null) return;
 
-    ArrayList<PhysicsEntity> physicsEntities = this.findEntities (PhysicsEntity.class);
+    ArrayList<PhysicsEntity> physicsEntities = this.findEntities(PhysicsEntity.class);
 
-	 int size = physicsEntities.size();
+    int size = physicsEntities.size();
 
-	 //for each PhysicsEntity
-	 for (int i = 0; i < size; i++)
-	 {
-		if (physicsEntities.get(i) != player)
-		{
-		  //check if the player is colliding with it
-	     if (player.isCollidingWith (physicsEntities.get(i)))
-		    player.collideWith (physicsEntities.get(i));
+    // for each PhysicsEntity
+    for (int i = 0; i < size; i++) {
+      if (physicsEntities.get(i) != player) {
+        // check if the player is colliding with it
+        if (player.isCollidingWith(physicsEntities.get(i)))
+          player.collideWith(physicsEntities.get(i));
 
-		  //check if it is colliding with every remaining non-player PhysicsEntity
-	     for (int j = i + 1; j < size; j++)
-		  {
-		    if (physicsEntities.get(j) != player)
-			 {
-		      if (physicsEntities.get(i).isCollidingWith(physicsEntities.get(j)))
-		        physicsEntities.get(i).collideWith(physicsEntities.get(j));
+        // check if it is colliding with every remaining non-player PhysicsEntity
+        for (int j = i + 1; j < size; j++) {
+          if (physicsEntities.get(j) != player) {
+            if (physicsEntities.get(i).isCollidingWith(physicsEntities.get(j)))
+              physicsEntities.get(i).collideWith(physicsEntities.get(j));
           }
         }
-		}
-	 }
+      }
+    }
   }
-
 
   /**
    * Move the view around to scroll with the player
@@ -444,7 +436,7 @@ public abstract class GameScene extends Scene {
    */
   private void drawHud(Graphics2D g2d) {
 
-    this.undoTransformView (g2d);
+    this.undoTransformView(g2d);
     // Draw the number of lives left
     Lives lives    = this.getGame().getResouce(Lives.class);
     Rectangle rect = new Rectangle(40, 12, 150, 32);
@@ -463,7 +455,7 @@ public abstract class GameScene extends Scene {
       g2d.drawImage(dataFileImage, width - (12 + 40 * (i + 1)), 12, 32, 32, null);
     }
 
-    this.transformView (g2d);
+    this.transformView(g2d);
   }
 
   /**
@@ -546,94 +538,81 @@ public abstract class GameScene extends Scene {
   /**
    * Set the friction coefficient and notify PhysicsEntities
    */
-	protected void broadcastFriction()
-	{
-		super.createEntities();
+  protected void broadcastFriction() {
+    super.createEntities();
 
-      for (PhysicsEntity e: this.findEntities (PhysicsEntity.class))
-		{
-			e.setFriction (this.frictionCoefficient);
-		}
-	}
+    for (PhysicsEntity e: this.findEntities(PhysicsEntity.class)) {
+      e.setFriction(this.frictionCoefficient);
+    }
+  }
 
   /**
    * Calculate the rate at which zoom increases with velocity
    */
   public void computeZoomRate() {
-	 double playerMaxSpeed = this.findFirstEntity(Player.class).getMaxSpeed();
-	 this.zoomRate = -0.5 / playerMaxSpeed;
+    double playerMaxSpeed = this.findFirstEntity(Player.class).getMaxSpeed();
+    this.zoomRate         = -0.5 / playerMaxSpeed;
   }
 
-    /* Get the zoom level based on the player's velocity */
+  /* Get the zoom level based on the player's velocity */
   private void computeZoomLevel() {
 
-	 //update recentSpeeds with newest speed
+    // update recentSpeeds with newest speed
     Player player = this.findFirstEntity(Player.class);
-	 if (player == null)
-      recentSpeeds [this.speedIndex] = 0;
-	 else
-      recentSpeeds [this.speedIndex] = player.getVelocity().length();
-    
-	 this.speedIndex ++;
-	 this.speedIndex %= SPEED_MEMORY_SIZE;
+    if (player == null)
+      recentSpeeds[this.speedIndex] = 0;
+    else
+      recentSpeeds[this.speedIndex] = player.getVelocity().length();
 
-	 //get average of recentSpeeds
+    this.speedIndex++;
+    this.speedIndex %= SPEED_MEMORY_SIZE;
+
+    // get average of recentSpeeds
     double avgSpeed = 0;
-	 for (double speed : recentSpeeds)
-	 	avgSpeed += speed;
+    for (double speed: recentSpeeds) avgSpeed += speed;
     avgSpeed /= SPEED_MEMORY_SIZE;
 
-	 //calculate zoom level
-	 this.zoomLevel = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
+    // calculate zoom level
+    this.zoomLevel = Math.max((avgSpeed * this.zoomRate) + 1, 0.25);
   }
 
   /**
    * Get the affine transformation, applying zoom
    */
   @Override
-  protected void transformView (Graphics2D imgG2d) {
+  protected void transformView(Graphics2D imgG2d) {
 
-	 //scale the view
-    imgG2d.scale (this.zoomLevel, this.zoomLevel);
+    // scale the view
+    imgG2d.scale(this.zoomLevel, this.zoomLevel);
 
-	 //move view so that car is in the center of the old view, which is now the
-	 //upper left area of the scaled view
-    super.transformView (imgG2d);
+    // move view so that car is in the center of the old view, which is now the
+    // upper left area of the scaled view
+    super.transformView(imgG2d);
 
-	 //move the view so that the car is in the top left corner of the scaled view
-	 imgG2d.translate (
-	 	-1 * this.mainView.size.width  / 2,
-		-1 * this.mainView.size.height / 2
-	 );
+    // move the view so that the car is in the top left corner of the scaled view
+    imgG2d.translate(-1 * this.mainView.size.width / 2, -1 * this.mainView.size.height / 2);
 
-	 //move the view so that the car is in the middle of the scaled view
-	 imgG2d.translate (
-	 	(this.mainView.size.width  / this.zoomLevel) / 2,
-		(this.mainView.size.height / this.zoomLevel) / 2
-    );
+    // move the view so that the car is in the middle of the scaled view
+    imgG2d.translate((this.mainView.size.width / this.zoomLevel) / 2,
+                     (this.mainView.size.height / this.zoomLevel) / 2);
   }
 
   /**
    * Undo affine transformation
    */
-  private void undoTransformView (Graphics2D imgG2d) {
+  private void undoTransformView(Graphics2D imgG2d) {
 
-	 //move the view so that the car is in the top left corner of the scaled view
-	 imgG2d.translate (
-	 	-1 * (this.mainView.size.width  / this.zoomLevel) / 2,
-		-1 * (this.mainView.size.height / this.zoomLevel) / 2
-    );
+    // move the view so that the car is in the top left corner of the scaled view
+    imgG2d.translate(-1 * (this.mainView.size.width / this.zoomLevel) / 2,
+                     -1 * (this.mainView.size.height / this.zoomLevel) / 2);
 
-	 //move the view so that the car is in the middle of the original view
-	 imgG2d.translate (
-	 	this.mainView.size.width  / 2,
-		this.mainView.size.height / 2
-	 );
+    // move the view so that the car is in the middle of the original view
+    imgG2d.translate(this.mainView.size.width / 2, this.mainView.size.height / 2);
 
-	 //translate backwards
+    // translate backwards
     imgG2d.translate(this.mainView.position.x, this.mainView.position.y);
 
-	 //un-scale the view
-    imgG2d.scale (1 / this.zoomLevel, 1 / this.zoomLevel);
+    // un-scale the view
+    imgG2d.scale(1 / this.zoomLevel, 1 / this.zoomLevel);
   }
 }

@@ -307,9 +307,9 @@ public abstract class Scene {
     // Only draw to the main view
     BufferedImage viewImage = new BufferedImage(this.mainView.size.width, this.mainView.size.height,
                                                 BufferedImage.TYPE_INT_ARGB);
-	 // Get the affine transformation
+    // Get the affine transformation
     Graphics2D imgG2d = (Graphics2D) viewImage.getGraphics();
-    this.transformView (imgG2d);
+    this.transformView(imgG2d);
 
     // Save the affine transformation so drawing methods do NOT mess anything up
     final AffineTransform oldTransform = imgG2d.getTransform();
@@ -338,7 +338,7 @@ public abstract class Scene {
    *
    * @return the affine transformation
    */
-  protected void transformView (Graphics2D imgG2d) {
+  protected void transformView(Graphics2D imgG2d) {
     imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
   }
 }

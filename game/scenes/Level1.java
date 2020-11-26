@@ -165,5 +165,4 @@ public class Level1 extends GameScene {
         "                                                                                                                                                                                                        ",
     };
   }
-
 }

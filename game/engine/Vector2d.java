@@ -63,10 +63,10 @@ public class Vector2d extends Point2d {
    */
   public final void rotate(double theta) {
     double x = (this.x * Math.cos(theta)) - (this.y * Math.sin(theta));
-	 double y = (this.x * Math.sin(theta)) + (this.y * Math.cos(theta));
+    double y = (this.x * Math.sin(theta)) + (this.y * Math.cos(theta));
 
-	 this.x = x;
-	 this.y = y;
+    this.x = x;
+    this.y = y;
   }
 
   /**
@@ -135,33 +135,32 @@ public class Vector2d extends Point2d {
    *
    * @param t1 the first point
    * @param t2 the second point
-	* @return   the sum of the two points
+   * @return   the sum of the two points
    */
   public static final Vector2d add(Vector2d v1, Vector2d v2) {
-    return new Vector2d (v1.x + v2.x, v1.y + v2.y);
+    return new Vector2d(v1.x + v2.x, v1.y + v2.y);
   }
 
- /**
-  *   Scale by the given factor.
-  *
-  *   @param scalar scaling factor
-  */
+  /**
+   *   Scale by the given factor.
+   *
+   *   @param scalar scaling factor
+   */
   public final void scaleBy(double scalar) {
     this.x *= scalar;
     this.y *= scalar;
   }
 
- /**
-  *   Scale to the given length; direction reverses on negative input.
-  *
-  *   @param length length to scale to
-  */
+  /**
+   *   Scale to the given length; direction reverses on negative input.
+   *
+   *   @param length length to scale to
+   */
   public final void scaleTo(double length) {
     if (this.length() == 0) {
-	   this.set (length, length);
-	}
-	else {
-	   this.scaleBy (length / this.length());
-	 }
+      this.set(length, length);
+    } else {
+      this.scaleBy(length / this.length());
+    }
   }
 }

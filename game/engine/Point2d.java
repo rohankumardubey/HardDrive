@@ -74,10 +74,10 @@ public class Point2d extends Point2D.Double {
    *
    * @param t1 the first point
    * @param t2 the second point
-	* @return   the sum of the two points
+   * @return   the sum of the two points
    */
   public static final Point2d add(Point2d t1, Point2d t2) {
-    return new Point2d (t1.x + t2.x, t1.y + t2.y);
+    return new Point2d(t1.x + t2.x, t1.y + t2.y);
   }
 
   /**
