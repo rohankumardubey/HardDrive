@@ -10,7 +10,7 @@ public class DataFile extends Component {
 
   private static final int TILE_SIZE = 2;
 
-  private static final    int DATA_FILE_HEALTH   = 18;
+  private static final    int DATA_FILE_HEALTH   = 1;
   private static final double DATA_FILE_FRICTION = 100;
   private static final double DATA_FILE_MASS     = 100;
 

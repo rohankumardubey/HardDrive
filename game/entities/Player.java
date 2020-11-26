@@ -11,7 +11,7 @@ import game.scenes.GameScene;
 public class Player extends PhysicsEntity {
 
   // Constants
-  private static final int    PLAYER_HEALTH =  50;
+  private static final int    PLAYER_HEALTH = 100;
   private static final double   TURN_RADIUS = 120;
   private static final double  ACCELERATION = 3.0;
   private static final double     MAX_SPEED =  30;
