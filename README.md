@@ -1,6 +1,10 @@
-# CSCI-437 Fall 2020 - Final Project
+# Hard Drive
 
-"Hard Drive"
+CSCI-437 Fall 2020 - Final Project
+
+Game created by Bryan McClain and Caleb Wilson.
+
+The game is also available on [Itch](https://comprosoft.itch.io/hard-drive).
 
 <br />
 
@@ -61,6 +65,7 @@ The basic game controls are as follows:
 - `Down` - Reverse and drive backward
 - `Right` - Spin the car clockwise
 - `Left` - Spin the car counter-clockwise
+- `D` - Hold to enable drift
 - `F4` - Toggle fullscreen mode
 - `Escape` - Close the game
 
@@ -168,6 +173,7 @@ The game defines several abstract entities that are subclassed into concrete typ
 The antivirus entities will be explained in more detail below.
 
 - **HealthEntity** - Abstract entity that also has a health counter. It automatically draws the health bar on top of the entity sprite.
+- **PhysicsEntity** - Abstract entity that encapsulates the physics engine.
 - **Player** - Player that you control in the game.
 - **BinaryExplosion** - Cool binary effect that displays when you destory components or antiviruses
 - **PlayerExplosion** - Special case of `BinaryExplosion` that respawns the player when the animation finishes
