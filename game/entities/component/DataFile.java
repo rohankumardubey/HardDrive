@@ -9,10 +9,13 @@ import game.scenes.*;
 public class DataFile extends Component {
 
   private static final int TILE_SIZE = 2;
-  private static final int HEALTH    = 18;
+
+  private static final    int DATA_FILE_HEALTH   = 18;
+  private static final double DATA_FILE_FRICTION = 100;
+  private static final double DATA_FILE_MASS     = 100;
 
   public DataFile(Point2d position) {
-    super(HEALTH);
+    super (DATA_FILE_HEALTH, DATA_FILE_FRICTION, DATA_FILE_MASS);
 
     this.sprite.addFrames(GameAssets.getLoadedImage("data-file"));
     this.sprite.size.setSize(GameScene.TILE_SIZE * TILE_SIZE, GameScene.TILE_SIZE * TILE_SIZE);

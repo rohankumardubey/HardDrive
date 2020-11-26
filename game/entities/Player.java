@@ -22,7 +22,7 @@ public class Player extends PhysicsEntity {
   private double driftBoost = 0;
 
   public Player(Point2d position) {
-    super(new Vector2d (0.5, 25), PLAYER_MASS, PLAYER_HEALTH);
+    super (PLAYER_HEALTH, new Vector2d (0.5, 25), PLAYER_MASS);
 
     // Initialize player size and sprite
     this.sprite.addFrames(GameAssets.getLoadedImage("car"));
@@ -57,6 +57,11 @@ public class Player extends PhysicsEntity {
   @Override
   protected void onStep() {
     move();
+
+	 System.out.println ("-\n\nPosition: (" + this.position.x + ", " + this.position.y + ")\n");
+	 System.out.println ("Velocity: (" + this.velocity.x + ", " + this.velocity.y + ")\n");
+	 System.out.println ("Acceleration: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
+	 System.out.println ("Angle: " + this.angle);
 
     testForWallCollision();
     testForComponentCollisions();
@@ -155,6 +160,17 @@ public class Player extends PhysicsEntity {
     this.sprite.addAngleRadians(radians);
     this.velocity.rotateBy(radians);
     this.mask = sprite.getMask();
+  }
+
+  protected void applyCollisionDamage (PhysicsEntity e)
+  {
+	 double health = e.getHealth();
+    e.hit ((int) this.getMomentum (PhysicsEntity.COLLISION_DAMAGE).length());
+
+	 if (e.isDestroyed())
+	   this.heal ((int) health);
+    else
+		this.hit ((int) e.getMomentum(PhysicsEntity.COLLISION_DAMAGE).length());
   }
 
   private void testForWallCollision() {

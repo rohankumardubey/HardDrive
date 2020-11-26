@@ -5,10 +5,15 @@ import game.scenes.MainScene;
 
 public abstract class PhysicsEntity extends HealthEntity
 {
-	//pblc Point2d position inherited from Entity
+	//collision elasticity and damage
+	protected static final double COLLISION_ELASTICITY = 0.5;
+	protected static final double COLLISION_DAMAGE = 1;
+
+	//public Point2d position inherited from Entity
 	public Vector2d velocity;
 	public Vector2d acceleration;
 
+	//angles stored in radians
 	public double angle = 0;
 	public double angularVelocity = 0;
 
@@ -22,7 +27,7 @@ public abstract class PhysicsEntity extends HealthEntity
 	private Vector2d friction; // Current force of friction
 
 	// Constructor
-	public PhysicsEntity (Vector2d fricCoef, double mass, int health)
+	public PhysicsEntity (int health, Vector2d fricCoef, double mass)
 	{
 		super (health);
 
@@ -39,6 +44,11 @@ public abstract class PhysicsEntity extends HealthEntity
 		this.weight = mass; // this will be removed if/when gravity is implemented
 
 	} //end Constructor
+
+	public PhysicsEntity (int health, double fricCoef, double mass)
+	{
+		this (health, new Vector2d (fricCoef, fricCoef), mass);
+	}
 
 	public Vector2d getPosition()
 	{
@@ -88,11 +98,6 @@ public abstract class PhysicsEntity extends HealthEntity
 
 		this.mask = sprite.getMask();
 
-		System.out.println ("-\n\nPosition: (" + this.position.x + ", " + this.position.y + ")\n");
-		System.out.println ("Velocity: (" + this.velocity.x + ", " + this.velocity.y + ")\n");
-		System.out.println ("Acceleration: (" + this.acceleration.x + ", " + this.acceleration.y + ")\n\n");
-		System.out.println ("Angle: " + this.angle);
-
 	} //end onStep()
 
 	//apply friction
@@ -118,8 +123,6 @@ public abstract class PhysicsEntity extends HealthEntity
 		else
 			this.friction.y = Math.abs(this.friction.y);
 
-		System.out.println ("(" + this.friction.x + ", " + this.friction.y + ")\n");
-
 		//apply friction without overshooting
 		if (Math.abs(this.friction.x) > (Math.abs(this.velocity.x)))
 			this.velocity.x = 0;
@@ -136,6 +139,63 @@ public abstract class PhysicsEntity extends HealthEntity
 
 	} //end applyFriction()
 
+	//collide with another PhysicsEntity
+	protected void collideWith (PhysicsEntity e)
+	{
+		this.applyCollisionDamages (e);
+		this.applyCollisionForces  (e);
+	}
+
+	//calculate new velocities according to physics formulas
+	protected void applyCollisionForces (PhysicsEntity e)
+	{
+		Vector2d newVelocity = new Vector2d
+		(
+			newVelocityAfterCollision (
+				this.mass, this.velocity.x,
+				e.mass, e.velocity.x
+			),
+			newVelocityAfterCollision (
+				this.mass, this.velocity.y,
+				e.mass, e.velocity.y
+			)
+		);
+
+		e.velocity.set
+		(
+			COLLISION_ELASTICITY * (this.velocity.x - e.velocity.x) + newVelocity.x,
+			COLLISION_ELASTICITY * (this.velocity.y - e.velocity.y) + newVelocity.y
+		);
+
+		this.velocity.set (newVelocity);
+	}
+
+	private double newVelocityAfterCollision (double m1, double v1, double m2, double v2)
+	{
+		double v1f =
+			((m1 * v1) + (m2 * v2) - (m2 * COLLISION_ELASTICITY * (v1 - v2)))
+			/ (m1 + m2)
+		;
+
+		return v1f;
+	}
+
+
+/*
+		Vector2d momentum = e.getMomentum (COLLISION_ELASTICITY);
+		e.applyForce (this.getMomentum (COLLISION_ELASTICITY));
+		this.applyForce (momentum);
+*/
+
+	//get the momentum as the product of velocity and mass
+	protected Vector2d getMomentum (double percentage)
+	{
+		Vector2d momentum = new Vector2d (this.velocity);
+		momentum.scaleBy (this.mass * percentage);
+
+		return momentum;
+	}
+
 	/*
 		apply the given force for a frame
 
@@ -151,6 +211,13 @@ public abstract class PhysicsEntity extends HealthEntity
 		//apply
 		this.velocity.add (force);
 
-	} //end applyingForce()
+	} //end applyForce()
+
+	//apply the damage done by a force
+	protected void applyCollisionDamages (PhysicsEntity e)
+	{
+		e.hit ((int) this.getMomentum(COLLISION_DAMAGE).length());
+		this.hit ((int) e.getMomentum(COLLISION_DAMAGE).length());
+	}
 
 } //end class PhysicsEntity

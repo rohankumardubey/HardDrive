@@ -10,12 +10,14 @@ import java.awt.image.*;
  */
 public class Chip extends Component {
 
-  private static final int CHIP_HEALTH = 30;
-  private static final Dimension SIZE =
+  private final static    int CHIP_HEALTH   = 30;
+  private final static double CHIP_FRICTION = 15;
+  private final static double CHIP_MASS     = 50;
+  private final static Dimension SIZE =
       new Dimension(6 * GameScene.TILE_SIZE, 3 * GameScene.TILE_SIZE);
 
   public Chip(Point2d position, boolean isVertical) {
-    super(CHIP_HEALTH);
+    super (CHIP_HEALTH, CHIP_FRICTION, CHIP_MASS);
 
     this.sprite.addFrames(randomChip());
     this.sprite.size.setSize(SIZE);

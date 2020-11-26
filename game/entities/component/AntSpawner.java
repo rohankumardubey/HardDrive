@@ -10,18 +10,25 @@ import java.awt.image.*;
  * Spawns ants into the game
  */
 public class AntSpawner extends Component {
-  private final static int ANT_SPAWNER_HEALTH = 30;
-  private final static int MAX_ANTS           = 30;
-  private final static int ANT_SPAWN_DELAY    = 10;
+  private final static    int ANT_SPAWNER_HEALTH   = 30;
+  private final static double ANT_SPAWNER_FRICTION = 15;
+  private final static double ANT_SPAWNER_MASS     = 50;
+
+  private final static int MAX_ANTS        = 30;
+  private final static int ANT_SPAWN_DELAY = 10;
+
   private static final Dimension SIZE =
       new Dimension(6 * GameScene.TILE_SIZE, 3 * GameScene.TILE_SIZE);
 
   public AntSpawner(Point2d position, boolean isVertical) {
-    super(ANT_SPAWNER_HEALTH);
+    super (ANT_SPAWNER_HEALTH, ANT_SPAWNER_FRICTION, ANT_SPAWNER_MASS);
 
     this.sprite.addFrames(randomChip());
     this.sprite.size.setSize(SIZE);
-    if (isVertical) { this.sprite.setAngleDegrees(90); }
+    if (isVertical) {
+	   this.sprite.setAngleDegrees(90);
+		this.angle = Math.toRadians(90);
+    }
 
     this.mask = sprite.getMask();
     this.position.set(position);

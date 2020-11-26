@@ -24,7 +24,7 @@ public abstract class HealthEntity extends Entity {
   }
 
   /**
-   * Get the current eneity health
+   * Get the current entity health
    * @return    Entity health
    */
   public int getHealth() {
