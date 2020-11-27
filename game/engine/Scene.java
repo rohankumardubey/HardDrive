@@ -332,13 +332,4 @@ public abstract class Scene {
     // Then draw the image to the screen
     g2d.drawImage(viewImage, 0, 0, size.width, size.height, null);
   }
-
-  /**
-   * Transform the view to the correct size and location
-   *
-   * @return the affine transformation
-   */
-  protected void transformView(Graphics2D imgG2d) {
-    imgG2d.translate(-1 * this.mainView.position.x, -1 * this.mainView.position.y);
-  }
 }
