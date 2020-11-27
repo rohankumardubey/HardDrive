@@ -1,6 +1,7 @@
 package game.entities;
 
 import game.engine.*;
+import game.entities.component.*;
 import game.resources.*;
 import game.scenes.*;
 import java.awt.*;
@@ -19,9 +20,13 @@ public class PlayerExplosion extends BinaryExplosion {
     super.onDestroy();
 
     GameScene scene = (GameScene) this.getScene();
-    Lives lives     = scene.getGame().getResouce(Lives.class);
-    lives.playerKilled();
 
-    scene.respawnPlayer();
+    // Only kill the player if the last data file hasn't been destroyed
+    //   Otherwise, the player was destroyed by destroying the last data file
+    if (scene.findEntities(DataFile.class).size() > 0) {
+      Lives lives = scene.getGame().getResouce(Lives.class);
+      lives.playerKilled();
+      scene.respawnPlayer();
+    }
   }
 }
