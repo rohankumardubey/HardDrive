@@ -100,7 +100,7 @@ ASSETS_FOLDER=assets
 all: $(JAR)
 
 $(JAR): $(CLASSES) $(MANIFEST) $(SOURCES) $(OTHER_FILES)
-	jar cvfm $@ $(MANIFEST) $(ENTRY) $(ANONYMOUS_CLASSES) $(ASSETS_FOLDER)/* $^
+	jar cvfm $@ $(MANIFEST) $(CLASSES) $(ANONYMOUS_CLASSES) $(ASSETS_FOLDER)/*
 
 %.class: %.java
 	javac -source 8 -target 8 $<
