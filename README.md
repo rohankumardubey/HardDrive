@@ -1,6 +1,10 @@
 # Hard Drive
+Created by Mr Robot
 
-Destroy All the data on Your Hard Drive 
+Destroy All the data on Your Hard Drive.
+
+Q. Can we recover Data back by any chance ?
+A. Ofcourse not
 
 ## Compiling and Running
 
