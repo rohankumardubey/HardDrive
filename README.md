@@ -2,15 +2,6 @@
 
 Destroy All the data on Your Hard Drive 
 
-<br />
-
-## Game Engine Structure
-
-Check out the [Game Engine Documentation](Engine.md) to learn about the basic structure of the game engine.
-All of the objects and rooms in this game are subclasses of these base engine components.
-
-<br />
-
 ## Compiling and Running
 
 Make sure you have `javac` version 8 or later installed on your computer.
