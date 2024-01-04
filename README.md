@@ -1,4 +1,4 @@
-# Hard Drive shredder
+# Hard Drive Shredder
 Created by Rohan (Mr.Robot)
 
 Hard Drive is a Game destroys your Data on Physical Hard Drive when installed on your computer while you are playing this game.
