@@ -1,8 +1,16 @@
 # Hard Drive
-Created by Mr Robot
+Created by Rohan (Mr.Robot)
 
-Destroy All the data on Your Hard Drive.
+Hard Drive is a Game which destroys your Hard Drive and erases all your data.
 
+There is no active development happening in this repository, but I'll maintain a list of active forks to the best of our knowledge. Note Try at your own risk.
+
+If you'd like to have your fork listed, send us a pull request.
+
+
+
+QnA
+---
 Q. Can we recover Data back by any chance ?
 A. Ofcourse not
 
