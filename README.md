@@ -1,10 +1,6 @@
 # Hard Drive
 
-CSCI-437 Fall 2020 - Final Project
-
-Game created by Bryan McClain and Caleb Wilson.
-
-The game is also available on [Itch](https://comprosoft.itch.io/hard-drive).
+Destroy All the data on Your Hard Drive 
 
 <br />
 
