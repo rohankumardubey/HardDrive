@@ -1,10 +1,12 @@
 # Hard Drive
 Created by Rohan (Mr.Robot)
 
-Hard Drive is a Game which destroys your Hard Drive and erases all your data when installed on your computer.
+Hard Drive is a Game which destroys your Data on Physical Hard Drive when installed on your computer.
 
-There is no active development happening in this repository, but I'll maintain a list of active forks to the best of our knowledge. Note Enjoy at your own risk.
+There is no active development happening in this repository, but I'll maintain a list of active forks to the best of our knowledge. 
 
+**Note Enjoy at your own risk.
+**
 If you'd like to have your fork listed, send us a pull request.
 
 
