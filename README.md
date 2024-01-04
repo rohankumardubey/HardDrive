@@ -13,6 +13,7 @@ There is no active development happening in this repository, but I'll maintain a
 QnA
 ---
 Q. Can we recover Data back by any chance ?
+
 A. Ofcourse not
 
 ## Compiling and Running
